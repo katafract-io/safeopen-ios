@@ -1,6 +1,6 @@
 import Foundation
 
-struct ScannedPayload: Identifiable, Codable {
+struct ScannedPayload: Identifiable, Codable, Hashable {
     let id: UUID
     let rawValue: String
     let type: PayloadType
@@ -8,7 +8,7 @@ struct ScannedPayload: Identifiable, Codable {
     let scannedAt: Date
     let source: PayloadSource
 
-    enum PayloadSource: String, Codable {
+    enum PayloadSource: String, Codable, Hashable {
         case camera
         case paste
         case shareExtension

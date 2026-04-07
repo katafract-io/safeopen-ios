@@ -43,7 +43,7 @@ struct RiskScoringService {
 
         // Suspicious path keywords
         let path = url.path.lowercased()
-        if suspiciousPathKeywords.contains(where: { path.contains($0) }) {
+        if Self.suspiciousPathKeywords.contains(where: { path.contains($0) }) {
             factors.append(.suspiciousPathKeyword)
         }
 

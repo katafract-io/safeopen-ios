@@ -1,6 +1,6 @@
 import Foundation
 
-struct InspectionResult: Identifiable, Codable {
+struct InspectionResult: Identifiable, Codable, Hashable {
     let id: UUID
     let payload: ScannedPayload
     let title: String
@@ -12,7 +12,7 @@ struct InspectionResult: Identifiable, Codable {
     let redirectHops: [RedirectHop]
     let canOpenSafely: Bool
 
-    enum RecommendedAction: String, Codable {
+    enum RecommendedAction: String, Codable, Hashable {
         case open
         case openSafely
         case caution
