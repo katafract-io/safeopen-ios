@@ -17,20 +17,20 @@ final class SafeOpenSessionManager: ObservableObject {
 
     // MARK: - Prefetch (Phase C)
 
-    func prefetch(url: URL) async {
+    func loadPreview(url: URL) async {
         isLoading = true
         error = nil
         defer { isLoading = false }
         do {
             let result = try await api.prefetchURL(url)
-            prefetch = result
+            self.prefetch = result
             // Also store session so the browser can use it
             session = SafeOpenSession(
                 sessionId:    result.sessionId,
                 sessionToken: "",         // prefetch doesn't return a proxy token
                 proxyHost:    "",
                 proxyPort:    8444,
-                assignedIPv6: result.assignedIPv6,
+                assignedIpv6: result.assignedIpv6,
                 ephemeral:    result.ephemeral,
                 expiresAt:    result.expiresAt
             )

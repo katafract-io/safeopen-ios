@@ -5,7 +5,7 @@ struct SafeOpenSession: Codable {
     let sessionToken: String
     let proxyHost: String
     let proxyPort: Int
-    let assignedIPv6: String
+    let assignedIpv6: String
     let ephemeral: Bool
     let expiresAt: Date
 
@@ -15,24 +15,24 @@ struct SafeOpenSession: Codable {
         URL(string: "http://\(proxyHost):\(proxyPort)")
     }
 
-    var displayIPv6: String {
-        // Truncate for display: fd10:cafe::a3b2 → a3b2
-        assignedIPv6.components(separatedBy: ":").last ?? assignedIPv6
+    var displayIpv6: String {
+        assignedIpv6.components(separatedBy: ":").last ?? assignedIpv6
     }
 }
 
 struct PrefetchResult: Codable {
-    let originalURL: String
-    let finalURL: String
+    let originalUrl: String
+    let finalUrl: String
     let statusCode: Int
     let title: String?
+    let summary: String?
     let redirectChain: [PrefetchHop]
-    let assignedIPv6: String
+    let assignedIpv6: String
     let ephemeral: Bool
     let sessionId: String
     let expiresAt: Date
 
-    var resolvedURL: URL? { URL(string: finalURL) }
+    var resolvedURL: URL? { URL(string: finalUrl) }
 
     struct PrefetchHop: Codable {
         let url: String

@@ -52,18 +52,24 @@ struct CameraPreviewView: UIViewRepresentable {
 
 // MARK: - Scanner overlay
 
+private struct FinderFrameKey: PreferenceKey {
+    static var defaultValue: CGRect = .zero
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) { value = nextValue() }
+}
+
 struct ScannerOverlay: View {
     let torchOn: Bool
     let onTorchToggle: () -> Void
 
     @State private var pulse = false
+    @State private var finderRect: CGRect = .zero
 
     private let finderSize: CGFloat = 270
 
     var body: some View {
         ZStack {
-            // Dimmed surround
-            DimmedSurround(finderSize: finderSize)
+            // Dimmed surround — cutout tracks actual finder position
+            DimmedSurround(finderRect: finderRect)
 
             VStack(spacing: 0) {
                 // Top bar
@@ -91,6 +97,11 @@ struct ScannerOverlay: View {
                     FinderFrame(size: finderSize, pulse: pulse)
                 }
                 .frame(width: finderSize, height: finderSize)
+                .background(
+                    GeometryReader { geo in
+                        Color.clear.preference(key: FinderFrameKey.self, value: geo.frame(in: .global))
+                    }
+                )
 
                 Spacer()
 
@@ -104,6 +115,7 @@ struct ScannerOverlay: View {
                     .padding(.bottom, 48)
             }
         }
+        .onPreferenceChange(FinderFrameKey.self) { finderRect = $0 }
         .onAppear {
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) {
                 pulse = true
@@ -115,23 +127,18 @@ struct ScannerOverlay: View {
 // MARK: - Dimmed surround
 
 struct DimmedSurround: View {
-    let finderSize: CGFloat
+    let finderRect: CGRect
 
     var body: some View {
         GeometryReader { geo in
-            let cx = geo.size.width / 2
-            let cy = geo.size.height / 2
-            let half = finderSize / 2
-            let r: CGFloat = 20
-
             Path { path in
-                // Full screen rect
                 path.addRect(CGRect(origin: .zero, size: geo.size))
-                // Cut-out (subtract finder)
-                path.addRoundedRect(
-                    in: CGRect(x: cx - half, y: cy - half, width: finderSize, height: finderSize),
-                    cornerSize: CGSize(width: r, height: r)
-                )
+                if finderRect != .zero {
+                    path.addRoundedRect(
+                        in: finderRect,
+                        cornerSize: CGSize(width: 20, height: 20)
+                    )
+                }
             }
             .fill(Color.black.opacity(0.62), style: FillStyle(eoFill: true))
         }
