@@ -3,6 +3,12 @@ import SwiftUI
 struct InspectionResultView: View {
     let result: InspectionResult
     @State private var copied = false
+    @State private var copiedClean = false
+
+    private var cleanURL: URL? {
+        guard let url = result.finalURL else { return nil }
+        return URLNormalizationService.stripTrackingParams(from: url)
+    }
 
     var body: some View {
         ScrollView {
@@ -27,6 +33,16 @@ struct InspectionResultView: View {
                                     .foregroundStyle(.primary)
                                     .lineLimit(4)
                                     .multilineTextAlignment(.trailing)
+                            }
+                            if let clean = cleanURL {
+                                Divider().padding(.vertical, 4)
+                                LabeledRow(label: "Clean URL") {
+                                    Text(clean.absoluteString)
+                                        .font(.caption.monospaced())
+                                        .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
+                                        .lineLimit(4)
+                                        .multilineTextAlignment(.trailing)
+                                }
                             }
                         }
                     }
@@ -81,6 +97,24 @@ struct InspectionResultView: View {
 
                         // Open Safely button — wired to session manager
                         OpenSafelyButton(result: result)
+
+                        if let clean = cleanURL {
+                            Button {
+                                UIPasteboard.general.string = clean.absoluteString
+                                withAnimation { copiedClean = true }
+                                Task {
+                                    try? await Task.sleep(for: .seconds(2))
+                                    withAnimation { copiedClean = false }
+                                }
+                            } label: {
+                                Label(copiedClean ? "Copied!" : "Copy Clean URL",
+                                      systemImage: copiedClean ? "checkmark" : "scissors")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
+                            .tint(Color(red: 0, green: 0.83, blue: 1))
+                            .controlSize(.large)
+                        }
 
                         Button {
                             let text = result.payload.normalizedValue ?? result.payload.rawValue
