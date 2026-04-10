@@ -16,18 +16,23 @@
 		4067902B0CB5D2A910D2F799 /* InspectionResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3F5A87110340C7DC3E4ED1 /* InspectionResultView.swift */; };
 		56DBA75759B048F3BB939D82 /* RiskLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C175311B2448E2C8EC5E5B8 /* RiskLevel.swift */; };
 		5B6E16F5FF86107F58E99C42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 280742B220D637A4C4ADD9CA /* Assets.xcassets */; };
+		6853E53A5CD6C8A0E4697B86 /* SafeOpenSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76D4DB25C1CEAD3CDBFF581C /* SafeOpenSessionManager.swift */; };
 		68A0EA34E28285C63679D143 /* RiskScoringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6593512AC6962F3191E4EBD2 /* RiskScoringService.swift */; };
 		6A1BFC53AE4CE385CDB060EE /* PayloadType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0E76A9D021D3A0BBC0C3BC /* PayloadType.swift */; };
 		6B95F4DC21D36EEFF59A887C /* RiskFactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BDD0C49A91C036C396285D6 /* RiskFactor.swift */; };
 		6C3AB1FB786547A76521F476 /* InspectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2B349EA750CEA3E0C1B86D /* InspectionResult.swift */; };
+		7165ED7221C60D00464C88F6 /* SafeOpenBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9F2C755B3BE6A0A270FF3F /* SafeOpenBrowserView.swift */; };
 		77B4163D86DC8EABF233D742 /* CameraScannerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEAE5B4CE5AD8A60524A2E /* CameraScannerService.swift */; };
 		7B765B5614C3B6ABB286A587 /* InspectionAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4E1FE333873897332B8A84 /* InspectionAPIClient.swift */; };
 		7B81F6F8934B380F40C5ABFE /* RedirectHop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9909809917CC36CCB5619F /* RedirectHop.swift */; };
+		7CE998CCFEEC8BE7F74EC70C /* SafeOpenSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C691DD7CD86680F57B480D1 /* SafeOpenSession.swift */; };
 		832F8141EB70E503EE4D0724 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA5B7F165C41FB5B82A3B01 /* HistoryView.swift */; };
 		9332F5F4618DDC7F3785B65F /* SafeOpenService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A556DB223228AEAD95DBA33 /* SafeOpenService.swift */; };
 		B10EE0B833CE08F751A0EC73 /* PasteLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2127CC0D12F979138598C77C /* PasteLinkView.swift */; };
 		BBA62C66E03F7C448EB53049 /* SafeOpenApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E591E0D58D6F5654B9C2F837 /* SafeOpenApp.swift */; };
+		C440C6766E750A493D55A2D5 /* SafeOpenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A0DB197A0884854435CDFEB /* SafeOpenStore.swift */; };
 		CE9AC7811829C2D659088C19 /* URLNormalizationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD8FF9A89EC0FC65425E9DB /* URLNormalizationService.swift */; };
+		D0D01E94FC4076080080023D /* ProUpgradeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40500674ACE46E471DDEED57 /* ProUpgradeView.swift */; };
 		FB3E63825766C07D9FB4822F /* ScannedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF11F4BD8BF70F7ECEA6DBB /* ScannedPayload.swift */; };
 /* End PBXBuildFile section */
 
@@ -39,15 +44,20 @@
 		280742B220D637A4C4ADD9CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A556DB223228AEAD95DBA33 /* SafeOpenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenService.swift; sourceTree = "<group>"; };
 		3148F799FA84A036FA03FBC2 /* QRScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewModel.swift; sourceTree = "<group>"; };
+		3D9F2C755B3BE6A0A270FF3F /* SafeOpenBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenBrowserView.swift; sourceTree = "<group>"; };
 		3EA5B7F165C41FB5B82A3B01 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		3EF11F4BD8BF70F7ECEA6DBB /* ScannedPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedPayload.swift; sourceTree = "<group>"; };
+		40500674ACE46E471DDEED57 /* ProUpgradeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProUpgradeView.swift; sourceTree = "<group>"; };
 		4C175311B2448E2C8EC5E5B8 /* RiskLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskLevel.swift; sourceTree = "<group>"; };
 		4C9909809917CC36CCB5619F /* RedirectHop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedirectHop.swift; sourceTree = "<group>"; };
 		4D2B349EA750CEA3E0C1B86D /* InspectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionResult.swift; sourceTree = "<group>"; };
 		526DA69097B36919B396D842 /* PasteLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteLinkViewModel.swift; sourceTree = "<group>"; };
+		5A0DB197A0884854435CDFEB /* SafeOpenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenStore.swift; sourceTree = "<group>"; };
 		6593512AC6962F3191E4EBD2 /* RiskScoringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskScoringService.swift; sourceTree = "<group>"; };
+		76D4DB25C1CEAD3CDBFF581C /* SafeOpenSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenSessionManager.swift; sourceTree = "<group>"; };
 		94C7E4D151F67344316A5CB0 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		9AD8FF9A89EC0FC65425E9DB /* URLNormalizationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLNormalizationService.swift; sourceTree = "<group>"; };
+		9C691DD7CD86680F57B480D1 /* SafeOpenSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenSession.swift; sourceTree = "<group>"; };
 		9CEEAE5B4CE5AD8A60524A2E /* CameraScannerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScannerService.swift; sourceTree = "<group>"; };
 		9E8C6C7D19F4C3CADA86ADAF /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
 		BC4E1FE333873897332B8A84 /* InspectionAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionAPIClient.swift; sourceTree = "<group>"; };
@@ -66,6 +76,8 @@
 				C596220D4905CB4A3CD0D3CF /* PayloadClassifier.swift */,
 				6593512AC6962F3191E4EBD2 /* RiskScoringService.swift */,
 				2A556DB223228AEAD95DBA33 /* SafeOpenService.swift */,
+				76D4DB25C1CEAD3CDBFF581C /* SafeOpenSessionManager.swift */,
+				5A0DB197A0884854435CDFEB /* SafeOpenStore.swift */,
 				9AD8FF9A89EC0FC65425E9DB /* URLNormalizationService.swift */,
 			);
 			path = Services;
@@ -92,10 +104,12 @@
 		339F5BB42DAD2456CFF1F9EE /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				B3FACA49BD459E708E1DB55D /* Browser */,
 				8480836F31F59B2BBEFBDEE9 /* History */,
 				0F59D5BB59FBA173D834C29C /* Inspection */,
 				6326670F957CB26D77F0E2A3 /* Paste */,
 				71ACBEDCD486320F040F4C2B /* Scanner */,
+				E6CCDBA643AB430EE332EB86 /* Upgrade */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -108,6 +122,7 @@
 				4C9909809917CC36CCB5619F /* RedirectHop.swift */,
 				1BDD0C49A91C036C396285D6 /* RiskFactor.swift */,
 				4C175311B2448E2C8EC5E5B8 /* RiskLevel.swift */,
+				9C691DD7CD86680F57B480D1 /* SafeOpenSession.swift */,
 				3EF11F4BD8BF70F7ECEA6DBB /* ScannedPayload.swift */,
 			);
 			path = Models;
@@ -167,6 +182,22 @@
 				3EA5B7F165C41FB5B82A3B01 /* HistoryView.swift */,
 			);
 			path = History;
+			sourceTree = "<group>";
+		};
+		B3FACA49BD459E708E1DB55D /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				3D9F2C755B3BE6A0A270FF3F /* SafeOpenBrowserView.swift */,
+			);
+			path = Browser;
+			sourceTree = "<group>";
+		};
+		E6CCDBA643AB430EE332EB86 /* Upgrade */ = {
+			isa = PBXGroup;
+			children = (
+				40500674ACE46E471DDEED57 /* ProUpgradeView.swift */,
+			);
+			path = Upgrade;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +281,7 @@
 				1FB099DF17D4E88FCB7AD0EB /* PasteLinkViewModel.swift in Sources */,
 				2762CEDCDFBEFD08A426C8D8 /* PayloadClassifier.swift in Sources */,
 				6A1BFC53AE4CE385CDB060EE /* PayloadType.swift in Sources */,
+				D0D01E94FC4076080080023D /* ProUpgradeView.swift in Sources */,
 				2773B6376489084F8D279584 /* QRScannerView.swift in Sources */,
 				3C7DD14B5F9E97DA5D706DF9 /* QRScannerViewModel.swift in Sources */,
 				7B81F6F8934B380F40C5ABFE /* RedirectHop.swift in Sources */,
@@ -257,7 +289,11 @@
 				56DBA75759B048F3BB939D82 /* RiskLevel.swift in Sources */,
 				68A0EA34E28285C63679D143 /* RiskScoringService.swift in Sources */,
 				BBA62C66E03F7C448EB53049 /* SafeOpenApp.swift in Sources */,
+				7165ED7221C60D00464C88F6 /* SafeOpenBrowserView.swift in Sources */,
 				9332F5F4618DDC7F3785B65F /* SafeOpenService.swift in Sources */,
+				7CE998CCFEEC8BE7F74EC70C /* SafeOpenSession.swift in Sources */,
+				6853E53A5CD6C8A0E4697B86 /* SafeOpenSessionManager.swift in Sources */,
+				C440C6766E750A493D55A2D5 /* SafeOpenStore.swift in Sources */,
 				FB3E63825766C07D9FB4822F /* ScannedPayload.swift in Sources */,
 				CE9AC7811829C2D659088C19 /* URLNormalizationService.swift in Sources */,
 			);

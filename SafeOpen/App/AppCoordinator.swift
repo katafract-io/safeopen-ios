@@ -12,7 +12,7 @@ struct AppCoordinator: View {
 
             PasteLinkView()
                 .tabItem {
-                    Label("Paste", systemImage: "doc.on.clipboard")
+                    Label("Inspect", systemImage: "link.badge.plus")
                 }
 
             HistoryView()
@@ -20,5 +20,7 @@ struct AppCoordinator: View {
                     Label("History", systemImage: "clock")
                 }
         }
+        .preferredColorScheme(.dark)
+        .tint(Color(red: 0, green: 0.83, blue: 1))
     }
 }
