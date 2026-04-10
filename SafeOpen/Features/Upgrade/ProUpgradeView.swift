@@ -20,7 +20,7 @@ struct ProUpgradeView: View {
                         Text("SafeOpen Pro")
                             .font(.title.bold())
 
-                        Text("Open any link in a disposable browser session with a fresh IPv6 address — your device never touches the destination.")
+                        Text("AI-powered link analysis and a disposable IPv6 identity — your device never touches the destination.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -32,18 +32,18 @@ struct ProUpgradeView: View {
 
                     // ── Feature list ─────────────────────────────────────
                     VStack(alignment: .leading, spacing: 14) {
+                        FeatureRow(icon: "sparkles",
+                                   title: "AI link analysis",
+                                   detail: "Know what a link does before you touch it — in plain English.")
                         FeatureRow(icon: "globe.badge.chevron.backward",
                                    title: "Disposable IPv6 identity",
                                    detail: "A fresh address per session — burned after 10 minutes.")
                         FeatureRow(icon: "eye.slash.fill",
                                    title: "Zero device IP exposure",
-                                   detail: "The destination sees a rotating datacenter IPv6, never your IP.")
+                                   detail: "The destination sees a unique datacenter IPv6, never your IP.")
                         FeatureRow(icon: "trash.fill",
                                    title: "No cookies, no cache",
                                    detail: "Isolated browser session wiped on close.")
-                        FeatureRow(icon: "bolt.shield.fill",
-                                   title: "Always proxied",
-                                   detail: "Even on the base plan, your real IP is never sent to scanned links.")
                     }
                     .padding(24)
 
