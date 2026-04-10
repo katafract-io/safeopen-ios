@@ -134,7 +134,7 @@ enum InspectionAPIError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .unauthorized:            return "Service error. Please update the app."
-        case .planRequired:            return "Safe Open requires a WraithVPN or Enclave plan."
+        case .planRequired:            return "SafeOpen Pro is required to open links in a clean session."
         case .rateLimited:             return "Too many active sessions. Close an existing session and try again."
         case .networkError(let e):     return e.localizedDescription
         case .serverError(_, let msg): return msg
