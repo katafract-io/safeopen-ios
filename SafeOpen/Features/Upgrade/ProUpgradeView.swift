@@ -42,8 +42,8 @@ struct ProUpgradeView: View {
                                    title: "No cookies, no cache",
                                    detail: "Isolated browser session wiped on close.")
                         FeatureRow(icon: "bolt.shield.fill",
-                                   title: "Free tier still protected",
-                                   detail: "Even without Pro, your IP is never exposed to scanned links.")
+                                   title: "Always proxied",
+                                   detail: "Even on the base plan, your real IP is never sent to scanned links.")
                     }
                     .padding(24)
 

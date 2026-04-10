@@ -351,6 +351,12 @@ struct OpenSafelyButton: View {
         .sheet(isPresented: $showUpgrade) {
             ProUpgradeView()
         }
+        .onChange(of: manager.needsUpgrade) { _, needs in
+            if needs {
+                showUpgrade = true
+                manager.needsUpgrade = false
+            }
+        }
     }
 
     private func openSafely() async {

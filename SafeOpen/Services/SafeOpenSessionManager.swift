@@ -10,6 +10,7 @@ final class SafeOpenSessionManager: ObservableObject {
     @Published var prefetch: PrefetchResult?
     @Published var isLoading = false
     @Published var error: String?
+    @Published var needsUpgrade = false
 
     private let api = InspectionAPIClient()
     private var expiryTask: Task<Void, Never>?
@@ -36,7 +37,11 @@ final class SafeOpenSessionManager: ObservableObject {
             )
             scheduleExpiry(at: result.expiresAt)
         } catch {
-            self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            if case InspectionAPIError.planRequired = error {
+                self.needsUpgrade = true
+            } else {
+                self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            }
         }
     }
 
@@ -56,7 +61,11 @@ final class SafeOpenSessionManager: ObservableObject {
             activeSessionId = s.sessionId
             scheduleExpiry(at: s.expiresAt)
         } catch {
-            self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            if case InspectionAPIError.planRequired = error {
+                self.needsUpgrade = true
+            } else {
+                self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+            }
         }
     }
 
