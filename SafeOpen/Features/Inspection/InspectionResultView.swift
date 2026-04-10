@@ -285,44 +285,65 @@ struct OpenSafelyButton: View {
     @State private var showUpgrade = false
 
     private var isPro: Bool { InspectionAPIClient.isProUser }
+    private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     var body: some View {
         Group {
-            VStack(spacing: 8) {
-                Button {
-                    Task { await openSafely() }
-                } label: {
-                    HStack {
-                        if manager.isLoading {
-                            ProgressView()
-                                .tint(.black)
-                                .scaleEffect(0.8)
-                        } else {
-                            Label("Open Safely", systemImage: "shield.lefthalf.filled")
+            if isPro {
+                // Pro: full Open Safely button
+                VStack(spacing: 8) {
+                    Button {
+                        Task { await openSafely() }
+                    } label: {
+                        HStack {
+                            if manager.isLoading {
+                                ProgressView().tint(.black).scaleEffect(0.8)
+                            } else {
+                                Label("Open Safely", systemImage: "shield.lefthalf.filled")
+                            }
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(Color(red: 0, green: 0.83, blue: 1))
-                .controlSize(.large)
-                .disabled(manager.isLoading || result.finalURL == nil)
+                    .buttonStyle(.borderedProminent)
+                    .tint(cyan)
+                    .controlSize(.large)
+                    .disabled(manager.isLoading || result.finalURL == nil)
 
-                // Pro badge / upsell
-                if isPro {
                     Label("Disposable IPv6 · Session isolated", systemImage: "sparkles")
                         .font(.caption2)
-                        .foregroundStyle(Color(red: 0, green: 0.83, blue: 1).opacity(0.85))
-                } else {
-                    Button {
-                        showUpgrade = true
-                    } label: {
-                        Label("Upgrade for disposable IPv6 identity", systemImage: "lock.fill")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                    .buttonStyle(.plain)
+                        .foregroundStyle(cyan.opacity(0.85))
                 }
+            } else {
+                // Free: Pro upsell card
+                Button { showUpgrade = true } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: "shield.lefthalf.filled")
+                            .font(.title2)
+                            .foregroundStyle(cyan)
+
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Analyze & Open Safely")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.primary)
+                            Text("AI summary · Disposable IPv6 · Isolated browser")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        Text("Pro")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(cyan)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(cyan.opacity(0.12), in: Capsule())
+                    }
+                    .padding(14)
+                    .background(Color(UIColor.secondarySystemGroupedBackground),
+                                in: RoundedRectangle(cornerRadius: 14))
+                }
+                .buttonStyle(.plain)
             }
         }
         .alert("Error", isPresented: .constant(manager.error != nil), actions: {

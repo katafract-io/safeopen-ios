@@ -19,6 +19,10 @@ final class SafeOpenSessionManager: ObservableObject {
     // MARK: - Prefetch (Phase C)
 
     func loadPreview(url: URL) async {
+        guard InspectionAPIClient.isProUser else {
+            needsUpgrade = true
+            return
+        }
         isLoading = true
         error = nil
         defer { isLoading = false }
