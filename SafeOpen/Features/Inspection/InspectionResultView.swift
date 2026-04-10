@@ -338,13 +338,14 @@ struct OpenSafelyButton: View {
             }
         }
         .sheet(isPresented: $showPrefetchSheet) {
-            if let prefetch = manager.prefetch, result.finalURL != nil {
+            if let prefetch = manager.prefetch {
                 PrefetchPreviewSheet(
                     prefetch: prefetch,
                     onOpen: { showPrefetchSheet = false; showBrowser = true },
                     onCancel: { showPrefetchSheet = false; manager.clear() }
                 )
-                .presentationDetents([.medium])
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $showUpgrade) {
@@ -354,8 +355,7 @@ struct OpenSafelyButton: View {
 
     private func openSafely() async {
         guard let url = result.finalURL else { return }
-        // Phase C: prefetch first, show preview
-        await manager.prefetch(url: url)
+        await manager.loadPreview(url: url)
         if manager.prefetch != nil && manager.error == nil {
             showPrefetchSheet = true
         }
@@ -369,45 +369,90 @@ struct PrefetchPreviewSheet: View {
     let onOpen: () -> Void
     let onCancel: () -> Void
 
+    private let cyan = Color(red: 0, green: 0.83, blue: 1)
+
+    /// True when the backend couldn't actually reach the destination
+    private var loadFailed: Bool {
+        prefetch.statusCode == 0 && prefetch.finalUrl == prefetch.originalUrl
+    }
+
     var body: some View {
         NavigationStack {
             List {
-                Section("Verified Destination") {
-                    if let url = prefetch.resolvedURL {
+                if loadFailed {
+                    // ── Unreachable destination ──────────────────────────
+                    Section {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack(spacing: 10) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.orange)
+                                Text("Destination unreachable")
+                                    .font(.headline)
+                            }
+                            Text("Our proxy nodes couldn't connect to this address. It may be a private/local network address (e.g. 192.168.x.x), an invalid URL, or a link that no longer exists.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text(prefetch.originalUrl)
+                                .font(.caption.monospaced())
+                                .foregroundStyle(.secondary)
+                                .lineLimit(3)
+                        }
+                        .padding(.vertical, 6)
+                    }
+                } else {
+                    // ── AI Summary ───────────────────────────────────────
+                    if let summary = prefetch.summary {
+                        Section("Summary") {
+                            Text(summary)
+                                .font(.subheadline)
+                                .foregroundStyle(.primary)
+                                .padding(.vertical, 4)
+                        }
+                    }
+
+                    // ── Destination ──────────────────────────────────────
+                    Section("Verified Destination") {
                         VStack(alignment: .leading, spacing: 6) {
                             if let title = prefetch.title {
                                 Text(title)
                                     .font(.headline)
                             }
-                            Text(url.absoluteString)
+                            Text(prefetch.finalUrl)
                                 .font(.caption.monospaced())
                                 .foregroundStyle(.secondary)
-                                .lineLimit(3)
+                                .lineLimit(4)
+                            if prefetch.statusCode > 0 {
+                                Text("HTTP \(prefetch.statusCode)")
+                                    .font(.caption2.monospaced())
+                                    .foregroundStyle(prefetch.statusCode < 400 ? .green : .orange)
+                            }
                         }
                         .padding(.vertical, 4)
                     }
-                }
 
-                if !prefetch.redirectChain.isEmpty {
-                    Section("Redirect Chain (\(prefetch.redirectChain.count))") {
-                        ForEach(Array(prefetch.redirectChain.enumerated()), id: \.offset) { i, hop in
-                            HStack(alignment: .top, spacing: 8) {
-                                Text("\(hop.statusCode)")
-                                    .font(.caption.monospaced().weight(.semibold))
-                                    .foregroundStyle(.secondary)
-                                    .frame(width: 36)
-                                Text(hop.url)
-                                    .font(.caption.monospaced())
-                                    .lineLimit(2)
+                    // ── Redirect chain ───────────────────────────────────
+                    if !prefetch.redirectChain.isEmpty {
+                        Section("Redirect Chain (\(prefetch.redirectChain.count))") {
+                            ForEach(Array(prefetch.redirectChain.enumerated()), id: \.offset) { _, hop in
+                                HStack(alignment: .top, spacing: 8) {
+                                    Text("\(hop.statusCode)")
+                                        .font(.caption.monospaced().weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                        .frame(width: 36)
+                                    Text(hop.url)
+                                        .font(.caption.monospaced())
+                                        .lineLimit(2)
+                                }
                             }
                         }
                     }
                 }
 
+                // ── Privacy ──────────────────────────────────────────────
                 Section("Privacy") {
                     LabeledContent("Inspected via") {
                         Text(prefetch.ephemeral ? "Disposable IPv6" : "Shared node")
-                            .foregroundStyle(prefetch.ephemeral ? Color(red: 0, green: 0.83, blue: 1) : .secondary)
+                            .foregroundStyle(prefetch.ephemeral ? cyan : .secondary)
                     }
                     LabeledContent("Your IP exposed") {
                         Text("No — never touched destination")
@@ -421,10 +466,12 @@ struct PrefetchPreviewSheet: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel", action: onCancel)
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Open Safely") { onOpen() }
-                        .bold()
-                        .tint(Color(red: 0, green: 0.83, blue: 1))
+                if !loadFailed {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Open Safely") { onOpen() }
+                            .bold()
+                            .tint(cyan)
+                    }
                 }
             }
         }

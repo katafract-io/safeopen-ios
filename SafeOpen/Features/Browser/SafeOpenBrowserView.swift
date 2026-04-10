@@ -38,7 +38,7 @@ struct SafeOpenBrowserView: View {
                                     Circle()
                                         .fill(Color(red: 0, green: 0.83, blue: 1))
                                         .frame(width: 6, height: 6)
-                                    Text("Sandbox · \(session.assignedIPv6)")
+                                    Text("Sandbox · \(session.assignedIpv6)")
                                         .font(.system(size: 10, weight: .medium, design: .monospaced))
                                         .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
                                 }
@@ -108,19 +108,11 @@ struct WebView: UIViewRepresentable {
         config.websiteDataStore = .nonPersistent()
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
 
-        // Proxy via session if available
-        if let proxyURL = session.proxyURL,
-           !session.sessionToken.isEmpty,
-           let host = proxyURL.host,
-           let port = proxyURL.port {
-            let dict: [AnyHashable: Any] = [
-                kCFNetworkProxiesHTTPEnable: true,
-                kCFNetworkProxiesHTTPProxy: host,
-                kCFNetworkProxiesHTTPPort: port,
-            ]
-            let scheme = URLSessionConfiguration.ephemeral
-            scheme.connectionProxyDictionary = dict
-        }
+        // Proxy routing: WKWebView doesn't expose a native proxy API.
+        // Full routing requires openSession() to return real credentials,
+        // then a WKURLSchemeHandler intercept. Current flow uses prefetch-only
+        // sessions (empty token/host), so the browser opens direct with a
+        // non-persistent data store for local privacy.
 
         let wv = WKWebView(frame: .zero, configuration: config)
         wv.navigationDelegate = context.coordinator
@@ -190,7 +182,7 @@ struct SessionInfoSheet: View {
             List {
                 Section("Identity") {
                     LabeledContent("IP Address") {
-                        Text(session.assignedIPv6)
+                        Text(session.assignedIpv6)
                             .font(.caption.monospaced())
                             .foregroundStyle(.secondary)
                     }

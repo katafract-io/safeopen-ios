@@ -8,7 +8,7 @@ struct InspectionAPIClient {
 
     // MARK: - Service token (SafeOpen service account on the platform)
     // This is a service-level API key, not a per-user credential.
-    private static let serviceToken = "REDACTED_OLD_SERVICE_TOKEN"
+    private static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
 
     // MARK: - Device ID (stable UUID, persisted in Keychain)
     static var deviceID: String {
