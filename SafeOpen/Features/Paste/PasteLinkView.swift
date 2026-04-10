@@ -83,12 +83,6 @@ struct PasteLinkView: View {
             .navigationDestination(item: $viewModel.result) { result in
                 InspectionResultView(result: result)
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { inputFocused = false }
-                }
-            }
         }
         .onReceive(viewModel.$result.compactMap { $0 }) { appState.record($0) }
     }
