@@ -36,7 +36,7 @@ struct QRScannerView: View {
 // MARK: - Camera preview
 
 struct CameraPreviewView: UIViewRepresentable {
-    let viewModel: QRScannerViewModel
+    @ObservedObject var viewModel: QRScannerViewModel
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView()

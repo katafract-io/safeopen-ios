@@ -10,7 +10,7 @@ final class QRScannerViewModel: ObservableObject {
     @Published var cameraAuthorized = false
     @Published var torchOn = false
 
-    private(set) var previewLayer: AVCaptureVideoPreviewLayer?
+    @Published private(set) var previewLayer: AVCaptureVideoPreviewLayer?
 
     private let scanner = CameraScannerService()
     private let service = SafeOpenService()
