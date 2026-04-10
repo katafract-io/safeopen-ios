@@ -338,7 +338,7 @@ struct OpenSafelyButton: View {
             }
         }
         .sheet(isPresented: $showPrefetchSheet) {
-            if let prefetch = manager.prefetch, let url = result.finalURL {
+            if let prefetch = manager.prefetch, result.finalURL != nil {
                 PrefetchPreviewSheet(
                     prefetch: prefetch,
                     onOpen: { showPrefetchSheet = false; showBrowser = true },
