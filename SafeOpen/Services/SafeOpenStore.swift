@@ -50,6 +50,7 @@ final class SafeOpenStore: ObservableObject {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
                 await updateProStatus()
+                await DeviceTokenManager.shared.upgradeWithTransaction(transaction)
                 await transaction.finish()
             case .userCancelled:
                 break

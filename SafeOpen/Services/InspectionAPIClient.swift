@@ -6,10 +6,6 @@ struct InspectionAPIClient {
     private static let baseURL = "https://api.katafract.com"
     private static let session = URLSession(configuration: .ephemeral)
 
-    // MARK: - Service token (SafeOpen service account on the platform)
-    // This is a service-level API key, not a per-user credential.
-    private static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
-
     // MARK: - Device ID (stable UUID, persisted in Keychain)
     static var deviceID: String {
         let service = "com.katafract.safeopen"
@@ -44,7 +40,9 @@ struct InspectionAPIClient {
     }
 
     private func authorized(_ req: inout URLRequest) {
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
+        if let tok = DeviceTokenManager.shared.token {
+            req.setValue("Bearer \(tok)", forHTTPHeaderField: "Authorization")
+        }
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
     }
 
@@ -104,7 +102,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session/\(sessionId)")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "DELETE"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
+        authorized(&req)
         _ = try? await Self.session.data(for: req)
     }
 
