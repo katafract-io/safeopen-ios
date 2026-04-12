@@ -108,7 +108,7 @@ struct ProUpgradeView: View {
                         .scaleEffect(1.5)
                 }
             }
-            .onChange(of: InspectionAPIClient.isProUser) { _, isPro in
+            .onChange(of: store.isPro) { _, isPro in
                 if isPro { dismiss() }
             }
         }
