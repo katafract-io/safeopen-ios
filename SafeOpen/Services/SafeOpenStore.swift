@@ -10,6 +10,7 @@ final class SafeOpenStore: ObservableObject {
 
     @Published var products: [Product] = []
     @Published var isPurchasing = false
+    @Published var isPro: Bool = InspectionAPIClient.isProUser
     @Published var error: String?
 
     var monthly: Product? { products.first { $0.id == Self.monthlyID } }
@@ -109,6 +110,7 @@ final class SafeOpenStore: ObservableObject {
             }
         }
         InspectionAPIClient.isProUser = hasPro
+        isPro = hasPro
     }
 }
 

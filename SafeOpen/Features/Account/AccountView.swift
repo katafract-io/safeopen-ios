@@ -7,7 +7,7 @@ struct AccountView: View {
     @State private var showUpgrade = false
     @State private var showClearConfirm = false
 
-    private var isPro: Bool { InspectionAPIClient.isProUser }
+    private var isPro: Bool { store.isPro }
     private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     private var appVersion: String {

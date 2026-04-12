@@ -280,11 +280,12 @@ struct OpenSafelyButton: View {
     let result: InspectionResult
 
     @StateObject private var manager = SafeOpenSessionManager.shared
+    @StateObject private var store  = SafeOpenStore.shared
     @State private var showBrowser = false
     @State private var showPrefetchSheet = false
     @State private var showUpgrade = false
 
-    private var isPro: Bool { InspectionAPIClient.isProUser }
+    private var isPro: Bool { store.isPro }
     private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     var body: some View {
