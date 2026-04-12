@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Usage: ./scripts/bump [patch|minor|major]
+# Bumps CURRENT_PROJECT_VERSION, optionally bumps MARKETING_VERSION,
+# regenerates the Xcode project via XcodeGen, commits, and pushes.
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Read current values
+BUILD=$(grep 'CURRENT_PROJECT_VERSION:' project.yml | grep -oE '"[0-9]+"' | tr -d '"')
+VERSION=$(grep 'MARKETING_VERSION:' project.yml | grep -oE '"[0-9]+\.[0-9]+\.[0-9]+"' | tr -d '"')
+NEW_BUILD=$((BUILD + 1))
+
+IFS='.' read -r MAJ MIN PAT <<< "$VERSION"
+case "${1:-build}" in
+  major) NEW_VERSION="$((MAJ+1)).0.0" ;;
+  minor) NEW_VERSION="${MAJ}.$((MIN+1)).0" ;;
+  patch) NEW_VERSION="${MAJ}.${MIN}.$((PAT+1))" ;;
+  build) NEW_VERSION="$VERSION" ;;
+esac
+
+echo "Bumping build $BUILD → $NEW_BUILD, version $VERSION → $NEW_VERSION"
+
+# Update project.yml
+sed -i.bak "s/CURRENT_PROJECT_VERSION: \"$BUILD\"/CURRENT_PROJECT_VERSION: \"$NEW_BUILD\"/" project.yml
+sed -i.bak "s/MARKETING_VERSION: \"$VERSION\"/MARKETING_VERSION: \"$NEW_VERSION\"/" project.yml
+rm -f project.yml.bak
+
+# Regenerate Xcode project (requires xcodegen on PATH)
+if command -v xcodegen &>/dev/null; then
+  xcodegen generate
+  echo "Project regenerated."
+else
+  echo "WARNING: xcodegen not found — pbxproj not regenerated. Install via: brew install xcodegen"
+fi
+
+git add project.yml SafeOpen.xcodeproj/project.pbxproj
+git commit -m "chore: bump build $NEW_BUILD (v$NEW_VERSION)"
+git push
+echo "Pushed. Xcode Cloud should pick up the new build."
