@@ -31,7 +31,11 @@ if command -v xcodegen &>/dev/null; then
   xcodegen generate
   echo "Project regenerated."
 else
-  echo "WARNING: xcodegen not found — pbxproj not regenerated. Install via: brew install xcodegen"
+  # Fallback: patch pbxproj directly
+  sed -i.bak "s/CURRENT_PROJECT_VERSION = $BUILD;/CURRENT_PROJECT_VERSION = $NEW_BUILD;/g" SafeOpen.xcodeproj/project.pbxproj
+  sed -i.bak "s/MARKETING_VERSION = $VERSION;/MARKETING_VERSION = $NEW_VERSION;/g" SafeOpen.xcodeproj/project.pbxproj
+  rm -f SafeOpen.xcodeproj/project.pbxproj.bak
+  echo "pbxproj patched directly (xcodegen not found)."
 fi
 
 git add project.yml SafeOpen.xcodeproj/project.pbxproj
