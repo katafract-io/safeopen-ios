@@ -33,24 +33,13 @@ struct SafeOpenBrowserView: View {
                             Text(vm.pageTitle.isEmpty ? url.host ?? "Loading…" : vm.pageTitle)
                                 .font(.caption.weight(.semibold))
                                 .lineLimit(1)
-                            if session.ephemeral {
-                                HStack(spacing: 4) {
-                                    Circle()
-                                        .fill(Color(red: 0, green: 0.83, blue: 1))
-                                        .frame(width: 6, height: 6)
-                                    Text("Sandbox · \(session.assignedIpv6)")
-                                        .font(.system(size: 10, weight: .medium, design: .monospaced))
-                                        .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
-                                }
-                            } else {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "shield.fill")
-                                        .font(.system(size: 8))
-                                    Text("Protected")
-                                        .font(.system(size: 10, weight: .medium))
-                                }
-                                .foregroundStyle(.green)
+                            HStack(spacing: 4) {
+                                Image(systemName: "lock.fill")
+                                    .font(.system(size: 8))
+                                Text("Isolated · No cookies or cache")
+                                    .font(.system(size: 10, weight: .medium))
                             }
+                            .foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -181,7 +170,7 @@ struct SessionInfoSheet: View {
         NavigationStack {
             List {
                 Section("Identity") {
-                    LabeledContent("IP Address") {
+                    LabeledContent("Browsing IP") {
                         Text(session.assignedIpv6)
                             .font(.caption.monospaced())
                             .foregroundStyle(.secondary)
@@ -189,6 +178,13 @@ struct SessionInfoSheet: View {
                     LabeledContent("Mode") {
                         Text(session.ephemeral ? "Disposable" : "Shared node IP")
                             .foregroundStyle(session.ephemeral ? Color(red: 0, green: 0.83, blue: 1) : .secondary)
+                    }
+                }
+
+                Section("Privacy") {
+                    LabeledContent("Session storage") {
+                        Text("None — cookies cleared")
+                            .foregroundStyle(.green)
                     }
                 }
 

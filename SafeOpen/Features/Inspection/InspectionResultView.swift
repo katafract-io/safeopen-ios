@@ -383,6 +383,11 @@ struct OpenSafelyButton: View {
 
     private func openSafely() async {
         guard let url = result.finalURL else { return }
+        // Reuse prefetch if still fresh (> 30s remaining), else re-fetch
+        if let existing = manager.prefetch, existing.expiresAt.timeIntervalSinceNow > 30 {
+            showPrefetchSheet = true
+            return
+        }
         await manager.loadPreview(url: url)
         if manager.prefetch != nil && manager.error == nil {
             showPrefetchSheet = true
@@ -482,9 +487,13 @@ struct PrefetchPreviewSheet: View {
                         Text(prefetch.ephemeral ? "Disposable IPv6" : "Shared node")
                             .foregroundStyle(prefetch.ephemeral ? cyan : .secondary)
                     }
-                    LabeledContent("Your IP exposed") {
-                        Text("No — never touched destination")
+                    LabeledContent("Your IP during inspect") {
+                        Text("Not exposed")
                             .foregroundStyle(.green)
+                    }
+                    LabeledContent("Your IP if opened") {
+                        Text("Your device")
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
