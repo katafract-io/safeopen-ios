@@ -36,16 +36,23 @@ class SafeOpenService: ObservableObject {
             recommendedAction: recommendedAction(riskLevel: riskLevel),
             finalURL: normalizedURL,
             redirectHops: [],
-            canOpenSafely: false  // Phase C: true when Wraith session available
+            canOpenSafely: false
         )
     }
 
     // MARK: - Private
 
     private func scoreLocally(url: URL?, type: PayloadType) -> (RiskLevel, [RiskFactor]) {
-        guard let url else { return (.unknown, [.unknownDestination]) }
-        guard type == .url || type == .shortURL else { return (.low, []) }
-        return riskScorer.score(url: url, type: type)
+        // Known non-URL types are inherently classifiable — not "unknown"
+        switch type {
+        case .wifi, .sms, .email, .phone, .contact, .calendar, .plainText:
+            return (.low, [])
+        case .unknown:
+            return (.unknown, [.unknownDestination])
+        case .url, .shortURL:
+            guard let url else { return (.unknown, [.unknownDestination]) }
+            return riskScorer.score(url: url, type: type)
+        }
     }
 
     private func explain(payload: ScannedPayload, riskLevel: RiskLevel) -> (title: String, summary: String) {
