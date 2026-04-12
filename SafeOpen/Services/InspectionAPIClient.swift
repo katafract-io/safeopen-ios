@@ -39,8 +39,8 @@ struct InspectionAPIClient {
         set { UserDefaults.standard.set(newValue, forKey: "com.katafract.safeopen.isPro") }
     }
 
-    private func authorized(_ req: inout URLRequest) {
-        if let tok = DeviceTokenManager.shared.token {
+    private func authorized(_ req: inout URLRequest, token: String?) {
+        if let tok = token {
             req.setValue("Bearer \(tok)", forHTTPHeaderField: "Authorization")
         }
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -52,7 +52,8 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/prefetch")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        authorized(&req)
+        let tok = await MainActor.run { DeviceTokenManager.shared.token }
+        authorized(&req, token: tok)
 
         var body: [String: Any] = [
             "url": url.absoluteString,
@@ -77,7 +78,8 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        authorized(&req)
+        let tok = await MainActor.run { DeviceTokenManager.shared.token }
+        authorized(&req, token: tok)
 
         var body: [String: Any] = [
             "url": url.absoluteString,
@@ -102,7 +104,8 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session/\(sessionId)")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "DELETE"
-        authorized(&req)
+        let tok = await MainActor.run { DeviceTokenManager.shared.token }
+        authorized(&req, token: tok)
         _ = try? await Self.session.data(for: req)
     }
 
