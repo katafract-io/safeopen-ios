@@ -5,12 +5,14 @@ import MapKit
 import Contacts
 import ContactsUI
 import EventKit
+import SafariServices
 
 struct InspectionResultView: View {
     let result: InspectionResult
     @State private var copied = false
     @State private var copiedClean = false
     @State private var showHighRiskAlert = false
+    @State private var safariURL: URL?
 
     private var parsedContent: ParsedContent {
         PayloadParser().parse(raw: result.payload.rawValue, type: result.payload.type)
@@ -106,7 +108,7 @@ struct InspectionResultView: View {
                                 if result.riskLevel == .high {
                                     showHighRiskAlert = true
                                 } else {
-                                    UIApplication.shared.open(result.finalURL!)
+                                    safariURL = result.finalURL
                                 }
                             } label: {
                                 Label("Open in Browser", systemImage: "safari")
@@ -117,7 +119,7 @@ struct InspectionResultView: View {
                             .controlSize(.large)
                             .alert("High Risk — Open Anyway?", isPresented: $showHighRiskAlert) {
                                 Button("Open in Browser", role: .destructive) {
-                                    UIApplication.shared.open(result.finalURL!)
+                                    safariURL = result.finalURL
                                 }
                                 Button("Cancel", role: .cancel) {}
                             } message: {
@@ -170,6 +172,10 @@ struct InspectionResultView: View {
         .background(Color(UIColor.systemGroupedBackground))
         .navigationTitle("Inspection")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $safariURL) { url in
+            SafariView(url: url)
+                .ignoresSafeArea()
+        }
     }
 
     private var riskColor: Color {
@@ -180,6 +186,26 @@ struct InspectionResultView: View {
         case .unknown: return .secondary
         }
     }
+}
+
+// MARK: - Safari view (in-app, bypasses universal-link routing)
+
+extension URL: @retroactive Identifiable {
+    public var id: String { absoluteString }
+}
+
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        let cfg = SFSafariViewController.Configuration()
+        cfg.entersReaderIfAvailable = false
+        let vc = SFSafariViewController(url: url, configuration: cfg)
+        vc.preferredControlTintColor = UIColor(red: 0, green: 0.83, blue: 1, alpha: 1)
+        return vc
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
 }
 
 // MARK: - Risk Banner
