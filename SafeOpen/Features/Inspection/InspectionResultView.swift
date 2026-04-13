@@ -376,12 +376,14 @@ struct OpenSafelyButton: View {
             .disabled(manager.isLoading || result.finalURL == nil)
 
             HStack(spacing: 6) {
-                Image(systemName: "bolt.fill")
+                Image(systemName: store.balanceIsStale ? "wifi.exclamationmark" : "bolt.fill")
                     .font(.caption2)
-                    .foregroundStyle(cyan.opacity(0.85))
-                Text("Costs 1 credit · Balance: \(store.balance)")
+                    .foregroundStyle(store.balanceIsStale ? .orange : cyan.opacity(0.85))
+                Text(store.balanceIsStale
+                     ? "Offline · last known balance \(store.balance)"
+                     : "Costs 1 credit · Balance: \(store.balance)")
                     .font(.caption2)
-                    .foregroundStyle(cyan.opacity(0.85))
+                    .foregroundStyle(store.balanceIsStale ? .orange : cyan.opacity(0.85))
             }
         }
         .alert("Error", isPresented: .constant(manager.error != nil), actions: {
