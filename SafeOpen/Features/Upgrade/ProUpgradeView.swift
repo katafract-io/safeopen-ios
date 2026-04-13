@@ -49,7 +49,21 @@ struct ProUpgradeView: View {
 
                     // ── Pricing ──────────────────────────────────────────
                     VStack(spacing: 12) {
-                        if store.products.isEmpty {
+                        if store.isPro {
+                            // Already subscribed — don't offer additional purchases
+                            VStack(spacing: 8) {
+                                Label("You're a SafeOpen Pro subscriber", systemImage: "checkmark.seal.fill")
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
+
+                                if let url = URL(string: "itms-apps://apps.apple.com/account/subscriptions") {
+                                    Link("Manage Subscription", destination: url)
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .padding(.vertical, 16)
+                        } else if store.products.isEmpty {
                             ProgressView()
                                 .padding()
                         } else {
@@ -65,12 +79,14 @@ struct ProUpgradeView: View {
                             }
                         }
 
+                        if !store.isPro {
                         Button("Restore Purchases") {
                             Task { await store.restorePurchases() }
                         }
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .padding(.top, 4)
+                        }
 
                         if let err = store.error {
                             Text(err)
@@ -107,6 +123,10 @@ struct ProUpgradeView: View {
                         .tint(Color(red: 0, green: 0.83, blue: 1))
                         .scaleEffect(1.5)
                 }
+            }
+            .task {
+                // Re-check on appear so existing subs show "already Pro" immediately
+                await store.refreshProStatus()
             }
             .onChange(of: store.isPro) { _, isPro in
                 if isPro { dismiss() }

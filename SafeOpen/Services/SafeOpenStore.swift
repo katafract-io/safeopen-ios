@@ -8,11 +8,12 @@ final class SafeOpenStore: ObservableObject {
     static let monthlyID = "com.katafract.safeopen.pro_monthly"
     static let annualID  = "com.katafract.safeopen.pro_annual"
 
+    private static let proKey = "com.katafract.safeopen.isPro"
+
     @Published var products: [Product] = []
     @Published var isPurchasing = false
-    @Published var isPro: Bool = InspectionAPIClient.isProUser
+    @Published var isPro: Bool = UserDefaults.standard.bool(forKey: proKey)
     @Published var error: String?
-    @Published var isUpgrading = false
 
     var monthly: Product? { products.first { $0.id == Self.monthlyID } }
     var annual:  Product? { products.first { $0.id == Self.annualID } }
@@ -52,12 +53,10 @@ final class SafeOpenStore: ObservableObject {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
                 await updateProStatus()
-                isUpgrading = true
-                await DeviceTokenManager.shared.upgradeWithTransaction(transaction)
-                isUpgrading = false
                 await transaction.finish()
             case .userCancelled:
-                break
+                // OS may have shown "already subscribed" — re-check entitlements
+                await updateProStatus()
             case .pending:
                 break
             @unknown default:
@@ -81,7 +80,62 @@ final class SafeOpenStore: ObservableObject {
         }
     }
 
-    // MARK: - Internal
+    // MARK: - Public refresh
+
+    /// Sync with Apple then check entitlements. Called on view appear.
+    func refreshProStatus() async {
+        try? await AppStore.sync()   // ensure latest state from Apple
+        await updateProStatus()
+    }
+
+    // MARK: - Debug
+
+    struct StoreKitDiagnostic {
+        var syncError: String?
+        var currentEntitlements: [(id: String, revoked: Bool, expires: String)]  = []
+        var allTransactions:     [(id: String, revoked: Bool, expires: String)]  = []
+        var userDefaultsIsPro: Bool
+        var inMemoryIsPro: Bool
+        var monthlyID: String
+        var annualID:  String
+    }
+
+    func diagnose() async -> StoreKitDiagnostic {
+        var d = StoreKitDiagnostic(
+            userDefaultsIsPro: UserDefaults.standard.bool(forKey: Self.proKey),
+            inMemoryIsPro: isPro,
+            monthlyID: Self.monthlyID,
+            annualID:  Self.annualID
+        )
+        do {
+            try await AppStore.sync()
+        } catch {
+            d.syncError = error.localizedDescription
+        }
+        for await result in Transaction.currentEntitlements {
+            switch result {
+            case .verified(let tx):
+                let exp = tx.expirationDate.map { "\($0)" } ?? "none"
+                d.currentEntitlements.append((tx.productID, tx.revocationDate != nil, exp))
+            case .unverified(let tx, _):
+                d.currentEntitlements.append(("\(tx.productID) [UNVERIFIED]", false, "?"))
+            @unknown default: break
+            }
+        }
+        for await result in Transaction.all {
+            switch result {
+            case .verified(let tx):
+                let exp = tx.expirationDate.map { "\($0)" } ?? "none"
+                d.allTransactions.append((tx.productID, tx.revocationDate != nil, exp))
+            case .unverified(let tx, _):
+                d.allTransactions.append(("\(tx.productID) [UNVERIFIED]", false, "?"))
+            @unknown default: break
+            }
+        }
+        return d
+    }
+
+    // MARK: - Private
 
     private func listenForTransactions() -> Task<Void, Never> {
         Task(priority: .background) {
@@ -106,16 +160,35 @@ final class SafeOpenStore: ObservableObject {
 
     private func updateProStatus() async {
         var hasPro = false
+        var hasRevocation = false
+
         for await result in Transaction.currentEntitlements {
-            if case .verified(let tx) = result,
-               (tx.productID == Self.monthlyID || tx.productID == Self.annualID),
-               tx.revocationDate == nil {
+            guard case .verified(let tx) = result,
+                  tx.productID == Self.monthlyID || tx.productID == Self.annualID else { continue }
+            if tx.revocationDate != nil { hasRevocation = true } else { hasPro = true; break }
+        }
+
+        // Fallback when currentEntitlements is empty: check all past transactions.
+        // Covers cases where StoreKit is slow or the sub just renewed.
+        // Any verified, non-revoked purchase for our products = Pro.
+        if !hasPro && !hasRevocation {
+            for await result in Transaction.all {
+                guard case .verified(let tx) = result,
+                      (tx.productID == Self.monthlyID || tx.productID == Self.annualID),
+                      tx.revocationDate == nil else { continue }
                 hasPro = true
                 break
             }
         }
-        InspectionAPIClient.isProUser = hasPro
-        isPro = hasPro
+
+        if hasPro {
+            UserDefaults.standard.set(true, forKey: Self.proKey)
+            isPro = true
+        } else if hasRevocation {
+            UserDefaults.standard.set(false, forKey: Self.proKey)
+            isPro = false
+        }
+        // Empty = preserve cached state (network/StoreKit delay, offline).
     }
 }
 

@@ -1,64 +1,29 @@
 import Foundation
-import Security
 
+/// Calls the SafeOpen backend using the app-level service token.
+/// All users share this token; StoreKit (SafeOpenStore.isPro) is the
+/// sole client-side gate for whether to call the backend at all.
 struct InspectionAPIClient {
 
-    private static let baseURL = "https://api.katafract.com"
+    static let baseURL = "https://api.katafract.com"
     private static let session = URLSession(configuration: .ephemeral)
 
-    // MARK: - Device ID (stable UUID, persisted in Keychain)
-    static var deviceID: String {
-        let service = "com.katafract.safeopen"
-        let account = "device_id"
-        let query: [CFString: Any] = [
-            kSecClass:            kSecClassGenericPassword,
-            kSecAttrService:      service,
-            kSecAttrAccount:      account,
-            kSecReturnData:       true,
-        ]
-        var result: AnyObject?
-        if SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
-           let data = result as? Data,
-           let id = String(data: data, encoding: .utf8) {
-            return id
-        }
-        let newID = UUID().uuidString
-        let addQuery: [CFString: Any] = [
-            kSecClass:        kSecClassGenericPassword,
-            kSecAttrService:  service,
-            kSecAttrAccount:  account,
-            kSecValueData:    Data(newID.utf8),
-        ]
-        SecItemAdd(addQuery as CFDictionary, nil)
-        return newID
-    }
+    /// The app service token — authenticates the SafeOpen app to the backend.
+    /// All Pro users share this token; rate limiting is enforced server-side.
+    static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
 
-    // MARK: - Pro tier (set true after StoreKit purchase verification)
-    static var isProUser: Bool {
-        get { UserDefaults.standard.bool(forKey: "com.katafract.safeopen.isPro") }
-        set { UserDefaults.standard.set(newValue, forKey: "com.katafract.safeopen.isPro") }
-    }
-
-    private func authorized(_ req: inout URLRequest, token: String?) {
-        if let tok = token {
-            req.setValue("Bearer \(tok)", forHTTPHeaderField: "Authorization")
-        }
-        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    }
-
-    // MARK: - Prefetch (Phase C)
+    // MARK: - Prefetch
 
     func prefetchURL(_ url: URL, regionHint: String? = nil) async throws -> PrefetchResult {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/prefetch")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        let tok = await MainActor.run { DeviceTokenManager.shared.token }
-        authorized(&req, token: tok)
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [
             "url": url.absoluteString,
-            "device_id": Self.deviceID,
-            "request_ephemeral": Self.isProUser,
+            "request_ephemeral": true,   // always request disposable IPv6 for Pro users
         ]
         if let r = regionHint { body["region_hint"] = r }
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -72,19 +37,18 @@ struct InspectionAPIClient {
         return try decoder.decode(PrefetchResult.self, from: data)
     }
 
-    // MARK: - Session provisioning (Phase D)
+    // MARK: - Session provisioning (unused in current flow — prefetch covers inspection)
 
     func createSession(for url: URL, regionHint: String? = nil) async throws -> SafeOpenSession {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        let tok = await MainActor.run { DeviceTokenManager.shared.token }
-        authorized(&req, token: tok)
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [
             "url": url.absoluteString,
-            "device_id": Self.deviceID,
-            "request_ephemeral": Self.isProUser,
+            "request_ephemeral": true,
         ]
         if let r = regionHint { body["region_hint"] = r }
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
@@ -104,8 +68,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session/\(sessionId)")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "DELETE"
-        let tok = await MainActor.run { DeviceTokenManager.shared.token }
-        authorized(&req, token: tok)
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         _ = try? await Self.session.data(for: req)
     }
 
@@ -136,7 +99,7 @@ enum InspectionAPIError: LocalizedError {
         switch self {
         case .unauthorized:            return "Service error. Please update the app."
         case .planRequired:            return "SafeOpen Pro is required to open links in a clean session."
-        case .rateLimited:             return "Too many active sessions. Close an existing session and try again."
+        case .rateLimited:             return "Too many active sessions. Try again in a moment."
         case .networkError(let e):     return e.localizedDescription
         case .serverError(_, let msg): return msg
         }
