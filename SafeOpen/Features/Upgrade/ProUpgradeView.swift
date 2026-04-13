@@ -1,191 +1,208 @@
 import SwiftUI
 import StoreKit
 
+/// Buy Credits sheet. Replaces the old subscription paywall.
+/// Three consumable IAPs grant scan credits.
 struct ProUpgradeView: View {
     @StateObject private var store = SafeOpenStore.shared
     @Environment(\.dismiss) private var dismiss
+
+    private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 0) {
 
-                    // ── Hero ─────────────────────────────────────────────
-                    VStack(spacing: 12) {
-                        Image(systemName: "shield.lefthalf.filled")
+                    VStack(spacing: 14) {
+                        Image(systemName: "bolt.shield.fill")
                             .font(.system(size: 52, weight: .semibold))
-                            .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
-                            .padding(.top, 36)
+                            .foregroundStyle(cyan)
+                            .padding(.top, 32)
 
-                        Text("SafeOpen Pro")
+                        Text("Scan Credits")
                             .font(.title.bold())
 
-                        Text("AI-powered link analysis. Our servers inspect the destination so you don't have to.")
+                        Text("AI summaries and Open Safely sessions cost 1 credit each. Local scanning, risk scoring, and tracking-parameter stripping are always free.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
-                            .padding(.horizontal, 32)
-                            .padding(.bottom, 24)
+                            .padding(.horizontal, 28)
+                            .padding(.bottom, 8)
                     }
                     .frame(maxWidth: .infinity)
-                    .background(Color(red: 0, green: 0.83, blue: 1).opacity(0.08))
 
-                    // ── Feature list ─────────────────────────────────────
-                    VStack(alignment: .leading, spacing: 14) {
-                        FeatureRow(icon: "sparkles",
-                                   title: "AI link analysis",
-                                   detail: "Know what a link does before you touch it — plain-English summary of the destination.")
-                        FeatureRow(icon: "globe.badge.chevron.backward",
-                                   title: "Disposable IPv6 for inspection",
-                                   detail: "Our servers fetch the link with a fresh IPv6 address. Your device never touches the destination during analysis.")
-                        FeatureRow(icon: "eye.slash.fill",
-                                   title: "Your IP stays private during analysis",
-                                   detail: "The destination only sees our server during inspection. Browsing uses your own connection in an isolated session.")
-                        FeatureRow(icon: "trash.fill",
-                                   title: "No cookies, no cache, no history",
-                                   detail: "Isolated in-app browser session — nothing persists after you close.")
-                    }
-                    .padding(24)
+                    BalanceCard(balance: store.balance, nextRefill: store.nextRefillAt)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 18)
 
-                    // ── Pricing ──────────────────────────────────────────
                     VStack(spacing: 12) {
-                        if store.isPro {
-                            // Already subscribed — don't offer additional purchases
-                            VStack(spacing: 8) {
-                                Label("You're a SafeOpen Pro subscriber", systemImage: "checkmark.seal.fill")
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
-
-                                if let url = URL(string: "itms-apps://apps.apple.com/account/subscriptions") {
-                                    Link("Manage Subscription", destination: url)
-                                        .font(.footnote)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .padding(.vertical, 16)
-                        } else if store.products.isEmpty {
-                            ProgressView()
-                                .padding()
+                        if store.products.isEmpty {
+                            ProgressView().tint(cyan).padding(28)
                         } else {
-                            if let annual = store.annual {
-                                PriceButton(product: annual, badge: "Best Value") {
-                                    Task { await store.purchase(annual) }
+                            ForEach(orderedPacks(), id: \.id) { product in
+                                CreditPackRow(product: product, credits: credits(for: product.id), highlight: product.id == SafeOpenStore.standardID) {
+                                    Task { await store.purchase(product) }
                                 }
-                            }
-                            if let monthly = store.monthly {
-                                PriceButton(product: monthly, badge: nil) {
-                                    Task { await store.purchase(monthly) }
-                                }
+                                .disabled(store.isPurchasing)
                             }
                         }
+                    }
+                    .padding(16)
 
-                        if !store.isPro {
-                        Button("Restore Purchases") {
-                            Task { await store.restorePurchases() }
-                        }
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 4)
-                        }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("Credits never expire", systemImage: "infinity")
+                        Label("No subscription, no auto-renewal", systemImage: "checkmark.circle")
+                        Label("10 free credits added every month", systemImage: "gift")
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 8)
 
-                        if let err = store.error {
-                            Text(err)
-                                .font(.caption)
-                                .foregroundStyle(.red)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                        }
+                    Button {
+                        Task { await store.restorePurchases() }
+                    } label: {
+                        Text("Restore Purchases")
+                            .font(.footnote)
+                            .foregroundStyle(cyan)
+                    }
+                    .padding(.top, 18)
+                    .disabled(store.isPurchasing)
 
-                        Text("Payment charged to your Apple ID. Subscription auto-renews unless cancelled at least 24 hours before the end of the current period.")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                    if let err = store.error {
+                        Text(err)
+                            .font(.caption)
+                            .foregroundStyle(.red)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 24)
                             .padding(.top, 8)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 40)
+
+                    Spacer(minLength: 30)
                 }
             }
             .background(Color(UIColor.systemGroupedBackground))
-            .navigationTitle("Upgrade")
+            .navigationTitle("Buy Credits")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Not Now") { dismiss() }
-                        .foregroundStyle(.secondary)
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
                 }
             }
+            .task { await store.refreshBalance() }
             .overlay {
                 if store.isPurchasing {
-                    Color.black.opacity(0.3).ignoresSafeArea()
-                    ProgressView()
-                        .tint(Color(red: 0, green: 0.83, blue: 1))
-                        .scaleEffect(1.5)
+                    Color.black.opacity(0.35).ignoresSafeArea()
+                    ProgressView().tint(.white).scaleEffect(1.4)
                 }
             }
-            .task {
-                // Re-check on appear so existing subs show "already Pro" immediately
-                await store.refreshProStatus()
-            }
-            .onChange(of: store.isPro) { _, isPro in
-                if isPro { dismiss() }
-            }
+        }
+    }
+
+    private func orderedPacks() -> [Product] {
+        let order = [SafeOpenStore.starterID, SafeOpenStore.standardID, SafeOpenStore.powerID]
+        return order.compactMap { id in store.products.first { $0.id == id } }
+    }
+
+    private func credits(for productID: String) -> Int {
+        switch productID {
+        case SafeOpenStore.starterID:  return 100
+        case SafeOpenStore.standardID: return 500
+        case SafeOpenStore.powerID:    return 2500
+        default: return 0
         }
     }
 }
 
-// MARK: - Feature Row
-
-private struct FeatureRow: View {
-    let icon: String
-    let title: String
-    let detail: String
+private struct BalanceCard: View {
+    let balance: Int
+    let nextRefill: Date
+    private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
-                .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        VStack(spacing: 6) {
+            Text("Current Balance")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(1)
+            Text("\(balance)")
+                .font(.system(size: 56, weight: .bold, design: .rounded))
+                .foregroundStyle(cyan)
+                .contentTransition(.numericText())
+            Text("scan credits")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            if nextRefill < .distantFuture {
+                Text("Next free refill: \(nextRefill.formatted(date: .abbreviated, time: .omitted))")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .padding(.top, 4)
             }
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 22)
+        .background(Color(UIColor.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 18))
     }
 }
 
-// MARK: - Price Button
-
-private struct PriceButton: View {
+private struct CreditPackRow: View {
     let product: Product
-    let badge: String?
+    let credits: Int
+    let highlight: Bool
     let action: () -> Void
+    private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     var body: some View {
         Button(action: action) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(product.displayName)
-                        .font(.subheadline.weight(.semibold))
-                    if let badge {
-                        Text(badge)
-                            .font(.caption2.weight(.semibold))
-                            .foregroundStyle(Color(red: 0, green: 0.83, blue: 1))
+            HStack(alignment: .center, spacing: 14) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Text("\(credits)")
+                            .font(.title2.bold())
+                        Text("credits")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        if highlight {
+                            Text("BEST VALUE")
+                                .font(.caption2.bold())
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(cyan.opacity(0.15), in: Capsule())
+                                .foregroundStyle(cyan)
+                        }
                     }
+                    Text(perCreditLabel)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
                 }
                 Spacer()
                 Text(product.displayPrice)
-                    .font(.subheadline.weight(.bold))
+                    .font(.headline)
+                    .foregroundStyle(.primary)
             }
-            .padding(.horizontal, 16)
             .padding(.vertical, 14)
+            .padding(.horizontal, 18)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color(UIColor.secondarySystemGroupedBackground))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .strokeBorder(highlight ? cyan.opacity(0.4) : Color.clear, lineWidth: 1)
+                    )
+            )
         }
-        .background(Color(UIColor.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
-        .foregroundStyle(.primary)
+        .buttonStyle(.plain)
+    }
+
+    private var perCreditLabel: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = product.priceFormatStyle.locale
+        formatter.maximumFractionDigits = 4
+        let perCredit = NSDecimalNumber(decimal: product.price / Decimal(credits))
+        return "\(formatter.string(from: perCredit) ?? "") per credit"
     }
 }

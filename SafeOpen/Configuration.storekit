@@ -1,0 +1,62 @@
+{
+  "identifier" : "C0F1A8E1-7B6E-4A22-AC93-3B1F8E4F2D1A",
+  "nonRenewingSubscriptions" : [],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "C0F1A8E1-1001",
+      "localizations" : [
+        {
+          "description" : "100 scan credits for SafeOpen. AI summary or Open Safely costs 1 credit. Credits never expire.",
+          "displayName" : "100 Scan Credits",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.katafract.safeopen.credits_starter",
+      "referenceName" : "Starter Credit Pack",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "2.99",
+      "familyShareable" : false,
+      "internalID" : "C0F1A8E1-1002",
+      "localizations" : [
+        {
+          "description" : "500 scan credits for SafeOpen. AI summary or Open Safely costs 1 credit. Credits never expire.",
+          "displayName" : "500 Scan Credits",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.katafract.safeopen.credits_standard",
+      "referenceName" : "Standard Credit Pack",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "C0F1A8E1-1003",
+      "localizations" : [
+        {
+          "description" : "2,500 scan credits for SafeOpen. AI summary or Open Safely costs 1 credit. Credits never expire.",
+          "displayName" : "2,500 Scan Credits",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.katafract.safeopen.credits_power",
+      "referenceName" : "Power Credit Pack",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_compatibilityTimeRate" : 1,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : []
+  },
+  "subscriptionGroups" : [],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

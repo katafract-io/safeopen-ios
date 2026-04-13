@@ -354,157 +354,34 @@ struct OpenSafelyButton: View {
     @StateObject private var store   = SafeOpenStore.shared
     @State private var showBrowser = false
     @State private var showPrefetchSheet = false
-    @State private var showUpgrade = false
-    @State private var checkingPro = true   // spinner until first StoreKit check completes
-    @State private var diagnostic: SafeOpenStore.StoreKitDiagnostic?
-    @State private var diagRunning = false
-    @State private var debugTapCount = 0
-    @State private var showDebugPanel = false
+    @State private var showBuyCredits = false
 
-    private var isPro: Bool { store.isPro }
     private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     var body: some View {
-        Group {
-            if checkingPro {
-                HStack(spacing: 10) {
-                    ProgressView().tint(cyan)
-                    Text("Checking subscription…")
-                        .font(.subheadline).foregroundStyle(.secondary)
+        VStack(spacing: 8) {
+            Button { Task { await openSafely() } } label: {
+                HStack {
+                    if manager.isLoading {
+                        ProgressView().tint(.black).scaleEffect(0.8)
+                    } else {
+                        Label("Inspect & Open Safely", systemImage: "shield.lefthalf.filled")
+                    }
                 }
                 .frame(maxWidth: .infinity)
-                .padding(14)
-                .background(Color(UIColor.secondarySystemGroupedBackground),
-                            in: RoundedRectangle(cornerRadius: 14))
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(cyan)
+            .controlSize(.large)
+            .disabled(manager.isLoading || result.finalURL == nil)
 
-            } else if isPro {
-                VStack(spacing: 8) {
-                    Button { Task { await openSafely() } } label: {
-                        HStack {
-                            if manager.isLoading {
-                                ProgressView().tint(.black).scaleEffect(0.8)
-                            } else {
-                                Label("Inspect & Open Safely", systemImage: "shield.lefthalf.filled")
-                            }
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(cyan)
-                    .controlSize(.large)
-                    .disabled(manager.isLoading || result.finalURL == nil)
-
-                    Label("Servers inspect it · Isolated session · No cookies", systemImage: "sparkles")
-                        .font(.caption2)
-                        .foregroundStyle(cyan.opacity(0.85))
-                }
-
-            } else {
-                // Upsell — already subscribed? Restore button is prominent.
-                VStack(spacing: 10) {
-                    Button { showUpgrade = true } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: "shield.lefthalf.filled")
-                                .font(.title2).foregroundStyle(cyan)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(result.payload.type == .shortURL
-                                     ? "Reveal destination & Open Safely"
-                                     : "Inspect & Open Safely")
-                                    .font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
-                                Text("SafeOpen Pro — our servers fetch it for you")
-                                    .font(.caption).foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Text("Pro")
-                                .font(.caption.weight(.bold)).foregroundStyle(cyan)
-                                .padding(.horizontal, 8).padding(.vertical, 4)
-                                .background(cyan.opacity(0.12), in: Capsule())
-                        }
-                        .padding(14)
-                        .background(Color(UIColor.secondarySystemGroupedBackground),
-                                    in: RoundedRectangle(cornerRadius: 14))
-                    }
-                    .buttonStyle(.plain)
-
-                    // Restore — tap 5× to reveal diagnostic panel
-                    Button {
-                        Task {
-                            checkingPro = true
-                            defer { checkingPro = false }
-                            try? await AppStore.sync()
-                            await store.refreshProStatus()
-                        }
-                    } label: {
-                        Text("Already subscribed? Restore")
-                            .font(.footnote).foregroundStyle(cyan)
-                    }
-                    .simultaneousGesture(TapGesture(count: 1).onEnded {
-                        debugTapCount += 1
-                        if debugTapCount >= 5 { showDebugPanel = true }
-                    })
-
-                    // ── Debug panel (hidden; unlocked by 5-tapping Restore) ─
-                    if showDebugPanel {
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack {
-                                Text("StoreKit Diagnostic")
-                                    .font(.caption.monospaced().weight(.semibold))
-                                    .foregroundStyle(.orange)
-                                Spacer()
-                                Button { showDebugPanel = false; debugTapCount = 0 } label: {
-                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
-                                }
-                            }
-
-                            Button {
-                                Task {
-                                    diagRunning = true
-                                    diagnostic = await store.diagnose()
-                                    diagRunning = false
-                                }
-                            } label: {
-                                HStack(spacing: 6) {
-                                    if diagRunning { ProgressView().scaleEffect(0.7) }
-                                    Text(diagRunning ? "Running…" : "Run Diagnostic")
-                                        .font(.caption.monospaced())
-                                }
-                                .foregroundStyle(.orange)
-                            }
-                            .disabled(diagRunning)
-
-                            if let d = diagnostic {
-                                let text = diagText(d)
-                                Group {
-                                    debugRow("inMemory isPro", "\(d.inMemoryIsPro)")
-                                    debugRow("UserDefaults isPro", "\(d.userDefaultsIsPro)")
-                                    debugRow("syncError", d.syncError ?? "nil")
-                                    debugRow("monthlyID", d.monthlyID)
-                                    debugRow("annualID", d.annualID)
-                                    debugRow("currentEntitlements(\(d.currentEntitlements.count))",
-                                             d.currentEntitlements.isEmpty ? "none" :
-                                             d.currentEntitlements.map { "\($0.id)\n  rev=\($0.revoked) exp=\($0.expires)" }.joined(separator: "\n"))
-                                    debugRow("allTransactions(\(d.allTransactions.count))",
-                                             d.allTransactions.isEmpty ? "none" :
-                                             d.allTransactions.map { "\($0.id)\n  rev=\($0.revoked) exp=\($0.expires)" }.joined(separator: "\n"))
-                                    debugRow("session.isLoading", "\(manager.isLoading)")
-                                    debugRow("session.error", manager.error ?? "nil")
-                                    debugRow("prefetch.sessionId", manager.prefetch?.sessionId ?? "nil")
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-
-                                Button {
-                                    UIPasteboard.general.string = text
-                                } label: {
-                                    Label("Copy All", systemImage: "doc.on.doc")
-                                        .font(.caption.monospaced())
-                                        .foregroundStyle(.orange)
-                                }
-                            }
-                        }
-                        .padding(10)
-                        .background(.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                    }
-                }
+            HStack(spacing: 6) {
+                Image(systemName: "bolt.fill")
+                    .font(.caption2)
+                    .foregroundStyle(cyan.opacity(0.85))
+                Text("Costs 1 credit · Balance: \(store.balance)")
+                    .font(.caption2)
+                    .foregroundStyle(cyan.opacity(0.85))
             }
         }
         .alert("Error", isPresented: .constant(manager.error != nil), actions: {
@@ -530,16 +407,16 @@ struct OpenSafelyButton: View {
                 .presentationDragIndicator(.visible)
             }
         }
-        .sheet(isPresented: $showUpgrade) {
+        .sheet(isPresented: $showBuyCredits) {
             ProUpgradeView()
         }
-        // On appear: verify subscription then reveal correct state (spinner → button or upsell).
-        // checkingPro starts true so upsell never flashes before the check completes.
-        .task {
-            defer { checkingPro = false }
-            guard !store.isPro else { return }  // cached UserDefaults = pro, skip
-            await store.refreshProStatus()
+        .onChange(of: manager.needsCredits) { _, needs in
+            if needs {
+                showBuyCredits = true
+                manager.needsCredits = false
+            }
         }
+        .task { await store.refreshBalance() }
     }
 
     private func openSafely() async {
@@ -559,49 +436,6 @@ struct OpenSafelyButton: View {
         }
     }
 
-    @ViewBuilder
-    private func debugRow(_ label: String, _ value: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label)
-                .font(.caption2.monospaced().weight(.semibold))
-                .foregroundStyle(.orange)
-            Text(value)
-                .font(.caption2.monospaced())
-                .foregroundStyle(.primary)
-                .textSelection(.enabled)
-        }
-        Divider()
-    }
-
-    private func diagText(_ d: SafeOpenStore.StoreKitDiagnostic) -> String {
-        var lines = [
-            "=== SafeOpen StoreKit Diagnostic ===",
-            "inMemory isPro: \(d.inMemoryIsPro)",
-            "UserDefaults isPro: \(d.userDefaultsIsPro)",
-            "syncError: \(d.syncError ?? "nil")",
-            "monthlyID: \(d.monthlyID)",
-            "annualID:  \(d.annualID)",
-            "",
-            "=== Session Manager ===",
-            "isLoading: \(manager.isLoading)",
-            "error: \(manager.error ?? "nil")",
-            "session: \(manager.session?.sessionId ?? "nil")",
-            "prefetch: \(manager.prefetch?.sessionId ?? "nil")",
-            "",
-            "=== currentEntitlements (\(d.currentEntitlements.count)) ===",
-        ]
-        if d.currentEntitlements.isEmpty { lines.append("  (none)") }
-        for e in d.currentEntitlements {
-            lines.append("  \(e.id) | revoked=\(e.revoked) | exp=\(e.expires)")
-        }
-        lines.append("")
-        lines.append("=== allTransactions (\(d.allTransactions.count)) ===")
-        if d.allTransactions.isEmpty { lines.append("  (none)") }
-        for t in d.allTransactions {
-            lines.append("  \(t.id) | revoked=\(t.revoked) | exp=\(t.expires)")
-        }
-        return lines.joined(separator: "\n")
-    }
 }
 
 // MARK: - Prefetch preview sheet
