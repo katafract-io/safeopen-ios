@@ -330,6 +330,8 @@ struct OpenSafelyButton: View {
     @State private var checkingPro = true   // spinner until first StoreKit check completes
     @State private var diagnostic: SafeOpenStore.StoreKitDiagnostic?
     @State private var diagRunning = false
+    @State private var debugTapCount = 0
+    @State private var showDebugPanel = false
 
     private var isPro: Bool { store.isPro }
     private let cyan = Color(red: 0, green: 0.83, blue: 1)
@@ -396,7 +398,7 @@ struct OpenSafelyButton: View {
                     }
                     .buttonStyle(.plain)
 
-                    // Restore
+                    // Restore — tap 5× to reveal diagnostic panel
                     Button {
                         Task {
                             checkingPro = true
@@ -408,53 +410,72 @@ struct OpenSafelyButton: View {
                         Text("Already subscribed? Restore")
                             .font(.footnote).foregroundStyle(cyan)
                     }
+                    .simultaneousGesture(TapGesture(count: 1).onEnded {
+                        debugTapCount += 1
+                        if debugTapCount >= 5 { showDebugPanel = true }
+                    })
 
-                    // ── Debug panel ──────────────────────────────────────
-                    VStack(alignment: .leading, spacing: 6) {
-                        Button {
-                            Task {
-                                diagRunning = true
-                                diagnostic = await store.diagnose()
-                                diagRunning = false
+                    // ── Debug panel (hidden; unlocked by 5-tapping Restore) ─
+                    if showDebugPanel {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Text("StoreKit Diagnostic")
+                                    .font(.caption.monospaced().weight(.semibold))
+                                    .foregroundStyle(.orange)
+                                Spacer()
+                                Button { showDebugPanel = false; debugTapCount = 0 } label: {
+                                    Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+                                }
                             }
-                        } label: {
-                            HStack(spacing: 6) {
-                                if diagRunning { ProgressView().scaleEffect(0.7) }
-                                Text("Run StoreKit Diagnostic")
-                                    .font(.caption.monospaced())
-                            }
-                            .foregroundStyle(.orange)
-                        }
-
-                        if let d = diagnostic {
-                            let diagText = diagText(d)
-                            Group {
-                                debugRow("inMemory isPro", "\(d.inMemoryIsPro)")
-                                debugRow("UserDefaults isPro", "\(d.userDefaultsIsPro)")
-                                debugRow("syncError", d.syncError ?? "nil")
-                                debugRow("monthlyID", d.monthlyID)
-                                debugRow("annualID", d.annualID)
-                                debugRow("currentEntitlements(\(d.currentEntitlements.count))",
-                                         d.currentEntitlements.isEmpty ? "none" :
-                                         d.currentEntitlements.map { "\($0.id)\n  rev=\($0.revoked) exp=\($0.expires)" }.joined(separator: "\n"))
-                                debugRow("allTransactions(\(d.allTransactions.count))",
-                                         d.allTransactions.isEmpty ? "none" :
-                                         d.allTransactions.map { "\($0.id)\n  rev=\($0.revoked) exp=\($0.expires)" }.joined(separator: "\n"))
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
 
                             Button {
-                                UIPasteboard.general.string = diagText
+                                Task {
+                                    diagRunning = true
+                                    diagnostic = await store.diagnose()
+                                    diagRunning = false
+                                }
                             } label: {
-                                Label("Copy Diagnostic", systemImage: "doc.on.doc")
-                                    .font(.caption.monospaced())
-                                    .foregroundStyle(.orange)
+                                HStack(spacing: 6) {
+                                    if diagRunning { ProgressView().scaleEffect(0.7) }
+                                    Text(diagRunning ? "Running…" : "Run Diagnostic")
+                                        .font(.caption.monospaced())
+                                }
+                                .foregroundStyle(.orange)
                             }
-                            .padding(.top, 4)
+                            .disabled(diagRunning)
+
+                            if let d = diagnostic {
+                                let text = diagText(d)
+                                Group {
+                                    debugRow("inMemory isPro", "\(d.inMemoryIsPro)")
+                                    debugRow("UserDefaults isPro", "\(d.userDefaultsIsPro)")
+                                    debugRow("syncError", d.syncError ?? "nil")
+                                    debugRow("monthlyID", d.monthlyID)
+                                    debugRow("annualID", d.annualID)
+                                    debugRow("currentEntitlements(\(d.currentEntitlements.count))",
+                                             d.currentEntitlements.isEmpty ? "none" :
+                                             d.currentEntitlements.map { "\($0.id)\n  rev=\($0.revoked) exp=\($0.expires)" }.joined(separator: "\n"))
+                                    debugRow("allTransactions(\(d.allTransactions.count))",
+                                             d.allTransactions.isEmpty ? "none" :
+                                             d.allTransactions.map { "\($0.id)\n  rev=\($0.revoked) exp=\($0.expires)" }.joined(separator: "\n"))
+                                    debugRow("session.isLoading", "\(manager.isLoading)")
+                                    debugRow("session.error", manager.error ?? "nil")
+                                    debugRow("prefetch.sessionId", manager.prefetch?.sessionId ?? "nil")
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                                Button {
+                                    UIPasteboard.general.string = text
+                                } label: {
+                                    Label("Copy All", systemImage: "doc.on.doc")
+                                        .font(.caption.monospaced())
+                                        .foregroundStyle(.orange)
+                                }
+                            }
                         }
+                        .padding(10)
+                        .background(.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
                     }
-                    .padding(10)
-                    .background(.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
                 }
             }
         }
