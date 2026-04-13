@@ -49,6 +49,8 @@ struct CameraPreviewView: UIViewRepresentable {
         _ = viewModel.attachGeneration
         viewModel.attachPreview(to: uiView)
         viewModel.previewLayer?.frame = uiView.bounds
+        // Restrict metadata detection (and autofocus hint) to the centered finder box.
+        viewModel.applyFinderInterestRect(in: uiView.bounds)
     }
 }
 
@@ -133,20 +135,27 @@ struct DimmedSurround: View {
 
     var body: some View {
         GeometryReader { geo in
-            Path { path in
-                // Full screen coverage
-                path.addRect(CGRect(origin: .zero, size: geo.size))
-                // Cut out the finder box (even-odd fill) — use screen coords
-                // Convert finderRect from global to this view's local space
-                let localRect: CGRect
+            // Determine this view's origin in global (screen) coordinates.
+            // finderRect is also in global coords, so subtracting the origin
+            // converts it into this view's local drawing space.
+            let viewOrigin = geo.frame(in: .global).origin
+            let localRect: CGRect = {
                 if finderRect != .zero {
-                    localRect = finderRect
+                    return CGRect(
+                        x: finderRect.minX - viewOrigin.x,
+                        y: finderRect.minY - viewOrigin.y,
+                        width: finderRect.width,
+                        height: finderRect.height
+                    )
                 } else {
-                    // Before layout settles, use a centered estimate so the whole screen isn't dimmed
+                    // Centered fallback before layout settles
                     let cx = geo.size.width / 2, cy = geo.size.height / 2
                     let halfW: CGFloat = 135
-                    localRect = CGRect(x: cx - halfW, y: cy - halfW, width: halfW * 2, height: halfW * 2)
+                    return CGRect(x: cx - halfW, y: cy - halfW, width: halfW * 2, height: halfW * 2)
                 }
+            }()
+            Path { path in
+                path.addRect(CGRect(origin: .zero, size: geo.size))
                 path.addRoundedRect(in: localRect, cornerSize: CGSize(width: 20, height: 20))
             }
             .fill(Color.black.opacity(0.5), style: FillStyle(eoFill: true))
