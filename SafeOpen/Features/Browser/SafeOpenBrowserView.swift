@@ -170,14 +170,18 @@ struct SessionInfoSheet: View {
         NavigationStack {
             List {
                 Section("Identity") {
-                    LabeledContent("Browsing IP") {
+                    LabeledContent("Analysis IP") {
                         Text(session.assignedIpv6)
                             .font(.caption.monospaced())
                             .foregroundStyle(.secondary)
                     }
-                    LabeledContent("Mode") {
-                        Text(session.ephemeral ? "Disposable" : "Shared node IP")
+                    LabeledContent("Analysis mode") {
+                        Text(session.ephemeral ? "Disposable IPv6" : "Shared node IP")
                             .foregroundStyle(session.ephemeral ? Color(red: 0, green: 0.83, blue: 1) : .secondary)
+                    }
+                    LabeledContent("Your browsing IP") {
+                        Text("Your device connection")
+                            .foregroundStyle(.secondary)
                     }
                 }
 
@@ -202,8 +206,8 @@ struct SessionInfoSheet: View {
 
                 Section {
                     Text(session.ephemeral
-                         ? "This session uses a disposable IPv6 address that is unique to this inspection. The destination cannot link this session to any other activity. The address is retired when you close this browser."
-                         : "This session routes through a shared Katafract node IP. Your device's real IP is not exposed to the destination.")
+                         ? "Our servers inspected this link using a disposable IPv6 address — the destination only saw our server during analysis. This browser session is isolated with no cookies or cache."
+                         : "Our servers inspected this link through a shared Katafract node. This browser session is isolated with no cookies or cache.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

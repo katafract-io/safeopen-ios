@@ -4,6 +4,7 @@ struct InspectionResultView: View {
     let result: InspectionResult
     @State private var copied = false
     @State private var copiedClean = false
+    @State private var showHighRiskAlert = false
 
     private var cleanURL: URL? {
         guard let url = result.finalURL else { return nil }
@@ -83,9 +84,17 @@ struct InspectionResultView: View {
 
                     // Actions
                     VStack(spacing: 12) {
-                        if let url = result.finalURL {
+                        // ── Type-specific primary actions ──────────────────
+                        TypeActions(result: result)
+
+                        // ── URL actions ────────────────────────────────────
+                        if result.finalURL != nil && (result.payload.type == .url || result.payload.type == .shortURL) {
                             Button {
-                                UIApplication.shared.open(url)
+                                if result.riskLevel == .high {
+                                    showHighRiskAlert = true
+                                } else {
+                                    UIApplication.shared.open(result.finalURL!)
+                                }
                             } label: {
                                 Label("Open in Browser", systemImage: "safari")
                                     .frame(maxWidth: .infinity)
@@ -93,11 +102,19 @@ struct InspectionResultView: View {
                             .buttonStyle(.bordered)
                             .tint(riskColor)
                             .controlSize(.large)
+                            .alert("High Risk — Open Anyway?", isPresented: $showHighRiskAlert) {
+                                Button("Open in Browser", role: .destructive) {
+                                    UIApplication.shared.open(result.finalURL!)
+                                }
+                                Button("Cancel", role: .cancel) {}
+                            } message: {
+                                Text("This link shows signs of being dangerous. Opening it may expose you to phishing, malware, or other threats.")
+                            }
+
+                            OpenSafelyButton(result: result)
                         }
 
-                        // Open Safely button — wired to session manager
-                        OpenSafelyButton(result: result)
-
+                        // ── Copy actions ───────────────────────────────────
                         if let clean = cleanURL {
                             Button {
                                 UIPasteboard.general.string = clean.absoluteString
@@ -297,10 +314,10 @@ struct OpenSafelyButton: View {
                         Task { await openSafely() }
                     } label: {
                         HStack {
-                            if manager.isLoading {
+                            if manager.isLoading || store.isUpgrading {
                                 ProgressView().tint(.black).scaleEffect(0.8)
                             } else {
-                                Label("Open Safely", systemImage: "shield.lefthalf.filled")
+                                Label("Inspect & Open Safely", systemImage: "shield.lefthalf.filled")
                             }
                         }
                         .frame(maxWidth: .infinity)
@@ -308,9 +325,9 @@ struct OpenSafelyButton: View {
                     .buttonStyle(.borderedProminent)
                     .tint(cyan)
                     .controlSize(.large)
-                    .disabled(manager.isLoading || result.finalURL == nil)
+                    .disabled(manager.isLoading || store.isUpgrading || result.finalURL == nil)
 
-                    Label("Disposable IPv6 · Session isolated", systemImage: "sparkles")
+                    Label("Servers inspect it · Isolated browser · No cookies", systemImage: "sparkles")
                         .font(.caption2)
                         .foregroundStyle(cyan.opacity(0.85))
                 }
@@ -323,10 +340,12 @@ struct OpenSafelyButton: View {
                             .foregroundStyle(cyan)
 
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Analyze & Open Safely")
+                            Text(result.payload.type == .shortURL ? "Reveal destination & Open Safely" : "Inspect & Open Safely")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.primary)
-                            Text("AI summary · Disposable IPv6 · Isolated browser")
+                            Text(result.payload.type == .shortURL
+                                 ? "Our servers resolve the real URL — you see it before your device connects"
+                                 : "Our servers fetch it · You see what's there · Isolated browser")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -491,8 +510,8 @@ struct PrefetchPreviewSheet: View {
                         Text("Not exposed")
                             .foregroundStyle(.green)
                     }
-                    LabeledContent("Your IP if opened") {
-                        Text("Your device")
+                    LabeledContent("Your IP while browsing") {
+                        Text("Your device connection")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -512,5 +531,163 @@ struct PrefetchPreviewSheet: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Type-specific actions
+
+struct TypeActions: View {
+    let result: InspectionResult
+
+    var body: some View {
+        switch result.payload.type {
+        case .phone:
+            if let url = URL(string: result.payload.rawValue.hasPrefix("tel:") ? result.payload.rawValue : "tel:\(result.payload.rawValue)") {
+                PrimaryActionButton(label: "Call", icon: "phone.fill", tint: .green) {
+                    UIApplication.shared.open(url)
+                }
+            }
+
+        case .sms:
+            if let url = smsURL(from: result.payload.rawValue) {
+                PrimaryActionButton(label: "Send Message", icon: "message.fill", tint: .green) {
+                    UIApplication.shared.open(url)
+                }
+            }
+
+        case .email:
+            if let url = URL(string: result.payload.rawValue) {
+                PrimaryActionButton(label: "Compose Email", icon: "envelope.fill", tint: .orange) {
+                    UIApplication.shared.open(url)
+                }
+            }
+
+        case .wifi:
+            WiFiActionCard(raw: result.payload.rawValue)
+
+        default:
+            EmptyView()
+        }
+    }
+
+    private func smsURL(from raw: String) -> URL? {
+        // SMSTO:+1234:body or SMS:+1234
+        let stripped = raw
+            .replacingOccurrences(of: "SMSTO:", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: "SMS:", with: "", options: .caseInsensitive)
+        let parts = stripped.split(separator: ":", maxSplits: 1)
+        let number = parts.first.map(String.init) ?? stripped
+        let body = parts.count > 1 ? String(parts[1]) : ""
+        var comps = URLComponents()
+        comps.scheme = "sms"
+        comps.path = number
+        if !body.isEmpty { comps.queryItems = [URLQueryItem(name: "body", value: body)] }
+        return comps.url
+    }
+}
+
+private struct PrimaryActionButton: View {
+    let label: String
+    let icon: String
+    let tint: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(label, systemImage: icon)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(tint)
+        .controlSize(.large)
+    }
+}
+
+private struct WiFiActionCard: View {
+    let raw: String
+    @State private var copiedSSID = false
+    @State private var copiedPass = false
+
+    private var parsed: (ssid: String, password: String, security: String) {
+        // WIFI:T:WPA;S:NetworkName;P:Password;H:false;;
+        var ssid = "", password = "", security = "Unknown"
+        let fields = raw
+            .replacingOccurrences(of: "WIFI:", with: "", options: .caseInsensitive)
+            .components(separatedBy: ";")
+        for field in fields {
+            let kv = field.split(separator: ":", maxSplits: 1).map(String.init)
+            guard kv.count == 2 else { continue }
+            switch kv[0].uppercased() {
+            case "S": ssid     = kv[1]
+            case "P": password = kv[1]
+            case "T": security = kv[1].uppercased() == "nopass" ? "Open" : kv[1].uppercased()
+            default: break
+            }
+        }
+        return (ssid, password, security)
+    }
+
+    var body: some View {
+        let info = parsed
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Image(systemName: "wifi")
+                    .foregroundStyle(.blue)
+                Text("Wi-Fi Network")
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text(info.security)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color(UIColor.tertiarySystemGroupedBackground), in: Capsule())
+            }
+
+            if !info.ssid.isEmpty {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Network").font(.caption).foregroundStyle(.secondary)
+                        Text(info.ssid).font(.subheadline.monospaced())
+                    }
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = info.ssid
+                        withAnimation { copiedSSID = true }
+                        Task { try? await Task.sleep(for: .seconds(2)); withAnimation { copiedSSID = false } }
+                    } label: {
+                        Image(systemName: copiedSSID ? "checkmark" : "doc.on.doc")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.secondary)
+                }
+            }
+
+            if !info.password.isEmpty {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Password").font(.caption).foregroundStyle(.secondary)
+                        Text(String(repeating: "•", count: min(info.password.count, 12)))
+                            .font(.subheadline.monospaced())
+                    }
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = info.password
+                        withAnimation { copiedPass = true }
+                        Task { try? await Task.sleep(for: .seconds(2)); withAnimation { copiedPass = false } }
+                    } label: {
+                        Label(copiedPass ? "Copied" : "Copy Password",
+                              systemImage: copiedPass ? "checkmark" : "doc.on.doc")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.blue)
+                    .controlSize(.small)
+                }
+            }
+        }
+        .padding(14)
+        .background(Color(UIColor.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
     }
 }

@@ -20,7 +20,7 @@ struct ProUpgradeView: View {
                         Text("SafeOpen Pro")
                             .font(.title.bold())
 
-                        Text("AI-powered link analysis and a disposable IPv6 identity — your device never touches the destination.")
+                        Text("AI-powered link analysis. Our servers inspect the destination so you don't have to.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -34,16 +34,16 @@ struct ProUpgradeView: View {
                     VStack(alignment: .leading, spacing: 14) {
                         FeatureRow(icon: "sparkles",
                                    title: "AI link analysis",
-                                   detail: "Know what a link does before you touch it — in plain English.")
+                                   detail: "Know what a link does before you touch it — plain-English summary of the destination.")
                         FeatureRow(icon: "globe.badge.chevron.backward",
-                                   title: "Disposable IPv6 identity",
-                                   detail: "A fresh address per session — burned after 10 minutes.")
+                                   title: "Disposable IPv6 for inspection",
+                                   detail: "Our servers fetch the link with a fresh IPv6 address. Your device never touches the destination during analysis.")
                         FeatureRow(icon: "eye.slash.fill",
-                                   title: "Zero device IP exposure",
-                                   detail: "The destination sees a unique datacenter IPv6, never your IP.")
+                                   title: "Your IP stays private during analysis",
+                                   detail: "The destination only sees our server during inspection. Browsing uses your own connection in an isolated session.")
                         FeatureRow(icon: "trash.fill",
-                                   title: "No cookies, no cache",
-                                   detail: "Isolated browser session wiped on close.")
+                                   title: "No cookies, no cache, no history",
+                                   detail: "Isolated in-app browser session — nothing persists after you close.")
                     }
                     .padding(24)
 
