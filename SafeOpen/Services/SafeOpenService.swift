@@ -36,7 +36,7 @@ class SafeOpenService: ObservableObject {
             recommendedAction: recommendedAction(riskLevel: riskLevel),
             finalURL: normalizedURL,
             redirectHops: [],
-            canOpenSafely: false
+            canOpenSafely: riskLevel != .high && type != .unknown
         )
     }
 
@@ -60,9 +60,9 @@ class SafeOpenService: ObservableObject {
         case .url:
             return ("Website link", "This opens a website in your browser.")
         case .shortURL:
-            return ("Shortened link", "This is a shortened link. The real destination is not yet confirmed.")
+            return ("Shortened link", "The real destination is hidden. Use Inspect & Open to reveal it before your device connects.")
         case .wifi:
-            return ("Wi-Fi network", "This joins a Wi-Fi network automatically.")
+            return ("Wi-Fi network", "This will join a Wi-Fi network. Review the credentials before connecting.")
         case .sms:
             return ("Text message", "This starts a text message.")
         case .email:

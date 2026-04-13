@@ -12,6 +12,7 @@ final class SafeOpenStore: ObservableObject {
     @Published var isPurchasing = false
     @Published var isPro: Bool = InspectionAPIClient.isProUser
     @Published var error: String?
+    @Published var isUpgrading = false
 
     var monthly: Product? { products.first { $0.id == Self.monthlyID } }
     var annual:  Product? { products.first { $0.id == Self.annualID } }
@@ -51,7 +52,9 @@ final class SafeOpenStore: ObservableObject {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
                 await updateProStatus()
+                isUpgrading = true
                 await DeviceTokenManager.shared.upgradeWithTransaction(transaction)
+                isUpgrading = false
                 await transaction.finish()
             case .userCancelled:
                 break
