@@ -595,7 +595,10 @@ struct PrefetchPreviewSheet: View {
     }
 
     private var loadFailed: Bool {
-        prefetch.statusCode == 0 && prefetch.finalUrl == prefetch.originalUrl
+        // statusCode 0 = connection refused / timeout from our node
+        // 403/407 with no content change = likely IP-range block
+        prefetch.statusCode == 0 ||
+        (prefetch.statusCode == 403 && prefetch.finalUrl == prefetch.originalUrl)
     }
 
     private var trackerCount: Int { prefetch.trackers.count }
@@ -826,19 +829,53 @@ struct PrefetchPreviewSheet: View {
     // MARK: - Unreachable
 
     private var unreachableView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.largeTitle).foregroundStyle(.orange)
-            Text("Destination unreachable")
-                .font(.headline)
-            Text("Our proxy nodes couldn't connect. The address may be private, invalid, or no longer active.")
-                .font(.subheadline).foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            Text(prefetch.originalUrl)
-                .font(.caption.monospaced()).foregroundStyle(.secondary)
-                .lineLimit(3).multilineTextAlignment(.center)
+        VStack(spacing: 0) {
+            VStack(spacing: 16) {
+                Image(systemName: "network.slash")
+                    .font(.system(size: 48)).foregroundStyle(.orange)
+
+                Text("Inspection blocked")
+                    .font(.headline)
+
+                Text("This site appears to be blocking our inspection servers — some sites reject known datacenter or VPN IP ranges.")
+                    .font(.subheadline).foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+
+                Text(prefetch.originalUrl)
+                    .font(.caption.monospaced()).foregroundStyle(.secondary)
+                    .lineLimit(3).multilineTextAlignment(.center)
+            }
+            .padding(32)
+            .frame(maxWidth: .infinity)
+
+            Spacer()
+
+            // Direct-open escape hatch
+            VStack(spacing: 8) {
+                if let url = URL(string: prefetch.originalUrl) {
+                    Button {
+                        onCancel()
+                        UIApplication.shared.open(url)
+                    } label: {
+                        Label("Open in Safari", systemImage: "safari")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.orange)
+                    .controlSize(.large)
+                    .padding(.horizontal, 24)
+                }
+
+                Text("Your IP address will be visible to this site.")
+                    .font(.caption2).foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+
+                Button("Cancel", action: onCancel)
+                    .font(.footnote).foregroundStyle(.secondary)
+            }
+            .padding(.bottom, 32)
         }
-        .padding(32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
