@@ -518,10 +518,15 @@ struct OpenSafelyButton: View {
 
     private func openSafely() async {
         guard let url = result.finalURL else { return }
-        if let existing = manager.prefetch, existing.expiresAt.timeIntervalSinceNow > 30 {
+        // Reuse only if the cached prefetch is for this exact URL and still valid.
+        if let existing = manager.prefetch,
+           existing.finalUrl == url.absoluteString,
+           existing.expiresAt.timeIntervalSinceNow > 30 {
             showPrefetchSheet = true
             return
         }
+        // Clear any stale prefetch from a previous inspection before fetching fresh.
+        manager.clear()
         await manager.loadPreview(url: url)
         if manager.prefetch != nil && manager.error == nil {
             showPrefetchSheet = true

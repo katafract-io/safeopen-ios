@@ -45,6 +45,9 @@ final class QRScannerViewModel: ObservableObject {
 
     func resumeScanning() {
         guard cameraAuthorized else { return }
+        // Reset dedup state so returning from inspection allows an immediate re-scan
+        scanCooldown = false
+        lastScannedValue = nil
         scanner.resume()
         attachGeneration += 1   // forces CameraPreviewView.updateUIView to re-attach the layer
     }
@@ -52,6 +55,18 @@ final class QRScannerViewModel: ObservableObject {
     func toggleTorch() {
         torchOn.toggle()
         scanner.setTorch(torchOn)
+    }
+
+    /// Restrict the metadata output detection zone to the centered finder square.
+    /// Converts from layer coords → metadata output coords via the preview layer.
+    func applyFinderInterestRect(in viewBounds: CGRect) {
+        guard let layer = previewLayer else { return }
+        let finderSize: CGFloat = 270
+        let cx = viewBounds.midX, cy = viewBounds.midY
+        let layerRect = CGRect(x: cx - finderSize / 2, y: cy - finderSize / 2,
+                               width: finderSize, height: finderSize)
+        let metaRect = layer.metadataOutputRectConverted(fromLayerRect: layerRect)
+        scanner.setInterestRect(metaRect)
     }
 
     func attachPreview(to view: UIView) {

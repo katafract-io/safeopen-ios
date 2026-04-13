@@ -7,6 +7,7 @@ final class CameraScannerService: NSObject {
 
     private var captureSession: AVCaptureSession?
     private(set) var previewLayer: AVCaptureVideoPreviewLayer?
+    private var metadataOutput: AVCaptureMetadataOutput?
     private var isRunning = false
 
     // MARK: - Start
@@ -41,6 +42,7 @@ final class CameraScannerService: NSObject {
                 .qr, .ean8, .ean13, .pdf417, .aztec,
                 .dataMatrix, .code39, .code93, .code128, .upce
             ]
+            metadataOutput = output
         } catch {
             completion(.failure(error))
             return
@@ -74,6 +76,14 @@ final class CameraScannerService: NSObject {
             session.startRunning()
             DispatchQueue.main.async { self?.isRunning = true }
         }
+    }
+
+    /// Restrict code detection to a sub-region of the camera frame.
+    /// `rect` must be in metadata output coordinate space (use
+    /// `AVCaptureVideoPreviewLayer.metadataOutputRectConverted(fromLayerRect:)`).
+    func setInterestRect(_ rect: CGRect) {
+        guard rect != .zero else { return }
+        metadataOutput?.rectOfInterest = rect
     }
 
     func setTorch(_ on: Bool) {
