@@ -45,6 +45,8 @@ struct CameraPreviewView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
+        // attachGeneration is read here so SwiftUI calls updateUIView whenever it changes.
+        _ = viewModel.attachGeneration
         viewModel.attachPreview(to: uiView)
         viewModel.previewLayer?.frame = uiView.bounds
     }
@@ -132,15 +134,22 @@ struct DimmedSurround: View {
     var body: some View {
         GeometryReader { geo in
             Path { path in
+                // Full screen coverage
                 path.addRect(CGRect(origin: .zero, size: geo.size))
+                // Cut out the finder box (even-odd fill) — use screen coords
+                // Convert finderRect from global to this view's local space
+                let localRect: CGRect
                 if finderRect != .zero {
-                    path.addRoundedRect(
-                        in: finderRect,
-                        cornerSize: CGSize(width: 20, height: 20)
-                    )
+                    localRect = finderRect
+                } else {
+                    // Before layout settles, use a centered estimate so the whole screen isn't dimmed
+                    let cx = geo.size.width / 2, cy = geo.size.height / 2
+                    let halfW: CGFloat = 135
+                    localRect = CGRect(x: cx - halfW, y: cy - halfW, width: halfW * 2, height: halfW * 2)
                 }
+                path.addRoundedRect(in: localRect, cornerSize: CGSize(width: 20, height: 20))
             }
-            .fill(Color.black.opacity(0.62), style: FillStyle(eoFill: true))
+            .fill(Color.black.opacity(0.5), style: FillStyle(eoFill: true))
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

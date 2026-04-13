@@ -23,7 +23,7 @@ class SafeOpenService: ObservableObject {
             source: source
         )
 
-        let (riskLevel, riskFactors) = scoreLocally(url: normalizedURL, type: type)
+        let (riskLevel, riskFactors) = scoreLocally(url: normalizedURL, type: type, raw: raw)
         let (title, summary) = explain(payload: payload, riskLevel: riskLevel)
 
         return InspectionResult(
@@ -42,10 +42,19 @@ class SafeOpenService: ObservableObject {
 
     // MARK: - Private
 
-    private func scoreLocally(url: URL?, type: PayloadType) -> (RiskLevel, [RiskFactor]) {
-        // Known non-URL types are inherently classifiable — not "unknown"
+    private func scoreLocally(url: URL?, type: PayloadType, raw: String = "") -> (RiskLevel, [RiskFactor]) {
         switch type {
-        case .wifi, .sms, .email, .phone, .contact, .calendar, .plainText:
+        case .wifi, .sms, .email, .phone, .contact, .meCard, .calendar, .otp, .geo, .plainText:
+            return (.low, [])
+        case .crypto:
+            return (.caution, [])
+        case .script:
+            return (.high, [.executableScript])
+        case .dataURL:
+            return (.caution, [.dataURLPayload])
+        case .deepLink:
+            return (.low, [])
+        case .json:
             return (.low, [])
         case .unknown:
             return (.unknown, [.unknownDestination])
@@ -61,6 +70,10 @@ class SafeOpenService: ObservableObject {
             return ("Website link", "This opens a website in your browser.")
         case .shortURL:
             return ("Shortened link", "The real destination is hidden. Use Inspect & Open to reveal it before your device connects.")
+        case .dataURL:
+            return ("Embedded data", "This encodes raw data directly in the payload — no server needed. Review before acting.")
+        case .deepLink:
+            return ("App deep link", "This opens a specific screen inside an app on your device.")
         case .wifi:
             return ("Wi-Fi network", "This will join a Wi-Fi network. Review the credentials before connecting.")
         case .sms:
@@ -71,8 +84,20 @@ class SafeOpenService: ObservableObject {
             return ("Phone call", "This starts a phone call.")
         case .contact:
             return ("Contact card", "This adds a contact to your address book.")
+        case .meCard:
+            return ("Contact (MECARD)", "This adds a contact to your address book.")
         case .calendar:
             return ("Calendar event", "This adds an event to your calendar.")
+        case .otp:
+            return ("One-time password", "This is an authenticator setup code. Add it to your authenticator app.")
+        case .crypto:
+            return ("Crypto payment", "This is a cryptocurrency payment request. Verify the address carefully before sending.")
+        case .geo:
+            return ("Location", "This encodes a geographic coordinate.")
+        case .script:
+            return ("Executable script", "This payload contains code. Do not execute it unless you trust the source completely.")
+        case .json:
+            return ("JSON data", "This is structured data in JSON format.")
         case .plainText:
             return ("Plain text", "This is a plain text string with no action.")
         case .unknown:

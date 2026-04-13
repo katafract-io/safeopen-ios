@@ -10,13 +10,12 @@ final class SafeOpenSessionManager: ObservableObject {
     @Published var prefetch: PrefetchResult?
     @Published var isLoading = false
     @Published var error: String?
-    @Published var needsUpgrade = false
 
     private let api = InspectionAPIClient()
     private var expiryTask: Task<Void, Never>?
     private var activeSessionId: String?
 
-    // MARK: - Prefetch (Phase C)
+    // MARK: - Prefetch
 
     func loadPreview(url: URL) async {
         isLoading = true
@@ -25,10 +24,9 @@ final class SafeOpenSessionManager: ObservableObject {
         do {
             let result = try await api.prefetchURL(url)
             self.prefetch = result
-            // Also store session so the browser can use it
             session = SafeOpenSession(
                 sessionId:    result.sessionId,
-                sessionToken: "",         // prefetch doesn't return a proxy token
+                sessionToken: "",
                 proxyHost:    "",
                 proxyPort:    8444,
                 assignedIpv6: result.assignedIpv6,
@@ -38,21 +36,22 @@ final class SafeOpenSessionManager: ObservableObject {
             scheduleExpiry(at: result.expiresAt)
         } catch {
             if case InspectionAPIError.planRequired = error {
-                self.needsUpgrade = true
+                // Service token should always be authorized — this shouldn't happen in production.
+                // If it does, the service token may have expired or been revoked.
+                self.error = "Service error. Please update the app."
             } else {
                 self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
             }
         }
     }
 
-    // MARK: - Full proxy session (Phase D)
+    // MARK: - Full proxy session
 
     func openSession(url: URL) async {
         isLoading = true
         error = nil
         defer { isLoading = false }
 
-        // Revoke any prior session
         await revokeCurrentSession()
 
         do {
@@ -61,11 +60,7 @@ final class SafeOpenSessionManager: ObservableObject {
             activeSessionId = s.sessionId
             scheduleExpiry(at: s.expiresAt)
         } catch {
-            if case InspectionAPIError.planRequired = error {
-                self.needsUpgrade = true
-            } else {
-                self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            }
+            self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
         }
     }
 

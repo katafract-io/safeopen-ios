@@ -1,6 +1,7 @@
 import Foundation
 
 enum RiskFactor: String, Codable, CaseIterable {
+    // URL-specific
     case insecureTransport
     case rawIPAddress
     case suspiciousEncoding
@@ -12,6 +13,10 @@ enum RiskFactor: String, Codable, CaseIterable {
     case suspiciousPathKeyword
     case excessiveQueryParams
     case extremelyLongURL
+    // New
+    case executableScript
+    case dataURLPayload
+    case obfuscatedContent
 
     var explanation: String {
         switch self {
@@ -37,6 +42,12 @@ enum RiskFactor: String, Codable, CaseIterable {
             return "Contains an unusually large number of query parameters."
         case .extremelyLongURL:
             return "This URL is unusually long, which is sometimes used to obscure the destination."
+        case .executableScript:
+            return "This payload contains code that could be executed — review carefully before acting."
+        case .dataURLPayload:
+            return "Embeds raw data directly in the payload, which can hide malicious content."
+        case .obfuscatedContent:
+            return "Contains heavily encoded or obfuscated content — the real payload is not readable."
         }
     }
 }

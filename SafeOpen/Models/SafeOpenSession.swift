@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 struct SafeOpenSession: Codable {
     let sessionId: String
@@ -31,11 +32,39 @@ struct PrefetchResult: Codable {
     let ephemeral: Bool
     let sessionId: String
     let expiresAt: Date
+    let trackers: [TrackerEntry]
+    let hasSnapshot: Bool
 
     var resolvedURL: URL? { URL(string: finalUrl) }
 
     struct PrefetchHop: Codable {
         let url: String
         let statusCode: Int
+    }
+}
+
+struct TrackerEntry: Codable, Identifiable {
+    var id: String { domain }
+    let domain: String
+    let category: String  // analytics | advertising | social | fingerprinting
+
+    var displayCategory: String {
+        switch category {
+        case "analytics":      return "Analytics"
+        case "advertising":    return "Advertising"
+        case "social":         return "Social"
+        case "fingerprinting": return "Fingerprinting"
+        default:               return category.capitalized
+        }
+    }
+
+    var categoryColor: Color {
+        switch category {
+        case "analytics":      return .orange
+        case "advertising":    return .red
+        case "social":         return Color(red: 0.4, green: 0.5, blue: 1)
+        case "fingerprinting": return .purple
+        default:               return .secondary
+        }
     }
 }

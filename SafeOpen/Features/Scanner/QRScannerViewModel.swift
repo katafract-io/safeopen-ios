@@ -9,6 +9,8 @@ final class QRScannerViewModel: ObservableObject {
     @Published var cameraStatus: AVAuthorizationStatus = .notDetermined
     @Published var cameraAuthorized = false
     @Published var torchOn = false
+    /// Incremented each time the camera restarts so CameraPreviewView re-attaches the layer.
+    @Published private(set) var attachGeneration: Int = 0
 
     @Published private(set) var previewLayer: AVCaptureVideoPreviewLayer?
 
@@ -44,6 +46,7 @@ final class QRScannerViewModel: ObservableObject {
     func resumeScanning() {
         guard cameraAuthorized else { return }
         scanner.resume()
+        attachGeneration += 1   // forces CameraPreviewView.updateUIView to re-attach the layer
     }
 
     func toggleTorch() {
@@ -54,7 +57,9 @@ final class QRScannerViewModel: ObservableObject {
     func attachPreview(to view: UIView) {
         guard let layer = previewLayer else { return }
         layer.frame = view.bounds
-        if layer.superlayer == nil {
+        // Always re-attach if the layer is on a stale superlayer (e.g. after navigation pop/push)
+        if layer.superlayer !== view.layer {
+            layer.removeFromSuperlayer()
             view.layer.insertSublayer(layer, at: 0)
         }
     }
