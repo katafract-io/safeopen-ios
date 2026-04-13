@@ -1,6 +1,7 @@
 import Foundation
 import Security
 import StoreKit
+import UIKit
 
 /// Manages the platform device token lifecycle.
 /// Token is stored in Keychain under service "com.katafract.safeopen" / account "device_token".
@@ -11,7 +12,38 @@ final class DeviceTokenManager: ObservableObject {
     private static let baseURL    = "https://api.katafract.com"
     private static let keychainService = "com.katafract.safeopen"
     private static let tokenAccount    = "device_token"
+    private static let deviceIDAccount = "device_id"
     private static let session = URLSession(configuration: .ephemeral)
+
+    /// Stable per-install device ID stored in Keychain (survives app updates, lost on reinstall).
+    static var deviceID: String {
+        if let stored = keychainLoad(account: deviceIDAccount) { return stored }
+        let id = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        keychainSave(id, account: deviceIDAccount)
+        return id
+    }
+
+    private static func keychainLoad(account: String) -> String? {
+        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
+                                  kSecAttrService: keychainService,
+                                  kSecAttrAccount: account,
+                                  kSecReturnData: true]
+        var ref: AnyObject?
+        guard SecItemCopyMatching(q as CFDictionary, &ref) == errSecSuccess,
+              let d = ref as? Data else { return nil }
+        return String(data: d, encoding: .utf8)
+    }
+
+    private static func keychainSave(_ value: String, account: String) {
+        let data = Data(value.utf8)
+        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
+                                  kSecAttrService: keychainService,
+                                  kSecAttrAccount: account]
+        if SecItemUpdate(q as CFDictionary, [kSecValueData: data] as CFDictionary) == errSecItemNotFound {
+            var add = q; add[kSecValueData] = data
+            SecItemAdd(add as CFDictionary, nil)
+        }
+    }
 
     /// The current bearer token. Nil until registration succeeds.
     @Published private(set) var token: String? = nil
@@ -30,7 +62,7 @@ final class DeviceTokenManager: ObservableObject {
 
     func register() async {
         let body: [String: Any] = [
-            "device_id":   InspectionAPIClient.deviceID,
+            "device_id":   Self.deviceID,
             "platform":    "ios",
             "app_version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         ]
@@ -56,35 +88,14 @@ final class DeviceTokenManager: ObservableObject {
         }
     }
 
-    // MARK: - Keychain
+    // MARK: - Keychain (token)
 
     private func loadFromKeychain() -> String? {
-        let query: [CFString: Any] = [
-            kSecClass:       kSecClassGenericPassword,
-            kSecAttrService: Self.keychainService,
-            kSecAttrAccount: Self.tokenAccount,
-            kSecReturnData:  true,
-        ]
-        var result: AnyObject?
-        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
-              let data = result as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
+        Self.keychainLoad(account: Self.tokenAccount)
     }
 
     private func saveToKeychain(_ tok: String) {
-        let data = Data(tok.utf8)
-        // Try update first, then add
-        let query: [CFString: Any] = [
-            kSecClass:       kSecClassGenericPassword,
-            kSecAttrService: Self.keychainService,
-            kSecAttrAccount: Self.tokenAccount,
-        ]
-        let update: [CFString: Any] = [kSecValueData: data]
-        if SecItemUpdate(query as CFDictionary, update as CFDictionary) == errSecItemNotFound {
-            var addQuery = query
-            addQuery[kSecValueData] = data
-            SecItemAdd(addQuery as CFDictionary, nil)
-        }
+        Self.keychainSave(tok, account: Self.tokenAccount)
     }
 
     // MARK: - HTTP
