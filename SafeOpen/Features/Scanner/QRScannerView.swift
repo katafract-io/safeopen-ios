@@ -65,7 +65,6 @@ struct ScannerOverlay: View {
     let torchOn: Bool
     let onTorchToggle: () -> Void
 
-    @State private var pulse = false
     @State private var finderRect: CGRect = .zero
 
     private let finderSize: CGFloat = 270
@@ -96,16 +95,14 @@ struct ScannerOverlay: View {
 
                 Spacer()
 
-                // Finder frame with animated corners
-                ZStack {
-                    FinderFrame(size: finderSize, pulse: pulse)
-                }
-                .frame(width: finderSize, height: finderSize)
-                .background(
-                    GeometryReader { geo in
-                        Color.clear.preference(key: FinderFrameKey.self, value: geo.frame(in: .global))
-                    }
-                )
+                // Invisible spacer that anchors the finder region for DimmedSurround alignment
+                Color.clear
+                    .frame(width: finderSize, height: finderSize)
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear.preference(key: FinderFrameKey.self, value: geo.frame(in: .global))
+                        }
+                    )
 
                 Spacer()
 
@@ -120,11 +117,6 @@ struct ScannerOverlay: View {
             }
         }
         .onPreferenceChange(FinderFrameKey.self) { finderRect = $0 }
-        .onAppear {
-            withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) {
-                pulse = true
-            }
-        }
     }
 }
 
@@ -162,60 +154,6 @@ struct DimmedSurround: View {
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)
-    }
-}
-
-// MARK: - Finder frame corners
-
-struct FinderFrame: View {
-    let size: CGFloat
-    let pulse: Bool
-
-    private let arm: CGFloat = 32
-    private let thick: CGFloat = 4
-    private let corner: CGFloat = 8
-    private let accentColor = Color(red: 0, green: 0.83, blue: 1)
-
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: corner)
-                .stroke(accentColor.opacity(0.15), lineWidth: 1)
-                .frame(width: size, height: size)
-
-            ForEach(0..<4, id: \.self) { i in
-                CornerBracket(arm: arm, thick: thick, radius: corner, color: accentColor)
-                    .frame(width: size, height: size)
-                    .rotationEffect(.degrees(Double(i) * 90))
-            }
-        }
-        .opacity(pulse ? 1.0 : 0.65)
-        .scaleEffect(pulse ? 1.0 : 0.985)
-        .animation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true), value: pulse)
-    }
-}
-
-struct CornerBracket: View {
-    let arm: CGFloat
-    let thick: CGFloat
-    let radius: CGFloat
-    let color: Color
-
-    var body: some View {
-        Canvas { ctx, size in
-            let w = size.width, h = size.height
-
-            // Top-left bracket (this view is rotated for other corners)
-            var path = Path()
-            path.move(to: CGPoint(x: 0, y: arm))
-            path.addLine(to: CGPoint(x: 0, y: radius))
-            path.addQuadCurve(to: CGPoint(x: radius, y: 0),
-                              control: CGPoint(x: 0, y: 0))
-            path.addLine(to: CGPoint(x: arm, y: 0))
-
-            ctx.stroke(path, with: .color(color),
-                       style: StrokeStyle(lineWidth: thick, lineCap: .round))
-            _ = (w, h)
-        }
     }
 }
 
