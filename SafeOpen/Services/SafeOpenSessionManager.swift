@@ -10,6 +10,7 @@ final class SafeOpenSessionManager: ObservableObject {
     @Published var prefetch: PrefetchResult?
     @Published var isLoading = false
     @Published var error: String?
+    @Published var needsCredits = false
 
     private let api = InspectionAPIClient()
     private var expiryTask: Task<Void, Never>?
@@ -34,14 +35,13 @@ final class SafeOpenSessionManager: ObservableObject {
                 expiresAt:    result.expiresAt
             )
             scheduleExpiry(at: result.expiresAt)
+        } catch InspectionAPIError.creditsRequired {
+            needsCredits = true
         } catch {
-            if case InspectionAPIError.planRequired = error {
-                // Service token should always be authorized — this shouldn't happen in production.
-                // If it does, the service token may have expired or been revoked.
-                self.error = "Service error. Please update the app."
-            } else {
-                self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-            }
+            self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+        }
+        if needsCredits == false {
+            await SafeOpenStore.shared.refreshBalance()
         }
     }
 
@@ -59,6 +59,9 @@ final class SafeOpenSessionManager: ObservableObject {
             session = s
             activeSessionId = s.sessionId
             scheduleExpiry(at: s.expiresAt)
+            await SafeOpenStore.shared.refreshBalance()
+        } catch InspectionAPIError.creditsRequired {
+            needsCredits = true
         } catch {
             self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
         }

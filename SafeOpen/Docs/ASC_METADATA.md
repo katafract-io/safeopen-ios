@@ -13,42 +13,34 @@ SafeOpen
 Link inspector & safe opener
 ```
 
-## Promotional Text (157/170 chars — updateable without new build)
+## Promotional Text (160/170 chars, updateable without new build)
 ```
-Every link you open exposes your IP. SafeOpen inspects links before you open them and routes every open through a privacy relay — your device stays anonymous.
+Every link you open exposes your IP. SafeOpen inspects links before you open them and routes every open through a privacy relay, so your device stays anonymous.
 ```
 
 ## Description (≤4000 chars)
 ```
-Most links look harmless. Shortened URLs, QR codes from flyers, links in text messages — any of them could lead somewhere unexpected. And the moment you tap them, the destination sees your device's IP address.
+Most links look harmless. Shortened URLs, QR codes from flyers, links in text messages. Any of them can lead somewhere unexpected, and the moment you tap, the destination already knows your device's IP address.
 
 SafeOpen changes that.
 
-Point your camera at any QR code, or paste a URL to get an instant safety inspection before anything loads. SafeOpen analyzes the link and highlights risk signals — shortened URLs, raw IP addresses, punycode domains, unusual ports, suspicious parameters, and more — in plain language you can actually understand.
+Point your camera at any QR code, or paste a URL to get a safety inspection before anything loads. SafeOpen analyzes the link and flags risk signals: shortened URLs, raw IP addresses, punycode domains, unusual ports, suspicious tracking parameters, and more.
 
-When you're ready to open, tap "Open Safely." Your request routes through SafeOpen's privacy relay. The destination never sees your real IP address.
+When you're ready to open, tap "Open Safely". Your request routes through SafeOpen's privacy relay, so the destination never sees your real IP address.
 
-─────────────────────────────
 FREE
-─────────────────────────────
-• QR scanner with torch control
-• Link inspection — paste or type any URL
-• Plain-language risk breakdown for every scan
-• Scan history stored on-device
-• Open Safely — your IP is always hidden behind our shared relay
+- QR scanner with torch control
+- Link inspection for any URL you paste or type
+- Plain risk breakdown for every scan
+- Scan history stored on device
+- Open Safely with a shared relay so your IP stays hidden
 
-─────────────────────────────
-SAFEOPEN PRO — $0.99/mo or $4.99/yr
-─────────────────────────────
-• Disposable IPv6 identity per session — a fresh datacenter address, burned after 10 minutes
-• Zero cross-session linkability — no two opens share the same IP
-• Everything in Free, with ephemeral identity on every open
+SAFEOPEN PRO ($0.99/mo or $4.99/yr)
+- Disposable IPv6 identity per session: a fresh datacenter address that expires after 10 minutes
+- No two opens share the same IP
+- Everything in Free, with ephemeral identity on every open
 
-─────────────────────────────
-
-No account. No login. Works immediately on install.
-
-Privacy is the default. Pro makes it airtight.
+No account. No login. Works the moment you install it.
 ```
 
 ## Keywords (97/100 chars — comma-separated, no spaces after commas)
@@ -56,9 +48,10 @@ Privacy is the default. Pro makes it airtight.
 QR scanner,link inspector,URL checker,phishing,safe browsing,privacy,IP protection,QR code reader
 ```
 
-## What's New (v1.0 — Initial Release)
+## What's New
+v1.0 is the initial release; Apple hides the "What's New" field on first submissions and rejects writes to it. Use this copy on the next version bump:
 ```
-SafeOpen is here. Scan QR codes, inspect any link for risk signals, and open URLs safely through our privacy relay — your IP never reaches the destination.
+First release. Scan QR codes, inspect any link for risk signals, and open URLs through SafeOpen's privacy relay so your IP never reaches the destination.
 ```
 
 ---
@@ -91,21 +84,21 @@ SafeOpen is here. Scan QR codes, inspect any link for risk signals, and open URL
 ## App Review Notes
 
 ```
-SafeOpen is a QR code scanner and link inspection app. It requires no user account — a service-level API token is embedded in the binary for all platform calls.
+SafeOpen is a QR code scanner and link inspection app. No user account is required. A service-level API token is embedded in the binary for all platform calls.
 
-Camera access is used exclusively for QR code scanning via AVFoundation. No photos are stored.
+Camera access is used exclusively for QR scanning via AVFoundation. No photos are stored.
 
-The "Open Safely" feature routes URL opens through Katafract's privacy relay infrastructure. During review, the reviewer's IP address will not be exposed to any destination URL opened via this button.
+"Open Safely" routes URL opens through Katafract's privacy relay. The reviewer's IP will not be exposed to any destination URL opened via this button.
 
-In-app purchase (Pro tier) enables ephemeral IPv6 per session. Use a Sandbox Apple ID to test. The free tier is fully functional without any purchase.
+In-app purchase (Pro) enables ephemeral IPv6 per session. Test with a Sandbox Apple ID. The free tier is fully functional without any purchase.
 
-To test core flows:
-1. Camera tab → point at any QR code
-2. Inspect tab → paste a URL (e.g. https://bit.ly/example) → tap Inspect
-3. Tap "Open Safely" on any result to test the privacy relay
-4. Tap the upgrade prompt to view the Pro paywall (no purchase required to dismiss)
+To test:
+1. Camera tab: point at any QR code
+2. Inspect tab: paste a URL (e.g. https://example.com) and tap Inspect
+3. Tap "Open Safely" on any result to test the relay
+4. Tap the upgrade prompt to view the Pro paywall (no purchase needed to dismiss)
 
-No demo credentials needed.
+No demo credentials required.
 ```
 
 ---
