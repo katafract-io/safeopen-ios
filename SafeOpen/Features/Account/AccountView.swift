@@ -35,13 +35,20 @@ struct AccountView: View {
                             }
                             Spacer()
                             VStack(alignment: .trailing, spacing: 0) {
-                                Text("\(store.balance)")
-                                    .font(.title2.bold())
-                                    .foregroundStyle(cyan)
-                                    .contentTransition(.numericText())
-                                Text("balance")
+                                HStack(spacing: 4) {
+                                    if store.balanceIsStale {
+                                        Image(systemName: "wifi.exclamationmark")
+                                            .font(.caption2)
+                                            .foregroundStyle(.orange)
+                                    }
+                                    Text("\(store.balance)")
+                                        .font(.title2.bold())
+                                        .foregroundStyle(cyan)
+                                        .contentTransition(.numericText())
+                                }
+                                Text(store.balanceIsStale ? "offline · stale" : "balance")
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(store.balanceIsStale ? .orange : .secondary)
                             }
                         }
                         .padding(.vertical, 4)

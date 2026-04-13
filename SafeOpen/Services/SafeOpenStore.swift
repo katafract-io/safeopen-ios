@@ -27,6 +27,11 @@ final class SafeOpenStore: ObservableObject {
     @Published var totalConsumed: Int = 0
     @Published var error: String?
 
+    /// True after the most recent refreshBalance() failed to reach the backend.
+    /// UI should treat `balance` as stale and show an offline indicator.
+    @Published var balanceIsStale: Bool = false
+    @Published var lastBalanceFetchAt: Date?
+
     var starter:  Product? { products.first { $0.id == Self.starterID  } }
     var standard: Product? { products.first { $0.id == Self.standardID } }
     var power:    Product? { products.first { $0.id == Self.powerID    } }
@@ -109,8 +114,10 @@ final class SafeOpenStore: ObservableObject {
             balance = snapshot.balance
             nextRefillAt = Date(timeIntervalSince1970: TimeInterval(snapshot.nextRefillAt))
             totalConsumed = snapshot.totalConsumed
+            balanceIsStale = false
+            lastBalanceFetchAt = Date()
         } catch {
-            // Don't surface — the inspection flow itself shows credit errors when relevant.
+            balanceIsStale = true
         }
     }
 
