@@ -21,6 +21,7 @@ final class SafeOpenStore: ObservableObject {
     init() {
         transactionListener = listenForTransactions()
         Task { await loadProducts() }
+        Task { await updateProStatus() }
     }
 
     deinit {
