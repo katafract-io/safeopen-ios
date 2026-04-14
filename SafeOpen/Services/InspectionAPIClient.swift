@@ -11,7 +11,8 @@ struct InspectionAPIClient {
 
     /// The app service token. Authenticates the SafeOpen client to the backend.
     /// Per-install authorization is the device ID below; this token only proves
-    /// the request came from a SafeOpen build.
+    /// the request came from a SafeOpen build. App Attest is layered on top for
+    /// request integrity and reinstall-farming defense.
     static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
 
     // MARK: - Device ID (anonymous, persisted in Keychain)
@@ -58,6 +59,7 @@ struct InspectionAPIClient {
             "request_ephemeral": true,
         ]
         if let r = regionHint { body["region_hint"] = r }
+        await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, response) = try await Self.session.data(for: req)
@@ -84,6 +86,7 @@ struct InspectionAPIClient {
             "request_ephemeral": true,
         ]
         if let r = regionHint { body["region_hint"] = r }
+        await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, response) = try await Self.session.data(for: req)
@@ -108,11 +111,13 @@ struct InspectionAPIClient {
     // MARK: - Credits
 
     struct CreditSnapshot: Decodable {
-        let balance: Int
-        let welcomeCredits: Int
-        let monthlyRefill: Int
-        let nextRefillAt: Int
-        let totalConsumed: Int
+        let balance:          Int
+        let freeBalance:      Int
+        let freeBalanceCap:   Int
+        let welcomeCredits:   Int
+        let monthlyRefill:    Int
+        let nextRefillAt:     Int
+        let totalConsumed:    Int
     }
 
     func getCredits() async throws -> CreditSnapshot {
@@ -128,10 +133,43 @@ struct InspectionAPIClient {
         return try decoder.decode(CreditSnapshot.self, from: data)
     }
 
+    // MARK: - Offers (loyalty bonuses)
+
+    struct Offer: Decodable, Identifiable {
+        let productId:     String
+        let baseCredits:   Int
+        let bonusCredits:  Int
+        let bonusType:     String   // "", "upgrade", "repurchase"
+        let totalCredits:  Int
+
+        var id: String { productId }
+    }
+
+    private struct OffersResponse: Decodable {
+        let offers: [Offer]
+    }
+
+    func getOffers() async throws -> [Offer] {
+        let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits/offers")!
+        var req = URLRequest(url: endpoint)
+        req.httpMethod = "GET"
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
+        req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
+        let (data, response) = try await Self.session.data(for: req)
+        try checkStatus(response, data: data)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return try decoder.decode(OffersResponse.self, from: data).offers
+    }
+
+    // MARK: - Redeem
+
     struct RedeemResponse: Decodable {
-        let balance: Int
-        let granted: Int
-        let productId: String
+        let balance:       Int
+        let granted:       Int
+        let productId:     String
+        let bonusCredits:  Int?
+        let bonusType:     String?
     }
 
     func redeemTransaction(id transactionId: String) async throws -> RedeemResponse {
@@ -141,12 +179,28 @@ struct InspectionAPIClient {
         req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        req.httpBody = try JSONSerialization.data(withJSONObject: ["transaction_id": transactionId])
+        var body: [String: Any] = ["transaction_id": transactionId]
+        await Self.attachAttestFields(to: &body)
+        req.httpBody = try JSONSerialization.data(withJSONObject: body)
         let (data, response) = try await Self.session.data(for: req)
         try checkStatus(response, data: data)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return try decoder.decode(RedeemResponse.self, from: data)
+    }
+
+    // MARK: - App Attest glue
+
+    /// Fetch fresh App Attest headers and merge them into a mutating-request body.
+    /// No-ops if App Attest is unavailable or key isn't bootstrapped — the backend
+    /// accepts nil during dark launch.
+    private static func attachAttestFields(to body: inout [String: Any]) async {
+        guard let headers = await AppAttestClient.shared.getAttestHeaders() else {
+            return
+        }
+        body["attest_key_id"]    = headers.keyId
+        body["attest_assertion"] = headers.assertion
+        body["attest_challenge"] = headers.challenge
     }
 
     // MARK: - Private

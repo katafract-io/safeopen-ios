@@ -23,8 +23,11 @@ final class SafeOpenStore: ObservableObject {
     @Published var products: [Product] = []
     @Published var isPurchasing = false
     @Published var balance: Int = 0
+    @Published var freeBalance: Int = 0
+    @Published var freeBalanceCap: Int = 20
     @Published var nextRefillAt: Date = .distantFuture
     @Published var totalConsumed: Int = 0
+    @Published var offers: [InspectionAPIClient.Offer] = []
     @Published var error: String?
 
     /// True after the most recent refreshBalance() failed to reach the backend.
@@ -112,12 +115,22 @@ final class SafeOpenStore: ObservableObject {
         do {
             let snapshot = try await InspectionAPIClient().getCredits()
             balance = snapshot.balance
+            freeBalance = snapshot.freeBalance
+            freeBalanceCap = snapshot.freeBalanceCap
             nextRefillAt = Date(timeIntervalSince1970: TimeInterval(snapshot.nextRefillAt))
             totalConsumed = snapshot.totalConsumed
             balanceIsStale = false
             lastBalanceFetchAt = Date()
         } catch {
             balanceIsStale = true
+        }
+    }
+
+    func refreshOffers() async {
+        do {
+            offers = try await InspectionAPIClient().getOffers()
+        } catch {
+            // Offer display is non-critical — fall back to base credits.
         }
     }
 
