@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08D0190AE54F244F658B7DD8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA98AEEA3EB0AB39428E6178 /* PrivacyInfo.xcprivacy */; };
 		1586CC60A6EB6D06EB9DF5B9 /* PayloadParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86D1887A3C07BE3A3DB322A /* PayloadParser.swift */; };
 		1FB099DF17D4E88FCB7AD0EB /* PasteLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526DA69097B36919B396D842 /* PasteLinkViewModel.swift */; };
 		2762CEDCDFBEFD08A426C8D8 /* PayloadClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596220D4905CB4A3CD0D3CF /* PayloadClassifier.swift */; };
@@ -65,6 +66,7 @@
 		9CEEAE5B4CE5AD8A60524A2E /* CameraScannerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraScannerService.swift; sourceTree = "<group>"; };
 		9E8C6C7D19F4C3CADA86ADAF /* QRScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerView.swift; sourceTree = "<group>"; };
 		A666E307890E875CE4AB00E3 /* Configuration.storekit */ = {isa = PBXFileReference; path = Configuration.storekit; sourceTree = "<group>"; };
+		AA98AEEA3EB0AB39428E6178 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B527ACA707D2F5BEA6BF92E8 /* ParsedContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsedContent.swift; sourceTree = "<group>"; };
 		B57666FA29C38FD52F7C8E81 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		BC4E1FE333873897332B8A84 /* InspectionAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionAPIClient.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				280742B220D637A4C4ADD9CA /* Assets.xcassets */,
 				A666E307890E875CE4AB00E3 /* Configuration.storekit */,
 				DE20E0DF6ABE7A873BF70F03 /* Info.plist */,
+				AA98AEEA3EB0AB39428E6178 /* PrivacyInfo.xcprivacy */,
 				1180F7CE310D11BA07D3B402 /* App */,
 				339F5BB42DAD2456CFF1F9EE /* Features */,
 				4D4943C99F52C2611E583BA7 /* Models */,
@@ -281,6 +284,7 @@
 			files = (
 				5B6E16F5FF86107F58E99C42 /* Assets.xcassets in Resources */,
 				DCAB28EAB482D33A999557CE /* Configuration.storekit in Resources */,
+				08D0190AE54F244F658B7DD8 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,7 +364,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2SGGP65W6C;
 				ENABLE_PREVIEWS = YES;
@@ -446,7 +450,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2SGGP65W6C;
 				ENABLE_NS_ASSERTIONS = NO;

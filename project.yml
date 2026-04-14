@@ -10,7 +10,7 @@ settings:
   base:
     SWIFT_VERSION: "5.9"
     MARKETING_VERSION: "1.0.1"
-    CURRENT_PROJECT_VERSION: "23"
+    CURRENT_PROJECT_VERSION: "24"
     DEVELOPMENT_TEAM: "2SGGP65W6C"
     ENABLE_PREVIEWS: YES
     DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
@@ -28,6 +28,7 @@ targets:
     resources:
       - SafeOpen/Assets.xcassets
       - SafeOpen/Preview Content/Preview Assets.xcassets
+      - SafeOpen/PrivacyInfo.xcprivacy
     info:
       path: SafeOpen/Info.plist
       properties:
