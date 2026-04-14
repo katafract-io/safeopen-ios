@@ -1,5 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     '/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Products/Debug-iphonesimulator/SafeOpen.app/SafeOpen'
-relocations:     []
-...
