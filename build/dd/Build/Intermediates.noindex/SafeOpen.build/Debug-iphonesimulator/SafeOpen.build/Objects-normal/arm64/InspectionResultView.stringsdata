@@ -1,0 +1,504 @@
+{
+  "source": "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Inspection/InspectionResultView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Inspection",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "Risk Factors",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "High Risk — Open Anyway?",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open in Browser",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open in Browser",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 124
+        }
+      },
+      {
+        "comment": "",
+        "key": "This link shows signs of being dangerous. Opening it may expose you to phishing, malware, or other threats.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copied!",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 142
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy Clean URL",
+        "location": {
+          "startingColumn": 65,
+          "startingLine": 142
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copied!",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy to Clipboard",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "Error",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 389
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inspect & Open Safely",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 368
+        }
+      },
+      {
+        "comment": "",
+        "key": "Offline · last known balance %lld",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 383
+        }
+      },
+      {
+        "comment": "",
+        "key": "Costs 1 credit · Balance: %lld",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 384
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 390
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tab",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 479
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 505
+        }
+      },
+      {
+        "comment": "",
+        "key": "Page preview unavailable",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 544
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld tracker%@ detected",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 575
+        }
+      },
+      {
+        "comment": "",
+        "key": "Haven DNS would block %lld of these",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 620
+        }
+      },
+      {
+        "comment": "",
+        "key": "DNS-level ad and tracker blocking on all your devices.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 622
+        }
+      },
+      {
+        "comment": "",
+        "key": "Learn about Enclave →",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 628
+        }
+      },
+      {
+        "comment": "",
+        "key": "Verified Destination",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 641
+        }
+      },
+      {
+        "comment": "",
+        "key": "Redirect Chain (%lld)",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 660
+        }
+      },
+      {
+        "comment": "",
+        "key": "Privacy",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 675
+        }
+      },
+      {
+        "comment": "",
+        "key": "HTTP %lld",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 651
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 663
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inspected via",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 676
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your IP during inspect",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 680
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your IP while browsing",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 683
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disposable IPv6",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 677
+        }
+      },
+      {
+        "comment": "",
+        "key": "Shared node",
+        "location": {
+          "startingColumn": 67,
+          "startingLine": 677
+        }
+      },
+      {
+        "comment": "",
+        "key": "Not exposed",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 681
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your device connection",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 684
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inspection blocked",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 699
+        }
+      },
+      {
+        "comment": "",
+        "key": "This site appears to be blocking our inspection servers — some sites reject known datacenter or VPN IP ranges.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 702
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your IP address will be visible to this site.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 731
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 736
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open in Safari",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 722
+        }
+      },
+      {
+        "comment": "",
+        "key": "Opens in a cookie-free session. Your IP will be used for browsing.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 759
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open in Isolated Browser",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 751
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open your authenticator app and scan this code, or paste the URL directly.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 941
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contact — %@",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1076
+        }
+      },
+      {
+        "comment": "",
+        "key": "Calendar Event",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1107
+        }
+      },
+      {
+        "comment": "",
+        "key": "One-Time Password (%@)",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Location",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1164
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ Payment",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1182
+        }
+      },
+      {
+        "comment": "",
+        "key": "Address",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 1186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Do not execute unless you fully trust the source.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 1224
+        }
+      },
+      {
+        "comment": "",
+        "key": "Executable Script",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 1216
+        }
+      },
+      {
+        "comment": "",
+        "key": "JSON Data",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1237
+        }
+      },
+      {
+        "comment": "",
+        "key": "Embedded Data",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1254
+        }
+      },
+      {
+        "comment": "",
+        "key": "App Deep Link",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1279
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scheme",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 1282
+        }
+      },
+      {
+        "comment": "",
+        "key": "App/Host",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 1286
+        }
+      },
+      {
+        "comment": "",
+        "key": "Path",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 1289
+        }
+      },
+      {
+        "comment": "",
+        "key": "Wi-Fi Network",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 1331
+        }
+      },
+      {
+        "comment": "",
+        "key": "Network",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 1345
+        }
+      },
+      {
+        "comment": "",
+        "key": "Password",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 1365
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copied",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 1375
+        }
+      },
+      {
+        "comment": "",
+        "key": "Copy Password",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 1375
+        }
+      }
+    ]
+  },
+  "version": 1
+}

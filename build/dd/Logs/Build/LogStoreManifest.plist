@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>logFormatVersion</key>
+	<integer>12</integer>
+	<key>logs</key>
+	<dict>
+		<key>1DA71085-48EB-4C3A-8B3E-51D68C3C266D</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>1DA71085-48EB-4C3A-8B3E-51D68C3C266D.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>1</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>SafeOpen project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>SafeOpen</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project SafeOpen with scheme SafeOpen and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>797811620.77728295</real>
+			<key>timeStoppedRecording</key>
+			<real>797811621.990628</real>
+			<key>title</key>
+			<string>Building project SafeOpen with scheme SafeOpen and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>1DA71085-48EB-4C3A-8B3E-51D68C3C266D</string>
+		</dict>
+		<key>9403B714-7691-404C-9E17-022247818792</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>9403B714-7691-404C-9E17-022247818792.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>1</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>0</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>SafeOpen project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>SafeOpen</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building project SafeOpen with scheme SafeOpen and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>797811343.52119005</real>
+			<key>timeStoppedRecording</key>
+			<real>797811597.30726504</real>
+			<key>title</key>
+			<string>Building project SafeOpen with scheme SafeOpen and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>9403B714-7691-404C-9E17-022247818792</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

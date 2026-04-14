@@ -1,0 +1,40 @@
+{
+  "source": "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/App/AppCoordinator.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Scan",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inspect",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "History",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "Account",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 30
+        }
+      }
+    ]
+  },
+  "version": 1
+}

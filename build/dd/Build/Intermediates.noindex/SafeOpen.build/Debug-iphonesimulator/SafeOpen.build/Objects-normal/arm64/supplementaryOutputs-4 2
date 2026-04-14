@@ -1,0 +1,23 @@
+{
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Paste/PasteLinkView.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkView.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkView.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkView.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkView.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkView.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Paste/PasteLinkViewModel.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkViewModel.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkViewModel.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkViewModel.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkViewModel.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PasteLinkViewModel.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Services/PayloadClassifier.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadClassifier.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadClassifier.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadClassifier.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadClassifier.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadClassifier.swiftdeps"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Upgrade/ProUpgradeView.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/ProUpgradeView.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/ProUpgradeView.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/ProUpgradeView.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/ProUpgradeView.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/ProUpgradeView.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Models/PayloadType.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadType.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadType.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadType.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadType.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadType.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Services/PayloadParser.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadParser.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadParser.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadParser.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadParser.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/PayloadParser.swiftdeps"
+  }
+}

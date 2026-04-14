@@ -1,0 +1,23 @@
+{
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/History/HistoryView.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/HistoryView.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/HistoryView.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/HistoryView.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/HistoryView.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/HistoryView.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Scanner/CameraScannerService.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/CameraScannerService.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/CameraScannerService.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/CameraScannerService.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/CameraScannerService.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/CameraScannerService.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Services/InspectionAPIClient.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/InspectionAPIClient.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/InspectionAPIClient.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/InspectionAPIClient.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/InspectionAPIClient.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/InspectionAPIClient.swiftdeps"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/App/AppCoordinator.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppCoordinator.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppCoordinator.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppCoordinator.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppCoordinator.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppCoordinator.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/App/AppState.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppState.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppState.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppState.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppState.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AppState.swiftdeps"
+  },
+  "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Account/AccountView.swift" : {
+    "const-values" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AccountView.swiftconstvalues",
+    "dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AccountView.d",
+    "diagnostics" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AccountView.dia",
+    "object" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AccountView.o",
+    "swift-dependencies" : "/Users/christianflores/Documents/GitHub/safeopen-ios/build/dd/Build/Intermediates.noindex/SafeOpen.build/Debug-iphonesimulator/SafeOpen.build/Objects-normal/arm64/AccountView.swiftdeps"
+  }
+}

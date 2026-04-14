@@ -1,0 +1,56 @@
+{
+  "source": "/Users/christianflores/Documents/GitHub/safeopen-ios/SafeOpen/Features/Paste/PasteLinkView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Inspect Link",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "URL or Text",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 14
+        }
+      },
+      {
+        "comment": "",
+        "key": "Paste a link, QR content, or any text…",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 21
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Paste from Clipboard",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Inspect",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 69
+        }
+      }
+    ]
+  },
+  "version": 1
+}
