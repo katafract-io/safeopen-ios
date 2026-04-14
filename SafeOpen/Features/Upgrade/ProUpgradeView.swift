@@ -41,7 +41,14 @@ struct ProUpgradeView: View {
                             ProgressView().tint(cyan).padding(28)
                         } else {
                             ForEach(orderedPacks(), id: \.id) { product in
-                                CreditPackRow(product: product, credits: credits(for: product.id), highlight: product.id == SafeOpenStore.standardID) {
+                                let offer = store.offers.first { $0.productId == product.id }
+                                CreditPackRow(
+                                    product: product,
+                                    baseCredits: offer?.baseCredits ?? credits(for: product.id),
+                                    bonusCredits: offer?.bonusCredits ?? 0,
+                                    bonusType: offer?.bonusType ?? "",
+                                    highlight: product.id == SafeOpenStore.standardID
+                                ) {
                                     Task { await store.purchase(product) }
                                 }
                                 .disabled(store.isPurchasing)
@@ -53,7 +60,7 @@ struct ProUpgradeView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Label("Credits never expire", systemImage: "infinity")
                         Label("No subscription, no auto-renewal", systemImage: "checkmark.circle")
-                        Label("10 free credits added every month", systemImage: "gift")
+                        Label("10 free credits added monthly (cap: \(store.freeBalanceCap))", systemImage: "gift")
                     }
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -91,7 +98,10 @@ struct ProUpgradeView: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .task { await store.refreshBalance() }
+            .task {
+                await store.refreshBalance()
+                await store.refreshOffers()
+            }
             .overlay {
                 if store.isPurchasing {
                     Color.black.opacity(0.35).ignoresSafeArea()
@@ -150,22 +160,29 @@ private struct BalanceCard: View {
 
 private struct CreditPackRow: View {
     let product: Product
-    let credits: Int
+    let baseCredits: Int
+    let bonusCredits: Int
+    let bonusType: String
     let highlight: Bool
     let action: () -> Void
-    private let cyan = Color(red: 0, green: 0.83, blue: 1)
+
+    private let cyan   = Color(red: 0, green: 0.83, blue: 1)
+    private let gold   = Color(red: 1.0, green: 0.78, blue: 0.24)
+
+    private var totalCredits: Int { baseCredits + bonusCredits }
+    private var hasBonus: Bool { bonusCredits > 0 }
 
     var body: some View {
         Button(action: action) {
             HStack(alignment: .center, spacing: 14) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
-                        Text("\(credits)")
+                        Text("\(totalCredits)")
                             .font(.title2.bold())
                         Text("credits")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                        if highlight {
+                        if highlight && !hasBonus {
                             Text("BEST VALUE")
                                 .font(.caption2.bold())
                                 .padding(.horizontal, 6)
@@ -173,6 +190,19 @@ private struct CreditPackRow: View {
                                 .background(cyan.opacity(0.15), in: Capsule())
                                 .foregroundStyle(cyan)
                         }
+                        if hasBonus {
+                            Text(bonusBadgeText)
+                                .font(.caption2.bold())
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(gold.opacity(0.18), in: Capsule())
+                                .foregroundStyle(gold)
+                        }
+                    }
+                    if hasBonus {
+                        Text("\(baseCredits) + \(bonusCredits) bonus")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
                     Text(perCreditLabel)
                         .font(.caption2)
@@ -190,11 +220,24 @@ private struct CreditPackRow: View {
                     .fill(Color(UIColor.secondarySystemGroupedBackground))
                     .overlay(
                         RoundedRectangle(cornerRadius: 14)
-                            .strokeBorder(highlight ? cyan.opacity(0.4) : Color.clear, lineWidth: 1)
+                            .strokeBorder(
+                                hasBonus ? gold.opacity(0.5) :
+                                (highlight ? cyan.opacity(0.4) : Color.clear),
+                                lineWidth: 1
+                            )
                     )
             )
         }
         .buttonStyle(.plain)
+    }
+
+    private var bonusBadgeText: String {
+        let pct = Int((Double(bonusCredits) / Double(baseCredits) * 100).rounded())
+        switch bonusType {
+        case "upgrade":    return "UPGRADE +\(pct)%"
+        case "repurchase": return "LOYALTY +\(pct)%"
+        default:           return "+\(pct)%"
+        }
     }
 
     private var perCreditLabel: String {
@@ -202,7 +245,7 @@ private struct CreditPackRow: View {
         formatter.numberStyle = .currency
         formatter.locale = product.priceFormatStyle.locale
         formatter.maximumFractionDigits = 4
-        let perCredit = NSDecimalNumber(decimal: product.price / Decimal(credits))
+        let perCredit = NSDecimalNumber(decimal: product.price / Decimal(max(1, totalCredits)))
         return "\(formatter.string(from: perCredit) ?? "") per credit"
     }
 }

@@ -15,6 +15,27 @@ struct AccountView: View {
         return "\(v) (\(b))"
     }
 
+    private var nextRefillRelative: String {
+        guard store.nextRefillAt < .distantFuture else { return "—" }
+        let now = Date()
+        let delta = store.nextRefillAt.timeIntervalSince(now)
+        if delta <= 0 {
+            return "any moment"
+        }
+        let days  = Int(delta / 86400)
+        let hours = Int((delta.truncatingRemainder(dividingBy: 86400)) / 3600)
+        if days >= 2 {
+            return "in \(days)d"
+        } else if days == 1 {
+            return "in 1d \(hours)h"
+        } else if hours >= 1 {
+            return "in \(hours)h"
+        } else {
+            let minutes = max(1, Int(delta / 60))
+            return "in \(minutes)m"
+        }
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -91,6 +112,27 @@ struct AccountView: View {
                 }
 
                 Section {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Next free top-up")
+                            Text(store.freeBalance >= store.freeBalanceCap
+                                 ? "Cap reached — top-up skipped until you use credits"
+                                 : "+\(min(10, store.freeBalanceCap - store.freeBalance)) credits")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Text(nextRefillRelative)
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline.monospacedDigit())
+                    }
+                    HStack {
+                        Text("Free credits")
+                        Spacer()
+                        Text("\(store.freeBalance) / \(store.freeBalanceCap)")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline.monospacedDigit())
+                    }
                     HStack {
                         Text("Version")
                         Spacer()

@@ -28,6 +28,8 @@
 		7165ED7221C60D00464C88F6 /* SafeOpenBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D9F2C755B3BE6A0A270FF3F /* SafeOpenBrowserView.swift */; };
 		77B4163D86DC8EABF233D742 /* CameraScannerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEAE5B4CE5AD8A60524A2E /* CameraScannerService.swift */; };
 		7B765B5614C3B6ABB286A587 /* InspectionAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4E1FE333873897332B8A84 /* InspectionAPIClient.swift */; };
+		2E0C2C0C3F17B620A0706E6E /* AppAttestClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E49EDC0F5C3CC0CBA09004 /* AppAttestClient.swift */; };
+		11B317A5AAF756D08547A549 /* DeviceCheckClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E52572A567BC3FFD89590F96 /* DeviceCheckClient.swift */; };
 		7B81F6F8934B380F40C5ABFE /* RedirectHop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9909809917CC36CCB5619F /* RedirectHop.swift */; };
 		7CE998CCFEEC8BE7F74EC70C /* SafeOpenSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C691DD7CD86680F57B480D1 /* SafeOpenSession.swift */; };
 		832F8141EB70E503EE4D0724 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EA5B7F165C41FB5B82A3B01 /* HistoryView.swift */; };
@@ -70,6 +72,9 @@
 		B527ACA707D2F5BEA6BF92E8 /* ParsedContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsedContent.swift; sourceTree = "<group>"; };
 		B57666FA29C38FD52F7C8E81 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		BC4E1FE333873897332B8A84 /* InspectionAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionAPIClient.swift; sourceTree = "<group>"; };
+		F8E49EDC0F5C3CC0CBA09004 /* AppAttestClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAttestClient.swift; sourceTree = "<group>"; };
+		E52572A567BC3FFD89590F96 /* DeviceCheckClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceCheckClient.swift; sourceTree = "<group>"; };
+		FF71F8AB02A2FD03F4F318E9 /* SafeOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SafeOpen.entitlements; sourceTree = "<group>"; };
 		C596220D4905CB4A3CD0D3CF /* PayloadClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadClassifier.swift; sourceTree = "<group>"; };
 		CB3F5A87110340C7DC3E4ED1 /* InspectionResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectionResultView.swift; sourceTree = "<group>"; };
 		DE20E0DF6ABE7A873BF70F03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -83,6 +88,8 @@
 			isa = PBXGroup;
 			children = (
 				BC4E1FE333873897332B8A84 /* InspectionAPIClient.swift */,
+				F8E49EDC0F5C3CC0CBA09004 /* AppAttestClient.swift */,
+				E52572A567BC3FFD89590F96 /* DeviceCheckClient.swift */,
 				C596220D4905CB4A3CD0D3CF /* PayloadClassifier.swift */,
 				F86D1887A3C07BE3A3DB322A /* PayloadParser.swift */,
 				6593512AC6962F3191E4EBD2 /* RiskScoringService.swift */,
@@ -173,6 +180,7 @@
 				A666E307890E875CE4AB00E3 /* Configuration.storekit */,
 				DE20E0DF6ABE7A873BF70F03 /* Info.plist */,
 				AA98AEEA3EB0AB39428E6178 /* PrivacyInfo.xcprivacy */,
+				FF71F8AB02A2FD03F4F318E9 /* SafeOpen.entitlements */,
 				1180F7CE310D11BA07D3B402 /* App */,
 				339F5BB42DAD2456CFF1F9EE /* Features */,
 				4D4943C99F52C2611E583BA7 /* Models */,
@@ -301,6 +309,8 @@
 				77B4163D86DC8EABF233D742 /* CameraScannerService.swift in Sources */,
 				832F8141EB70E503EE4D0724 /* HistoryView.swift in Sources */,
 				7B765B5614C3B6ABB286A587 /* InspectionAPIClient.swift in Sources */,
+				2E0C2C0C3F17B620A0706E6E /* AppAttestClient.swift in Sources */,
+				11B317A5AAF756D08547A549 /* DeviceCheckClient.swift in Sources */,
 				6C3AB1FB786547A76521F476 /* InspectionResult.swift in Sources */,
 				4067902B0CB5D2A910D2F799 /* InspectionResultView.swift in Sources */,
 				365C7D21B94163E003C77FD3 /* ParsedContent.swift in Sources */,
@@ -364,7 +374,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 25;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2SGGP65W6C;
 				ENABLE_PREVIEWS = YES;
@@ -402,6 +412,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SafeOpen/SafeOpen.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = SafeOpen/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -450,7 +461,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 24;
+				CURRENT_PROJECT_VERSION = 25;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2SGGP65W6C;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -481,6 +492,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SafeOpen/SafeOpen.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = SafeOpen/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
