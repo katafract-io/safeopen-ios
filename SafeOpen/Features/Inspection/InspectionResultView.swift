@@ -6,6 +6,7 @@ import Contacts
 import ContactsUI
 import EventKit
 import SafariServices
+import NetworkExtension
 
 struct InspectionResultView: View {
     let result: InspectionResult
@@ -1297,10 +1298,18 @@ private struct WiFiActionCard: View {
     let raw: String
     @State private var copiedSSID = false
     @State private var copiedPass = false
+    @State private var joinState: JoinState = .idle
 
-    private var parsed: (ssid: String, password: String, security: String) {
+    private enum JoinState: Equatable {
+        case idle
+        case joining
+        case joined
+        case failed(String)
+    }
+
+    private var parsed: (ssid: String, password: String, security: String, hidden: Bool) {
         // WIFI:T:WPA;S:NetworkName;P:Password;H:false;;
-        var ssid = "", password = "", security = "Unknown"
+        var ssid = "", password = "", security = "Unknown", hidden = false
         let fields = raw
             .replacingOccurrences(of: "WIFI:", with: "", options: .caseInsensitive)
             .components(separatedBy: ";")
@@ -1311,10 +1320,11 @@ private struct WiFiActionCard: View {
             case "S": ssid     = kv[1]
             case "P": password = kv[1]
             case "T": security = kv[1].uppercased() == "nopass" ? "Open" : kv[1].uppercased()
+            case "H": hidden   = (kv[1].lowercased() == "true")
             default: break
             }
         }
-        return (ssid, password, security)
+        return (ssid, password, security, hidden)
     }
 
     var body: some View {
@@ -1371,13 +1381,92 @@ private struct WiFiActionCard: View {
                               systemImage: copiedPass ? "checkmark" : "doc.on.doc")
                             .font(.caption)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.blue)
+                    .buttonStyle(.bordered)
+                    .tint(.secondary)
                     .controlSize(.small)
+                }
+            }
+
+            if !info.ssid.isEmpty {
+                Button {
+                    joinNetwork(ssid: info.ssid,
+                                password: info.password,
+                                security: info.security,
+                                hidden: info.hidden)
+                } label: {
+                    HStack(spacing: 6) {
+                        if joinState == .joining {
+                            ProgressView().controlSize(.mini).tint(.white)
+                        } else {
+                            Image(systemName: joinStateIcon)
+                        }
+                        Text(joinStateLabel)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+                .disabled(joinState == .joining || joinState == .joined)
+                .padding(.top, 6)
+
+                if case .failed(let reason) = joinState {
+                    Text(reason)
+                        .font(.caption2)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.leading)
                 }
             }
         }
         .padding(14)
         .background(Color(UIColor.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var joinStateIcon: String {
+        switch joinState {
+        case .idle:    return "wifi"
+        case .joining: return "wifi"
+        case .joined:  return "checkmark.circle.fill"
+        case .failed:  return "xmark.circle.fill"
+        }
+    }
+
+    private var joinStateLabel: String {
+        switch joinState {
+        case .idle:    return "Join Network"
+        case .joining: return "Joining…"
+        case .joined:  return "Connected"
+        case .failed:  return "Try Again"
+        }
+    }
+
+    private func joinNetwork(ssid: String, password: String, security: String, hidden: Bool) {
+        joinState = .joining
+        let config: NEHotspotConfiguration
+        let upper = security.uppercased()
+        if upper == "OPEN" || password.isEmpty {
+            config = NEHotspotConfiguration(ssid: ssid)
+        } else if upper.contains("WEP") {
+            config = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: true)
+        } else {
+            // WPA / WPA2 / WPA3 / SAE all use the WPA/WPA2 initializer; iOS negotiates.
+            config = NEHotspotConfiguration(ssid: ssid, passphrase: password, isWEP: false)
+        }
+        config.joinOnce = false
+        config.hidden   = hidden
+        NEHotspotConfigurationManager.shared.apply(config) { error in
+            DispatchQueue.main.async {
+                if let nsErr = error as NSError? {
+                    // Error code 13 = "already associated" — treat as success.
+                    if nsErr.domain == NEHotspotConfigurationErrorDomain,
+                       nsErr.code == NEHotspotConfigurationError.alreadyAssociated.rawValue {
+                        joinState = .joined
+                        return
+                    }
+                    joinState = .failed(nsErr.localizedDescription)
+                } else {
+                    joinState = .joined
+                }
+            }
+        }
     }
 }
