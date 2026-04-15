@@ -11,7 +11,7 @@ if [[ -z "${CI_BUILD_NUMBER:-}" ]]; then
   exit 0
 fi
 
-BUILD_OFFSET=28
+BUILD_OFFSET=27
 BUILD_NUMBER=$(( CI_BUILD_NUMBER + BUILD_OFFSET ))
 echo "ci_pre_xcodebuild: setting build number to $BUILD_NUMBER (CI_BUILD_NUMBER=$CI_BUILD_NUMBER + offset=$BUILD_OFFSET)"
 xcrun agvtool new-version -all "$BUILD_NUMBER"
