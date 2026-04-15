@@ -80,10 +80,15 @@ struct RiskScoringService {
 
     private func riskLevel(factors: [RiskFactor]) -> RiskLevel {
         if factors.isEmpty { return .low }
-        let highRisk: Set<RiskFactor> = [.rawIPAddress, .punycodeHost, .suspiciousEncoding]
+        // Immediate high-risk signals
+        let highRisk: Set<RiskFactor> = [.rawIPAddress, .punycodeHost, .suspiciousEncoding, .unusualPort]
         if factors.contains(where: { highRisk.contains($0) }) { return .high }
+        // HTTP credential/action page — classic phishing pattern
+        if factors.contains(.insecureTransport) && factors.contains(.suspiciousPathKeyword) { return .high }
+        // Two or more softer signals together
         if factors.count >= 2 { return .caution }
         if factors.contains(.shortenedLink) { return .caution }
+        if factors.contains(.extremelyLongURL) { return .caution }
         return .low
     }
 
