@@ -1,5 +1,5 @@
 # SafeOpen — App Store Connect Metadata
-# Version 1.0.0 | Bundle ID: com.katafract.safeopen | App ID: 6761782681
+# Version 1.0.1 | Bundle ID: com.katafract.safeopen | App ID: 6761782681
 
 ---
 
@@ -24,23 +24,27 @@ Most links look harmless. Shortened URLs, QR codes from flyers, links in text me
 
 SafeOpen changes that.
 
-Point your camera at any QR code, or paste a URL to get a safety inspection before anything loads. SafeOpen analyzes the link and flags risk signals: shortened URLs, raw IP addresses, punycode domains, unusual ports, suspicious tracking parameters, and more.
+Point your camera at any QR code, or paste a URL to get a safety inspection before anything loads. SafeOpen analyzes the link and flags risk signals: shortened URLs, raw IP addresses, punycode domains, unusual ports, suspicious tracking parameters, and more. All of this runs entirely on your device — offline, instant, free.
 
-When you're ready to open, tap "Open Safely". Your request routes through SafeOpen's privacy relay, so the destination never sees your real IP address.
+When you're ready to open, tap "Inspect & Open Safely". Your request routes through SafeOpen's privacy relay, where it gets a disposable IPv6 address that the destination sees instead of your real IP. The address is released after 10 minutes. Your cookies and browsing history are destroyed when the session ends.
 
-FREE
+FREE — NO ACCOUNT REQUIRED
 - QR scanner with torch control
-- Link inspection for any URL you paste or type
-- Plain risk breakdown for every scan
-- Scan history stored on device
-- Open Safely with a shared relay so your IP stays hidden
+- Decodes URLs, Wi-Fi credentials, contacts, calendar events, SMS, email, phone numbers, geo, crypto, and plain text
+- Local risk scoring: raw IPs, punycode domains, URL shorteners, suspicious paths, unusual ports, executable scripts, and more
+- Tracking-parameter stripping: removes 38+ known tracking params (UTM, fbclid, gclid, msclkid) and shows you the clean URL
+- Plain-language explanation for every risk flag
+- Scan history stored on-device only, never synced
 
-SAFEOPEN PRO ($0.99/mo or $4.99/yr)
-- Disposable IPv6 identity per session: a fresh datacenter address that expires after 10 minutes
-- No two opens share the same IP
-- Everything in Free, with ephemeral identity on every open
+SCAN CREDITS (optional, one-time purchases)
+Two features require a connection to Katafract's servers and cost 1 scan credit each:
+- AI Summary: a plain-English summary of what the destination page actually contains
+- Open Safely: view the page through a privacy relay in an isolated session — the destination sees a disposable IPv6 address, not your real IP
 
-No account. No login. Works the moment you install it.
+Every install starts with 10 free credits. We add 10 more every 30 days.
+If you need more, credits are available as one-time in-app purchases. They never expire and there is no subscription.
+
+No account. No login. No subscription. Works the moment you install it.
 ```
 
 ## Keywords (97/100 chars — comma-separated, no spaces after commas)
@@ -48,10 +52,9 @@ No account. No login. Works the moment you install it.
 QR scanner,link inspector,URL checker,phishing,safe browsing,privacy,IP protection,QR code reader
 ```
 
-## What's New
-v1.0 is the initial release; Apple hides the "What's New" field on first submissions and rejects writes to it. Use this copy on the next version bump:
+## What's New (use on v1.0.1 and beyond — Apple hides this field on 1.0)
 ```
-First release. Scan QR codes, inspect any link for risk signals, and open URLs through SafeOpen's privacy relay so your IP never reaches the destination.
+Improved link preview — the inspection sheet now opens immediately so you can see analysis results as they arrive instead of waiting for the full load.
 ```
 
 ---
@@ -60,9 +63,9 @@ First release. Scan QR codes, inspect any link for risk signals, and open URLs t
 
 | Field | Value |
 |---|---|
-| Support URL | https://katafract.com/safeopen |
-| Marketing URL | https://katafract.com/safeopen |
-| Privacy Policy URL | https://katafract.com/privacy |
+| Support URL | https://katafract.com/support/safeopen |
+| Marketing URL | https://katafract.com/apps/safeopen |
+| Privacy Policy URL | https://katafract.com/privacy/safeopen |
 
 ---
 
@@ -88,36 +91,47 @@ SafeOpen is a QR code scanner and link inspection app. No user account is requir
 
 Camera access is used exclusively for QR scanning via AVFoundation. No photos are stored.
 
-"Open Safely" routes URL opens through Katafract's privacy relay. The reviewer's IP will not be exposed to any destination URL opened via this button.
+"Inspect & Open Safely" opens the link in an isolated in-app browser through Katafract's privacy relay. The reviewer's real IP will not be exposed to any destination URL opened via this button.
 
-In-app purchase (Pro) enables ephemeral IPv6 per session. Test with a Sandbox Apple ID. The free tier is fully functional without any purchase.
+In-app purchases are consumable scan-credit packs (not subscriptions). Purchasing is not required — the app is fully functional with the free credits included on install. Test with a Sandbox Apple ID.
 
 To test:
 1. Camera tab: point at any QR code
 2. Inspect tab: paste a URL (e.g. https://example.com) and tap Inspect
-3. Tap "Open Safely" on any result to test the relay
-4. Tap the upgrade prompt to view the Pro paywall (no purchase needed to dismiss)
+3. Tap "Inspect & Open Safely" on any result — sheet opens immediately with a loading indicator, then shows the full preview
+4. Tap the Buy Credits button to view the paywall (no purchase needed to dismiss)
 
 No demo credentials required.
 ```
 
 ---
 
-## In-App Purchases (already created in ASC)
+## In-App Purchases (consumable credit packs — no subscription)
 
-| Product ID | Name | Price | Billing |
+| Product ID | Name | Price | Type |
 |---|---|---|---|
-| com.katafract.safeopen.pro_monthly | SafeOpen Pro Monthly | $0.99 | Monthly auto-renewing |
-| com.katafract.safeopen.pro_annual | SafeOpen Pro Annual | $4.99 | Annual auto-renewing |
+| com.katafract.safeopen.credits_starter | SafeOpen Credits — Starter | $0.99 | Consumable |
+| com.katafract.safeopen.credits_standard | SafeOpen Credits — Standard | $2.99 | Consumable |
+| com.katafract.safeopen.credits_power | SafeOpen Credits — Power | $9.99 | Consumable |
 
-Subscription group: **SafeOpen Pro** (ID: 22024151)
+ASC Internal IDs: starter `6762161470`, standard `6762160344`, power `6762157575`
 
 IAP display name/description for each:
 
-**Pro Monthly**
-- Display Name: `SafeOpen Pro`
-- Description: `Disposable IPv6 identity per session. Fresh address, burned after 10 minutes.`
+**Starter (100 credits)**
+- Display Name: `100 Scan Credits`
+- Description: `100 scan credits for AI summaries and privacy-relay opens. Credits never expire.`
 
-**Pro Annual**
-- Display Name: `SafeOpen Pro Annual`
-- Description: `Disposable IPv6 identity per session. Fresh address per open, burned after 10 minutes. Best value.`
+**Standard (500 credits)**
+- Display Name: `500 Scan Credits`
+- Description: `500 scan credits for AI summaries and privacy-relay opens. Credits never expire. Best value for regular use.`
+
+**Power (2,500 credits)**
+- Display Name: `2,500 Scan Credits`
+- Description: `2,500 scan credits for AI summaries and privacy-relay opens. Credits never expire. Best value per credit.`
+
+---
+
+## Old IAPs — mark Removed from Sale in ASC
+- `com.katafract.safeopen.pro_monthly` (ID: 6761950941)
+- `com.katafract.safeopen.pro_annual` (ID: 6761951070)
