@@ -408,6 +408,17 @@ struct OpenSafelyButton: View {
                 )
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+            } else {
+                VStack(spacing: 16) {
+                    ProgressView()
+                        .scaleEffect(1.4)
+                    Text("Analyzing link…")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
         }
         .sheet(isPresented: $showBuyCredits) {
@@ -428,9 +439,10 @@ struct OpenSafelyButton: View {
         // No reuse, no cache. The user expects "inspect it now", not
         // "show me what we saw five minutes ago".
         manager.clear()
+        showPrefetchSheet = true  // open sheet immediately so user sees activity
         await manager.loadPreview(url: url)
-        if manager.prefetch != nil && manager.error == nil {
-            showPrefetchSheet = true
+        if manager.prefetch == nil {
+            showPrefetchSheet = false  // error or credits required — dismiss
         }
     }
 
