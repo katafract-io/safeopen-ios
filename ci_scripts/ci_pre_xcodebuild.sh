@@ -14,5 +14,6 @@ fi
 BUILD_OFFSET=27
 BUILD_NUMBER=$(( CI_BUILD_NUMBER + BUILD_OFFSET ))
 echo "ci_pre_xcodebuild: setting build number to $BUILD_NUMBER (CI_BUILD_NUMBER=$CI_BUILD_NUMBER + offset=$BUILD_OFFSET)"
-sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" "$CI_WORKSPACE/SafeOpen.xcodeproj/project.pbxproj"
+REPO_ROOT="$(dirname "$0")/.."
+sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" "$REPO_ROOT/SafeOpen.xcodeproj/project.pbxproj"
 echo "ci_pre_xcodebuild: done"
