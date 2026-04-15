@@ -13,10 +13,14 @@ enum RiskFactor: String, Codable, CaseIterable {
     case suspiciousPathKeyword
     case excessiveQueryParams
     case extremelyLongURL
-    // New
+    // Payload-specific
     case executableScript
     case dataURLPayload
     case obfuscatedContent
+    case openWifiNetwork
+    case weakWifiEncryption
+    case cryptoPayload
+    case embeddedURL
 
     var explanation: String {
         switch self {
@@ -47,7 +51,15 @@ enum RiskFactor: String, Codable, CaseIterable {
         case .dataURLPayload:
             return "Embeds raw data directly in the payload, which can hide malicious content."
         case .obfuscatedContent:
-            return "Contains heavily encoded or obfuscated content — the real payload is not readable."
+            return "Contains obfuscated or encoded content — the real payload is not human-readable."
+        case .openWifiNetwork:
+            return "This Wi-Fi network has no password. Anyone nearby can monitor your traffic."
+        case .weakWifiEncryption:
+            return "This Wi-Fi network uses WEP encryption, which is easily cracked."
+        case .cryptoPayload:
+            return "This is a cryptocurrency payment request. Verify the address independently before sending any funds."
+        case .embeddedURL:
+            return "This payload contains a URL. Review the destination carefully before proceeding."
         }
     }
 }
