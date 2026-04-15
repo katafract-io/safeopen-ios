@@ -44,12 +44,18 @@ class SafeOpenService: ObservableObject {
 
     private func scoreLocally(url: URL?, type: PayloadType, raw: String = "") -> (RiskLevel, [RiskFactor]) {
         switch type {
-        case .wifi, .sms, .email, .phone, .contact, .meCard, .calendar, .otp, .geo, .plainText:
+        case .sms, .email, .phone, .otp, .geo, .plainText:
             return (.low, [])
+        case .wifi:
+            return scoreWifi(raw: raw)
+        case .contact, .meCard:
+            return scoreStructuredPayloadWithURL(raw: raw, type: type)
+        case .calendar:
+            return scoreStructuredPayloadWithURL(raw: raw, type: type)
         case .crypto:
-            return (.caution, [])
+            return (.caution, [.cryptoPayload])
         case .script:
-            return (.high, [.executableScript])
+            return scoreScript(raw: raw)
         case .dataURL:
             return (.caution, [.dataURLPayload])
         case .deepLink:
@@ -62,6 +68,48 @@ class SafeOpenService: ObservableObject {
             guard let url else { return (.unknown, [.unknownDestination]) }
             return riskScorer.score(url: url, type: type)
         }
+    }
+
+    private func scoreWifi(raw: String) -> (RiskLevel, [RiskFactor]) {
+        guard case .wifi(let content) = PayloadParser().parse(raw: raw, type: .wifi) else {
+            return (.low, [])
+        }
+        var factors: [RiskFactor] = []
+        if content.security == "Open" || (content.security == "Unknown" && content.password.isEmpty) {
+            factors.append(.openWifiNetwork)
+        } else if content.security == "WEP" {
+            factors.append(.weakWifiEncryption)
+        }
+        return (factors.isEmpty ? .low : .caution, factors)
+    }
+
+    private func scoreStructuredPayloadWithURL(raw: String, type: PayloadType) -> (RiskLevel, [RiskFactor]) {
+        let parsed = PayloadParser().parse(raw: raw, type: type)
+        let embeddedURLString: String?
+        switch parsed {
+        case .contact(let c): embeddedURLString = c.url
+        case .event(let e):   embeddedURLString = e.url
+        default:              embeddedURLString = nil
+        }
+        guard let urlStr = embeddedURLString, let url = URL(string: urlStr) else {
+            return (.low, [])
+        }
+        var (level, factors) = riskScorer.score(url: url, type: .url)
+        if !factors.isEmpty {
+            factors.insert(.embeddedURL, at: 0)
+            if level == .low { level = .caution }
+        }
+        return (level, factors)
+    }
+
+    private func scoreScript(raw: String) -> (RiskLevel, [RiskFactor]) {
+        var factors: [RiskFactor] = [.executableScript]
+        let lower = raw.lowercased()
+        let obfuscationPatterns = ["eval(atob", "eval(decodeuri", "fromcharcode", "unescape(", "\\x", "string.fromchar"]
+        if obfuscationPatterns.contains(where: { lower.contains($0) }) {
+            factors.append(.obfuscatedContent)
+        }
+        return (.high, factors)
     }
 
     private func explain(payload: ScannedPayload, riskLevel: RiskLevel) -> (title: String, summary: String) {
