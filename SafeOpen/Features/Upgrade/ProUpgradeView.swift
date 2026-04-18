@@ -68,15 +68,9 @@ struct ProUpgradeView: View {
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
 
-                    Button {
-                        Task { await store.restorePurchases() }
-                    } label: {
-                        Text("Restore Purchases")
-                            .font(.footnote)
-                            .foregroundStyle(cyan)
-                    }
-                    .padding(.top, 18)
-                    .disabled(store.isPurchasing)
+                    // NOTE: Apple rule 3.1.1 prohibits a user-facing "Restore Purchases" affordance
+                    // for consumable-only apps. Pending-redemption recovery happens silently on app
+                    // launch via SafeOpenStore.retryPendingRedemptions().
 
                     if let err = store.error {
                         Text(err)

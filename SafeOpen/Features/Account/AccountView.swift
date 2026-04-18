@@ -80,12 +80,8 @@ struct AccountView: View {
                     Button { showBuyCredits = true } label: {
                         Label("Buy Credits", systemImage: "plus.circle.fill")
                     }
-                    Button {
-                        Task { await store.restorePurchases() }
-                    } label: {
-                        Label("Restore Purchases", systemImage: "arrow.clockwise")
-                    }
-                    .disabled(store.isPurchasing)
+                    // No "Restore Purchases" affordance — Apple rule 3.1.1 prohibits it for
+                    // consumable-only apps. Pending-redemption recovery runs silently on launch.
                 }
 
                 Section("Support") {
