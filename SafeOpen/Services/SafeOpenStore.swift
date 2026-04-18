@@ -45,6 +45,10 @@ final class SafeOpenStore: ObservableObject {
         transactionListener = listenForTransactions()
         Task { await loadProducts() }
         Task { await refreshBalance() }
+        // Automatic retry of any past consumable purchase whose server-side redemption
+        // failed mid-flight. Apple rule 3.1.1 prohibits user-facing "Restore Purchases"
+        // UI for consumable-only apps — so we do this silently on every launch instead.
+        Task { await retryPendingRedemptions() }
     }
 
     deinit { transactionListener?.cancel() }
@@ -139,15 +143,20 @@ final class SafeOpenStore: ObservableObject {
             let snapshot = try await InspectionAPIClient().redeemTransaction(id: String(transaction.id))
             balance = snapshot.balance
         } catch {
-            self.error = "Purchase succeeded but credit grant failed. Tap Restore Purchases to retry."
+            self.error = "Purchase succeeded but credit grant didn't go through. We'll retry automatically — if credits don't appear shortly, contact support."
         }
     }
 
-    /// Re-attempt redemption of every prior consumable purchase. Useful if a redemption
-    /// failed mid-flight (e.g. backend down) — Apple still lets us see the txn IDs.
-    func restorePurchases() async {
-        isPurchasing = true
-        defer { isPurchasing = false }
+    /// Silently re-attempts redemption of past consumable purchases whose backend grant
+    /// failed mid-flight (e.g. backend was down at the moment of purchase). Runs
+    /// automatically on app launch — NOT user-initiated.
+    ///
+    /// Apple rule 3.1.1: consumable-only apps MUST NOT expose a user-facing "Restore
+    /// Purchases" affordance. The retry mechanism itself is legitimate because the user
+    /// already paid; we just didn't successfully deliver. Doing it silently on launch
+    /// satisfies both sides: the user's credits get delivered, and we don't violate the
+    /// UI rule.
+    func retryPendingRedemptions() async {
         for await result in Transaction.all {
             guard case .verified(let tx) = result,
                   Self.allProductIDs.contains(tx.productID),
