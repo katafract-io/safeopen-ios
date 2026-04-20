@@ -4,7 +4,7 @@ import StoreKit
 /// SafeOpen consumable credit pack store + balance tracking.
 ///
 /// Unified credit SKU across all Katafract apps:
-///   - credits_standard  : 100 credits ($4.99), cross-app currency
+///   - credits_standard  : 100 credits ($5.00), cross-app currency
 ///
 /// Legacy IDs (grandfathered for existing user balances, not offered in UI):
 ///   - credits_starter   : 100 credits  ($0.99)
