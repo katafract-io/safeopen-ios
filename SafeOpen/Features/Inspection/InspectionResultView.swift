@@ -385,6 +385,7 @@ struct OpenSafelyButton: View {
                      : "Costs 1 credit · Balance: \(store.balance)")
                     .font(.caption2)
                     .foregroundStyle(store.balanceIsStale ? .orange : cyan.opacity(0.85))
+                    .opacity(PlatformEntitlement.isPlatformUnlocked ? 0.5 : 1)
             }
         }
         .alert("Error", isPresented: .constant(manager.error != nil), actions: {

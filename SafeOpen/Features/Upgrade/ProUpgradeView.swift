@@ -20,10 +20,10 @@ struct ProUpgradeView: View {
                             .foregroundStyle(cyan)
                             .padding(.top, 32)
 
-                        Text("Scan Credits")
+                        Text("Credits")
                             .font(.title.bold())
 
-                        Text("AI summaries and Open Safely sessions cost 1 credit each. Local scanning, risk scoring, and tracking-parameter stripping are always free.")
+                        Text("AI summaries and link preview screenshots cost 1 credit each. URL inspection, risk scoring, and tracking-parameter stripping are always free.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -39,20 +39,18 @@ struct ProUpgradeView: View {
                     VStack(spacing: 12) {
                         if store.products.isEmpty {
                             ProgressView().tint(cyan).padding(28)
-                        } else {
-                            ForEach(orderedPacks(), id: \.id) { product in
-                                let offer = store.offers.first { $0.productId == product.id }
-                                CreditPackRow(
-                                    product: product,
-                                    baseCredits: offer?.baseCredits ?? credits(for: product.id),
-                                    bonusCredits: offer?.bonusCredits ?? 0,
-                                    bonusType: offer?.bonusType ?? "",
-                                    highlight: product.id == SafeOpenStore.standardID
-                                ) {
-                                    Task { await store.purchase(product) }
-                                }
-                                .disabled(store.isPurchasing)
+                        } else if let product = store.standard {
+                            let offer = store.offers.first { $0.productId == product.id }
+                            CreditPackRow(
+                                product: product,
+                                baseCredits: offer?.baseCredits ?? credits(for: product.id),
+                                bonusCredits: offer?.bonusCredits ?? 0,
+                                bonusType: offer?.bonusType ?? "",
+                                highlight: true
+                            ) {
+                                Task { await store.purchase(product) }
                             }
+                            .disabled(store.isPurchasing)
                         }
                     }
                     .padding(16)
@@ -105,15 +103,11 @@ struct ProUpgradeView: View {
         }
     }
 
-    private func orderedPacks() -> [Product] {
-        let order = [SafeOpenStore.starterID, SafeOpenStore.standardID, SafeOpenStore.powerID]
-        return order.compactMap { id in store.products.first { $0.id == id } }
-    }
-
     private func credits(for productID: String) -> Int {
         switch productID {
+        case SafeOpenStore.standardID: return 100
+        // Legacy grandfather mappings (if old user restores purchase)
         case SafeOpenStore.starterID:  return 100
-        case SafeOpenStore.standardID: return 500
         case SafeOpenStore.powerID:    return 2500
         default: return 0
         }
