@@ -67,3 +67,38 @@ targets:
       properties:
         com.apple.developer.devicecheck.appattest-environment: production
         com.apple.developer.networking.HotspotConfiguration: true
+
+  SafeOpenShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: SafeOpenShareExtension
+    info:
+      path: SafeOpenShareExtension/Info.plist
+      properties:
+        CFBundleName: SafeOpenShare
+        CFBundleDisplayName: SafeOpenShare
+        CFBundleIdentifier: com.katafract.safeopen.ShareExtension
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        NSExtension:
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsText: true
+          NSExtensionPointIdentifier: com.apple.share-services
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.katafract.safeopen.ShareExtension
+        CODE_SIGN_ENTITLEMENTS: SafeOpenShareExtension/SafeOpenShareExtension.entitlements
+        LD_RUNPATH_SEARCH_PATHS:
+          - "$(inherited)"
+          - "@executable_path/Frameworks"
+          - "@executable_path/PlugIns"
+        SWIFT_EMIT_LOC_STRINGS: YES
+    entitlements:
+      path: SafeOpenShareExtension/SafeOpenShareExtension.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.katafract.enclave
