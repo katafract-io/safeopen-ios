@@ -47,10 +47,10 @@ struct AccountView: View {
                                 .font(.title2)
                                 .foregroundStyle(cyan)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Scan Credits")
+                                Text("Credits")
                                     .font(.subheadline.weight(.semibold))
                                     .foregroundStyle(.primary)
-                                Text("AI summary and Open Safely cost 1 credit each")
+                                Text("AI features cost 1 credit each. Basic inspection is free.")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }

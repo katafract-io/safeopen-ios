@@ -3,9 +3,11 @@ import StoreKit
 
 /// SafeOpen consumable credit pack store + balance tracking.
 ///
-/// Three consumable IAPs grant scan credits redeemed against the backend ledger:
+/// Unified credit SKU across all Katafract apps:
+///   - credits_standard  : 100 credits ($4.99), cross-app currency
+///
+/// Legacy IDs (grandfathered for existing user balances, not offered in UI):
 ///   - credits_starter   : 100 credits  ($0.99)
-///   - credits_standard  : 500 credits  ($2.99)
 ///   - credits_power     : 2500 credits ($9.99)
 ///
 /// Every install starts with 10 free credits and gets 10 more every 30 days.
@@ -15,10 +17,15 @@ final class SafeOpenStore: ObservableObject {
 
     static let shared = SafeOpenStore()
 
-    static let starterID  = "com.katafract.safeopen.credits_starter"
+    // Active unified SKU
     static let standardID = "com.katafract.safeopen.credits_standard"
+
+    // Legacy grandfathered IDs (for existing user balance migration only)
+    static let starterID  = "com.katafract.safeopen.credits_starter"
     static let powerID    = "com.katafract.safeopen.credits_power"
-    static let allProductIDs: Set<String> = [starterID, standardID, powerID]
+
+    // All product IDs to look up from StoreKit (active + legacy)
+    static let allProductIDs: Set<String> = [standardID, starterID, powerID]
 
     @Published var products: [Product] = []
     @Published var isPurchasing = false
