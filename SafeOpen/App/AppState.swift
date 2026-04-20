@@ -7,6 +7,8 @@ final class AppState: ObservableObject {
     private static let maxHistory = 500
 
     @Published var inspectionHistory: [InspectionResult] = []
+    @Published var selectedTab: Int = 0
+    @Published var pendingURLToInspect: URL?
 
     init() {
         load()

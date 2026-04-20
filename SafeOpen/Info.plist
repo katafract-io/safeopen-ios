@@ -23,7 +23,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>
-	<string>SafeOpen uses your camera to scan QR codes containing URLs. The URL is extracted locally on your device and shown to you for review before anything is opened — no image or camera data is stored or transmitted.</string>
+	<string>SafeOpen needs camera access to scan QR codes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SafeOpen can read QR codes from your photo library.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

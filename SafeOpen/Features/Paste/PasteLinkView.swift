@@ -4,6 +4,7 @@ struct PasteLinkView: View {
     @EnvironmentObject var appState: AppState
     @StateObject private var viewModel = PasteLinkViewModel()
     @FocusState private var inputFocused: Bool
+    @Binding var pendingURL: URL?
 
     var body: some View {
         NavigationStack {
@@ -85,5 +86,15 @@ struct PasteLinkView: View {
             }
         }
         .onReceive(viewModel.$result.compactMap { $0 }) { appState.record($0) }
+        .onAppear {
+            if let url = pendingURL {
+                viewModel.input = url.absoluteString
+                pendingURL = nil
+                // Automatically start inspection
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    viewModel.inspect()
+                }
+            }
+        }
     }
 }
