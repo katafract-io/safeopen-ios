@@ -30,6 +30,6 @@ struct AppCoordinator: View {
                 }
         }
         .preferredColorScheme(.dark)
-        .tint(Color(red: 0, green: 0.83, blue: 1))
+        .tint(Color.kataSapphire)
     }
 }
