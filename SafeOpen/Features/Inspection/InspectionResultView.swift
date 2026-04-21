@@ -28,7 +28,7 @@ struct InspectionResultView: View {
         ScrollView {
             VStack(spacing: 0) {
                 // ── Risk banner ──────────────────────────────────────────────
-                RiskBanner(result: result)
+                KataScanResultBanner(result: result)
 
                 // ── Body ─────────────────────────────────────────────────────
                 VStack(alignment: .leading, spacing: 16) {
@@ -181,9 +181,9 @@ struct InspectionResultView: View {
 
     private var riskColor: Color {
         switch result.riskLevel {
-        case .low:     return .green
-        case .caution: return .orange
-        case .high:    return .red
+        case .low:     return Color.kataChampagne
+        case .caution: return Color.kataGold
+        case .high:    return Color.kataCrimson
         case .unknown: return .secondary
         }
     }
@@ -247,9 +247,9 @@ struct RiskBanner: View {
 
     private var riskColor: Color {
         switch result.riskLevel {
-        case .low:     return .green
-        case .caution: return .orange
-        case .high:    return .red
+        case .low:     return Color.kataChampagne
+        case .caution: return Color.kataGold
+        case .high:    return Color.kataCrimson
         case .unknown: return .secondary
         }
     }

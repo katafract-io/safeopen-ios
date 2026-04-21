@@ -9,26 +9,40 @@ struct PasteLinkView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    // Input card
+                VStack(spacing: 32) {
+
+                    // ── App identity lockup ───────────────────────────────
+                    VStack(spacing: 4) {
+                        Text("SafeOpen")
+                            .font(.kataDisplay(28))
+                            .foregroundStyle(Color.kataMidnight)
+                        Text("KATAFRACT")
+                            .font(.kataMono(10))
+                            .foregroundStyle(Color.kataSapphire.opacity(0.6))
+                            .kerning(2)
+                    }
+                    .padding(.top, 8)
+
+                    // ── URL input card ────────────────────────────────────
                     VStack(alignment: .leading, spacing: 10) {
                         Text("URL or Text")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .font(.kataCaption(12, weight: .semibold))
+                            .foregroundStyle(Color.kataMidnight.opacity(0.55))
                             .padding(.horizontal, 4)
 
                         ZStack(alignment: .topLeading) {
                             if viewModel.input.isEmpty {
                                 Text("Paste a link, QR content, or any text…")
-                                    .foregroundStyle(.tertiary)
-                                    .font(.body)
+                                    .font(.kataBody(15))
+                                    .foregroundStyle(Color.kataMidnight.opacity(0.3))
                                     .padding(.top, 10)
                                     .padding(.leading, 4)
                                     .allowsHitTesting(false)
                             }
 
                             TextEditor(text: $viewModel.input)
-                                .font(.body.monospaced())
+                                .font(.kataMono(15))
+                                .foregroundStyle(Color.kataMidnight)
                                 .scrollContentBackground(.hidden)
                                 .focused($inputFocused)
                                 .frame(minHeight: 110, alignment: .top)
@@ -36,51 +50,73 @@ struct PasteLinkView: View {
                                 .textInputAutocapitalization(.never)
                         }
                         .padding(14)
-                        .background(Color(UIColor.secondarySystemGroupedBackground),
-                                    in: RoundedRectangle(cornerRadius: 14))
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(Color.kataIce.opacity(0.45))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(Color.kataSapphire.opacity(0.3), lineWidth: 1)
+                                )
+                        )
                     }
 
-                    // Paste from clipboard shortcut
-                    if !viewModel.input.isEmpty {
-                        Button(role: .destructive) {
-                            viewModel.input = ""
+                    // ── Secondary controls ────────────────────────────────
+                    HStack {
+                        Button {
+                            if let str = UIPasteboard.general.string, !str.isEmpty {
+                                viewModel.input = str
+                                KataHaptic.tap.fire()
+                            }
                         } label: {
-                            Label("Clear", systemImage: "xmark.circle")
-                                .font(.subheadline)
+                            Label("Paste", systemImage: "doc.on.clipboard")
+                                .font(.kataBody(15, weight: .medium))
+                                .foregroundStyle(Color.kataSapphire)
                         }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .buttonStyle(.plain)
+
+                        Spacer()
+
+                        if !viewModel.input.isEmpty {
+                            Button(role: .destructive) {
+                                viewModel.input = ""
+                                KataHaptic.tap.fire()
+                            } label: {
+                                Label("Clear", systemImage: "xmark.circle")
+                                    .font(.kataCaption(13))
+                                    .foregroundStyle(Color.kataMidnight.opacity(0.45))
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
 
-                    Button {
-                        if let str = UIPasteboard.general.string, !str.isEmpty {
-                            viewModel.input = str
-                        }
-                    } label: {
-                        Label("Paste from Clipboard", systemImage: "doc.on.clipboard")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.secondary)
-                    .controlSize(.large)
-
+                    // ── Primary CTA ───────────────────────────────────────
                     Button {
                         inputFocused = false
                         viewModel.inspect()
+                        KataHaptic.tap.fire()
                     } label: {
-                        Label("Inspect", systemImage: "magnifyingglass.circle.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
+                        HStack(spacing: 8) {
+                            Image(systemName: "shield.lefthalf.filled")
+                            Text("Check Safety")
+                                .font(.kataHeadline(17, weight: .medium))
+                        }
+                        .foregroundStyle(Color.kataIce)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(
+                            Capsule().fill(Color.kataSapphire)
+                        )
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Color(red: 0, green: 0.83, blue: 1))
-                    .controlSize(.large)
+                    .buttonStyle(.plain)
                     .disabled(viewModel.input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .opacity(viewModel.input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.4 : 1)
                 }
-                .padding(20)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 32)
             }
             .background(Color(UIColor.systemGroupedBackground))
-            .navigationTitle("Inspect Link")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationTitle("")
+            .navigationBarHidden(true)
             .navigationDestination(item: $viewModel.result) { result in
                 InspectionResultView(result: result)
             }
@@ -90,7 +126,6 @@ struct PasteLinkView: View {
             if let url = pendingURL {
                 viewModel.input = url.absoluteString
                 pendingURL = nil
-                // Automatically start inspection
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     viewModel.inspect()
                 }
