@@ -354,11 +354,12 @@ struct PayloadTypeBadge: View {
 
 // MARK: - Open Safely Button
 
+// MARK: - Inspect & Open button with entitlement gating
 struct OpenSafelyButton: View {
     let result: InspectionResult
 
     @StateObject private var manager = SafeOpenSessionManager.shared
-    @StateObject private var store   = SafeOpenStore.shared
+    @StateObject private var entitlements = EntitlementService.shared
     @State private var showBrowser = false
     @State private var showPrefetchSheet = false
     @State private var showBuyCredits = false
@@ -367,7 +368,7 @@ struct OpenSafelyButton: View {
 
     var body: some View {
         VStack(spacing: 8) {
-            Button { Task { await openSafely() } } label: {
+            Button { Task { await performScan() } } label: {
                 HStack {
                     if manager.isLoading {
                         KataProgressRing(size: 18)
@@ -380,18 +381,31 @@ struct OpenSafelyButton: View {
             .buttonStyle(.borderedProminent)
             .tint(cyan)
             .controlSize(.large)
-            .disabled(manager.isLoading || result.finalURL == nil)
+            .disabled(manager.isLoading || result.finalURL == nil || !entitlements.canScan)
 
             HStack(spacing: 6) {
-                Image(systemName: store.balanceIsStale ? "wifi.exclamationmark" : "bolt.fill")
-                    .font(.caption2)
-                    .foregroundStyle(store.balanceIsStale ? .orange : cyan.opacity(0.85))
-                Text(store.balanceIsStale
-                     ? "Offline · last known balance \(store.balance)"
-                     : "Costs 1 credit · Balance: \(store.balance)")
-                    .font(.caption2)
-                    .foregroundStyle(store.balanceIsStale ? .orange : cyan.opacity(0.85))
-                    .opacity(PlatformEntitlement.isPlatformUnlocked ? 0.5 : 1)
+                if entitlements.currentTier == .free {
+                    Image(systemName: "info.circle.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                    Text("\(entitlements.scansRemainingToday) scans left today")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                } else if entitlements.currentTier == .unlock {
+                    Image(systemName: "star.fill")
+                        .font(.caption2)
+                        .foregroundStyle(cyan.opacity(0.85))
+                    Text("Unlimited scans unlocked")
+                        .font(.caption2)
+                        .foregroundStyle(cyan.opacity(0.85))
+                } else {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                    Text("Enclave: unlimited + AI preview")
+                        .font(.caption2)
+                        .foregroundStyle(.green)
+                }
             }
         }
         .alert("Error", isPresented: .constant(manager.error != nil), actions: {
@@ -418,7 +432,7 @@ struct OpenSafelyButton: View {
             } else {
                 VStack(spacing: 16) {
                     KataProgressRing(size: 44)
-                    Text("Analyzing link…")
+                    Text("Analyzing link...")
                         .font(.kataMono(13))
                         .foregroundStyle(Color.kataGold.opacity(0.7))
                 }
@@ -428,15 +442,19 @@ struct OpenSafelyButton: View {
             }
         }
         .sheet(isPresented: $showBuyCredits) {
-            ProUpgradeView()
+            UnlockPaywallView()
         }
-        .onChange(of: manager.needsCredits) { _, needs in
-            if needs {
-                showBuyCredits = true
-                manager.needsCredits = false
-            }
+        .task { await entitlements.refresh() }
+    }
+
+    private func performScan() async {
+        guard entitlements.canScan else {
+            showBuyCredits = true
+            return
         }
-        .task { await store.refreshBalance() }
+        
+        await openSafely()
+        entitlements.incrementScanCounter()
     }
 
     private func openSafely() async {
@@ -453,6 +471,7 @@ struct OpenSafelyButton: View {
     }
 
 }
+
 
 // MARK: - Prefetch preview sheet
 
