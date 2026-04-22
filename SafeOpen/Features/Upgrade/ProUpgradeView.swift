@@ -1,5 +1,6 @@
 import SwiftUI
 import StoreKit
+import KatafractStyle
 
 /// Buy Credits sheet. Replaces the old subscription paywall.
 /// Three consumable IAPs grant scan credits.
@@ -38,7 +39,7 @@ struct ProUpgradeView: View {
 
                     VStack(spacing: 12) {
                         if store.products.isEmpty {
-                            ProgressView().tint(cyan).padding(28)
+                            KataProgressRing(size: 28).padding(28)
                         } else if let product = store.standard {
                             let offer = store.offers.first { $0.productId == product.id }
                             CreditPackRow(
@@ -97,7 +98,7 @@ struct ProUpgradeView: View {
             .overlay {
                 if store.isPurchasing {
                     Color.black.opacity(0.35).ignoresSafeArea()
-                    ProgressView().tint(.white).scaleEffect(1.4)
+                    KataProgressRing(size: 44)
                 }
             }
         }
