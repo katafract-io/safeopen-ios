@@ -104,7 +104,7 @@ struct AccountView: View {
             }
             .navigationTitle("Account")
             .sheet(isPresented: $showBuyCredits) {
-                ProUpgradeView()
+                UnlockPaywallView()
             }
             .confirmationDialog("Clear all scan history?", isPresented: $showClearConfirm, titleVisibility: .visible) {
                 Button("Clear History", role: .destructive) { appState.clearHistory() }
