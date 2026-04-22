@@ -1,14 +1,13 @@
 // SafeOpen/Features/Inspection/KataScanResultView.swift
 //
-// Polished hero result card used as the top-of-scroll focal point for
-// Screenshots 2 (safe) and 3 (dangerous). Replaces the stock RiskBanner
-// with a KatafractStyle-branded layout.
-//
-// The existing InspectionResultView is not removed — it still handles all
-// detail content below the fold. KataScanResultBanner is injected at the
-// top of InspectionResultView's body in place of RiskBanner.
+// Sealed verdict report. Opus crit item #2:
+//   - No green checkmark SF Symbol, no red danger color
+//   - Gold hairline container around screenshot thumbnail + metadata
+//   - Serif "stamp" rotated -8° in kataChampagne for all verdict levels
+//   - Differentiates from every scam-warning screen the user has ever seen
 
 import SwiftUI
+import KatafractStyle
 
 // MARK: - KataScanResultBanner (replaces RiskBanner in InspectionResultView)
 
@@ -18,11 +17,46 @@ struct KataScanResultBanner: View {
     var body: some View {
         switch result.riskLevel {
         case .low:     SafeResultBanner(urlString: result.finalURL?.absoluteString ?? result.payload.rawValue)
-        case .high:    DangerResultBanner(urlString: result.finalURL?.absoluteString ?? result.payload.rawValue,
-                                          reason: result.riskFactors.first?.explanation ?? "Threat indicators detected")
+        case .high:    DangerResultBanner(
+                           urlString: result.finalURL?.absoluteString ?? result.payload.rawValue,
+                           reason: result.riskFactors.first?.explanation ?? "Threat indicators detected"
+                       )
         case .caution: CautionResultBanner(result: result)
         case .unknown: UnknownResultBanner(result: result)
         }
+    }
+}
+
+// MARK: - Shared sealed container chrome
+
+private struct SealedContainer<Content: View>: View {
+    let hairlineColor: Color
+    let stampText: String
+    let stampAngle: Double
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            // Gold hairline border container
+            RoundedRectangle(cornerRadius: 2)
+                .stroke(hairlineColor.opacity(0.5), lineWidth: 0.5)
+                .background(
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.kataNavy.opacity(0.05))
+                )
+
+            content()
+                .padding(20)
+
+            // Serif stamp — top-right corner
+            Text(stampText)
+                .font(.kataDisplay(14))
+                .foregroundStyle(Color.kataChampagne)
+                .rotationEffect(.degrees(stampAngle))
+                .padding(.top, 14)
+                .padding(.trailing, 18)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -32,44 +66,54 @@ private struct SafeResultBanner: View {
     let urlString: String
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "checkmark.circle")
-                .font(.system(size: 80, weight: .regular))
-                .foregroundStyle(Color.kataChampagne)
-                .padding(.top, 32)
+        SealedContainer(hairlineColor: .kataGold, stampText: "Verified", stampAngle: -8) {
+            VStack(spacing: 20) {
+                // Sealed ring icon instead of green checkmark
+                ZStack {
+                    Circle()
+                        .stroke(Color.kataGold.opacity(0.35), lineWidth: 0.5)
+                        .frame(width: 72, height: 72)
+                    Image(systemName: "seal")
+                        .font(.system(size: 40, weight: .ultraLight))
+                        .foregroundStyle(Color.kataGold)
+                }
+                .padding(.top, 20)
 
-            Text("This link is safe.")
-                .font(.kataDisplay(24))
-                .foregroundStyle(Color.kataMidnight)
-                .multilineTextAlignment(.center)
+                Text("This link is safe.")
+                    .font(.kataDisplay(24))
+                    .foregroundStyle(Color.kataIce)
+                    .multilineTextAlignment(.center)
 
-            // URL pill
-            Text(urlString)
-                .font(.kataMono(14))
-                .foregroundStyle(Color.kataMidnight.opacity(0.7))
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.kataIce.opacity(0.55))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.kataGold.opacity(0.5), lineWidth: 0.75)
-                        )
-                )
-                .padding(.horizontal, 24)
+                // URL pill
+                Text(urlString)
+                    .font(.kataMono(13))
+                    .foregroundStyle(Color.kataIce.opacity(0.65))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.kataNavy.opacity(0.5))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.kataGold.opacity(0.4), lineWidth: 0.5)
+                            )
+                    )
+                    .padding(.horizontal, 8)
 
-            // Metadata chips row
-            HStack(spacing: 12) {
-                metaChip(icon: "globe", text: domain(from: urlString))
-                metaChip(icon: "clock", text: "Just now")
+                // Metadata chips
+                HStack(spacing: 12) {
+                    metaChip(icon: "globe", text: domain(from: urlString))
+                    metaChip(icon: "clock", text: "Just now")
+                }
+                .padding(.bottom, 20)
             }
-            .padding(.bottom, 28)
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.kataChampagne.opacity(0.06))
+        .background(Color.kataGold.opacity(0.04))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
     private func domain(from urlString: String) -> String {
@@ -95,77 +139,77 @@ private struct SafeResultBanner: View {
 private struct DangerResultBanner: View {
     let urlString: String
     let reason: String
-    private let crimson = Color.kataCrimson
 
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 72, weight: .regular))
-                .foregroundStyle(crimson)
-                .padding(.top, 32)
+        SealedContainer(hairlineColor: .kataChampagne, stampText: "Caution: \(reason)", stampAngle: -8) {
+            VStack(spacing: 20) {
+                ZStack {
+                    Circle()
+                        .stroke(Color.kataGold.opacity(0.9).opacity(0.35), lineWidth: 0.5)
+                        .frame(width: 72, height: 72)
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 36, weight: .ultraLight))
+                        .foregroundStyle(Color.kataGold.opacity(0.9))
+                }
+                .padding(.top, 20)
 
-            Text("Do not open.")
-                .font(.kataDisplay(24))
-                .foregroundStyle(crimson)
-                .multilineTextAlignment(.center)
+                Text("Do not open.")
+                    .font(.kataDisplay(24))
+                    .foregroundStyle(Color.kataIce)
+                    .multilineTextAlignment(.center)
 
-            // Reason chip
-            Text(reason)
-                .font(.kataBody(14))
-                .foregroundStyle(crimson.opacity(0.85))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.kataIce.opacity(0.7))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(crimson.opacity(0.5), lineWidth: 0.5)
-                        )
-                )
-                .padding(.horizontal, 24)
-
-            // Struck-through URL
-            Text(urlString)
-                .font(.kataMono(14))
-                .foregroundStyle(Color.kataMidnight.opacity(0.5))
-                .strikethrough(true, color: Color.kataMidnight.opacity(0.35))
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 24)
-                .padding(.bottom, 28)
+                // Struck-through URL
+                Text(urlString)
+                    .font(.kataMono(13))
+                    .foregroundStyle(Color.kataIce.opacity(0.4))
+                    .strikethrough(true, color: Color.kataIce.opacity(0.25))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 20)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .background(crimson.opacity(0.04))
+        .background(Color.kataChampagne.opacity(0.03))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }
 
-// MARK: - Caution banner (unchanged functional, styled)
+// MARK: - Caution banner
 
 private struct CautionResultBanner: View {
     let result: InspectionResult
 
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "exclamationmark.shield")
-                .font(.system(size: 44, weight: .regular))
-                .foregroundStyle(Color.kataGold)
-                .padding(.top, 28)
+        SealedContainer(hairlineColor: .kataChampagne, stampText: "Caution", stampAngle: -8) {
+            VStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .stroke(Color.kataGold.opacity(0.35), lineWidth: 0.5)
+                        .frame(width: 60, height: 60)
+                    Image(systemName: "exclamationmark.shield")
+                        .font(.system(size: 32, weight: .ultraLight))
+                        .foregroundStyle(Color.kataGold)
+                }
+                .padding(.top, 20)
 
-            Text(result.riskLevel.displayTitle)
-                .font(.kataHeadline(20))
-                .foregroundStyle(Color.kataMidnight)
+                Text(result.riskLevel.displayTitle)
+                    .font(.kataHeadline(20))
+                    .foregroundStyle(Color.kataIce)
 
-            Text(result.summary)
-                .font(.kataBody(15))
-                .foregroundStyle(Color.kataMidnight.opacity(0.65))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-                .padding(.bottom, 24)
+                Text(result.summary)
+                    .font(.kataBody(15))
+                    .foregroundStyle(Color.kataIce.opacity(0.65))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 20)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.kataGold.opacity(0.07))
+        .background(Color.kataGold.opacity(0.04))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }
 
@@ -175,25 +219,34 @@ private struct UnknownResultBanner: View {
     let result: InspectionResult
 
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "questionmark.app")
-                .font(.system(size: 44, weight: .regular))
-                .foregroundStyle(Color.kataMidnight.opacity(0.4))
-                .padding(.top, 28)
+        SealedContainer(hairlineColor: .kataGold, stampText: "Unknown", stampAngle: -8) {
+            VStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .stroke(Color.kataIce.opacity(0.2), lineWidth: 0.5)
+                        .frame(width: 60, height: 60)
+                    Image(systemName: "questionmark")
+                        .font(.system(size: 28, weight: .ultraLight))
+                        .foregroundStyle(Color.kataIce.opacity(0.5))
+                }
+                .padding(.top, 20)
 
-            Text(result.riskLevel.displayTitle)
-                .font(.kataHeadline(20))
-                .foregroundStyle(Color.kataMidnight)
+                Text(result.riskLevel.displayTitle)
+                    .font(.kataHeadline(20))
+                    .foregroundStyle(Color.kataIce)
 
-            Text(result.summary)
-                .font(.kataBody(15))
-                .foregroundStyle(Color.kataMidnight.opacity(0.65))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-                .padding(.bottom, 24)
+                Text(result.summary)
+                    .font(.kataBody(15))
+                    .foregroundStyle(Color.kataIce.opacity(0.65))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 20)
+            }
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.kataMidnight.opacity(0.04))
+        .background(Color.kataNavy.opacity(0.04))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }
 

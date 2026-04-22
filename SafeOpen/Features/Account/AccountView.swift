@@ -1,13 +1,12 @@
 import SwiftUI
 import StoreKit
+import KatafractStyle
 
 struct AccountView: View {
     @StateObject private var store = SafeOpenStore.shared
     @EnvironmentObject var appState: AppState
     @State private var showBuyCredits = false
     @State private var showClearConfirm = false
-
-    private let cyan = Color(red: 0, green: 0.83, blue: 1)
 
     private var appVersion: String {
         let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
@@ -19,69 +18,36 @@ struct AccountView: View {
         guard store.nextRefillAt < .distantFuture else { return "—" }
         let now = Date()
         let delta = store.nextRefillAt.timeIntervalSince(now)
-        if delta <= 0 {
-            return "any moment"
-        }
+        if delta <= 0 { return "any moment" }
         let days  = Int(delta / 86400)
         let hours = Int((delta.truncatingRemainder(dividingBy: 86400)) / 3600)
-        if days >= 2 {
-            return "in \(days)d"
-        } else if days == 1 {
-            return "in 1d \(hours)h"
-        } else if hours >= 1 {
-            return "in \(hours)h"
-        } else {
-            let minutes = max(1, Int(delta / 60))
-            return "in \(minutes)m"
-        }
+        if days >= 2        { return "in \(days)d" }
+        else if days == 1  { return "in 1d \(hours)h" }
+        else if hours >= 1 { return "in \(hours)h" }
+        else               { return "in \(max(1, Int(delta / 60)))m" }
     }
 
     var body: some View {
         NavigationStack {
             List {
 
+                // ── Credits sealed ledger (Opus hero move #3) ─────────────
                 Section {
                     Button { showBuyCredits = true } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: "bolt.shield.fill")
-                                .font(.title2)
-                                .foregroundStyle(cyan)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Credits")
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.primary)
-                                Text("AI features cost 1 credit each. Basic inspection is free.")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            VStack(alignment: .trailing, spacing: 0) {
-                                HStack(spacing: 4) {
-                                    if store.balanceIsStale {
-                                        Image(systemName: "wifi.exclamationmark")
-                                            .font(.caption2)
-                                            .foregroundStyle(.orange)
-                                    }
-                                    Text("\(store.balance)")
-                                        .font(.title2.bold())
-                                        .foregroundStyle(cyan)
-                                        .contentTransition(.numericText())
-                                }
-                                Text(store.balanceIsStale ? "offline · stale" : "balance")
-                                    .font(.caption2)
-                                    .foregroundStyle(store.balanceIsStale ? .orange : .secondary)
-                            }
-                        }
-                        .padding(.vertical, 4)
+                        CreditsLedgerView(
+                            balance: store.balance,
+                            freeBalance: store.freeBalance,
+                            freeBalanceCap: store.freeBalanceCap,
+                            isStale: store.balanceIsStale
+                        )
                     }
+                    .buttonStyle(.plain)
                 }
 
                 Section {
                     Button { showBuyCredits = true } label: {
                         Label("Buy Credits", systemImage: "plus.circle.fill")
                     }
-                    // No "Restore Purchases" affordance — Apple rule 3.1.1 prohibits it for
-                    // consumable-only apps. Pending-redemption recovery runs silently on launch.
                 }
 
                 Section("Support") {
@@ -92,7 +58,7 @@ struct AccountView: View {
                         Label("Terms of Service", systemImage: "doc.text")
                     }
                     Link(destination: URL(string: "https://katafract.com/support/safeopen")!) {
-                        Label("Help &amp; Support", systemImage: "questionmark.circle")
+                        Label("Help & Support", systemImage: "questionmark.circle")
                     }
                     Link(destination: URL(string: "mailto:support@katafract.com")!) {
                         Label("Contact Support", systemImage: "envelope")
@@ -123,13 +89,6 @@ struct AccountView: View {
                             .font(.subheadline.monospacedDigit())
                     }
                     HStack {
-                        Text("Free credits")
-                        Spacer()
-                        Text("\(store.freeBalance) / \(store.freeBalanceCap)")
-                            .foregroundStyle(.secondary)
-                            .font(.subheadline.monospacedDigit())
-                    }
-                    HStack {
                         Text("Version")
                         Spacer()
                         Text(appVersion).foregroundStyle(.secondary)
@@ -155,9 +114,78 @@ struct AccountView: View {
             .overlay {
                 if store.isPurchasing {
                     Color.black.opacity(0.3).ignoresSafeArea()
-                    ProgressView().tint(cyan).scaleEffect(1.5)
+                    KataProgressRing(size: 44)
                 }
             }
         }
+    }
+}
+
+// MARK: - Credits Sealed Ledger View
+
+private struct CreditsLedgerView: View {
+    let balance: Int
+    let freeBalance: Int
+    let freeBalanceCap: Int
+    let isStale: Bool
+
+    @State private var hairlineOpacity: Double = 0.4
+    @State private var previousBalance: Int = 0
+
+    private var ratio: Double {
+        let cap = Double(max(1, freeBalanceCap))
+        return min(1.0, Double(freeBalance) / cap)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Big kataIce balance number
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text("\(balance)")
+                    .font(.kataDisplay(48))
+                    .foregroundStyle(Color.kataIce)
+                    .contentTransition(.numericText())
+
+                if isStale {
+                    Image(systemName: "wifi.exclamationmark")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                        .padding(.leading, 8)
+                }
+            }
+
+            // Subtext
+            Text("credits sealed")
+                .font(.kataMono(12))
+                .foregroundStyle(Color.kataGold.opacity(0.7))
+
+            // Gold hairline — full width, animates on purchase, width tracks free ratio
+            GeometryReader { proxy in
+                Rectangle()
+                    .fill(Color.kataGold)
+                    .frame(width: proxy.size.width * ratio, height: 0.5)
+                    .opacity(hairlineOpacity)
+                    .animation(.easeInOut(duration: 0.4), value: ratio)
+            }
+            .frame(height: 0.5)
+            .padding(.top, 2)
+
+            // Secondary line: free vs cap
+            Text("Free credits: \(freeBalance) / \(freeBalanceCap)")
+                .font(.kataCaption(11))
+                .foregroundStyle(Color.kataIce.opacity(0.4))
+        }
+        .padding(.vertical, 12)
+        .onChange(of: balance) { oldValue, newValue in
+            if newValue > oldValue {
+                // Purchase — flash hairline bright
+                withAnimation(.easeInOut(duration: 0.6)) { hairlineOpacity = 1.0 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    withAnimation(.easeInOut(duration: 0.6)) { hairlineOpacity = 0.4 }
+                }
+                Task { @MainActor in KataHaptic.unlocked.fire() }
+            }
+        }
+        .onAppear { previousBalance = balance }
     }
 }

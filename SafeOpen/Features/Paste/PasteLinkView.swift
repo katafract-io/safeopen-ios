@@ -1,4 +1,5 @@
 import SwiftUI
+import KatafractStyle
 
 struct PasteLinkView: View {
     @EnvironmentObject var appState: AppState
@@ -120,6 +121,9 @@ struct PasteLinkView: View {
             .navigationDestination(item: $viewModel.result) { result in
                 InspectionResultView(result: result)
             }
+        }
+        .fullScreenCover(isPresented: $viewModel.isInspecting) {
+            InspectingSealView()
         }
         .onReceive(viewModel.$result.compactMap { $0 }) { appState.record($0) }
         .onAppear {
