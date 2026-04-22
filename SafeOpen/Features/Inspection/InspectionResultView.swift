@@ -1,4 +1,5 @@
 import SwiftUI
+import KatafractStyle
 import StoreKit
 import WebKit
 import MapKit
@@ -7,6 +8,11 @@ import ContactsUI
 import EventKit
 import SafariServices
 import NetworkExtension
+
+// MARK: - Local color extension (kataCrimson not in KatafractStyle v0.1.2)
+private extension Color {
+    static let kataCrimson = Color(red: 0.670, green: 0.130, blue: 0.130)
+}
 
 struct InspectionResultView: View {
     let result: InspectionResult
@@ -364,7 +370,7 @@ struct OpenSafelyButton: View {
             Button { Task { await openSafely() } } label: {
                 HStack {
                     if manager.isLoading {
-                        ProgressView().tint(.black).scaleEffect(0.8)
+                        KataProgressRing(size: 18)
                     } else {
                         Label("Inspect & Open Safely", systemImage: "shield.lefthalf.filled")
                     }
@@ -411,11 +417,10 @@ struct OpenSafelyButton: View {
                 .presentationDragIndicator(.visible)
             } else {
                 VStack(spacing: 16) {
-                    ProgressView()
-                        .scaleEffect(1.4)
+                    KataProgressRing(size: 44)
                     Text("Analyzing link…")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.kataMono(13))
+                        .foregroundStyle(Color.kataGold.opacity(0.7))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .presentationDetents([.large])
@@ -1409,7 +1414,7 @@ private struct WiFiActionCard: View {
                 } label: {
                     HStack(spacing: 6) {
                         if joinState == .joining {
-                            ProgressView().controlSize(.mini).tint(.white)
+                            KataProgressRing(size: 14)
                         } else {
                             Image(systemName: joinStateIcon)
                         }

@@ -1,4 +1,5 @@
 import SwiftUI
+import KatafractStyle
 
 struct AppCoordinator: View {
     @EnvironmentObject var appState: AppState
@@ -30,6 +31,6 @@ struct AppCoordinator: View {
                 }
         }
         .preferredColorScheme(.dark)
-        .tint(Color.kataSapphire)
+        .tint(KataAccent.gold)
     }
 }
