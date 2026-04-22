@@ -1,4 +1,5 @@
 import SwiftUI
+import KatafractStyle
 import WebKit
 
 struct SafeOpenBrowserView: View {
@@ -16,11 +17,13 @@ struct SafeOpenBrowserView: View {
                     .ignoresSafeArea(edges: .bottom)
 
                 if vm.isLoading {
-                    ProgressView(value: vm.progress)
-                        .progressViewStyle(.linear)
-                        .tint(Color(red: 0, green: 0.83, blue: 1))
-                        .frame(maxWidth: .infinity, maxHeight: 2, alignment: .top)
-                        .ignoresSafeArea()
+                    GeometryReader { proxy in
+                        Rectangle()
+                            .fill(Color.kataGold)
+                            .frame(width: proxy.size.width * vm.progress, height: 0.5)
+                    }
+                    .frame(height: 0.5, alignment: .top)
+                    .ignoresSafeArea()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
