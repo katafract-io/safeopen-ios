@@ -49,6 +49,7 @@
 		DCAB28EAB482D33A999557CE /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = A666E307890E875CE4AB00E3 /* Configuration.storekit */; };
 		FB3E63825766C07D9FB4822F /* ScannedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF11F4BD8BF70F7ECEA6DBB /* ScannedPayload.swift */; };
 		FFE2A1FC09AE24685899E49E /* PlatformEntitlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A910C8B3ED332533D83F9DC1 /* PlatformEntitlement.swift */; };
+		B179AE6F31294F82A03073E4 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBD4279A298749A1A60171D4 /* ScreenshotTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -99,6 +100,7 @@
 		E591E0D58D6F5654B9C2F837 /* SafeOpenApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenApp.swift; sourceTree = "<group>"; };
 		EE0E76A9D021D3A0BBC0C3BC /* PayloadType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadType.swift; sourceTree = "<group>"; };
 		F86D1887A3C07BE3A3DB322A /* PayloadParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadParser.swift; sourceTree = "<group>"; };
+		FBD4279A298749A1A60171D4 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				9342BFF3424D17C1F0A20202 /* KatafractStyle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F57B1D5830D48A3B9BB6185 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +217,8 @@
 				70BCB7C0EB35AD9D3AE87250 /* SafeOpen */,
 				4590A06EC65603BC4FEFFA6E /* SafeOpenShareExtension */,
 				6AFDD49543340A6CD369BA89 /* Products */,
+		,
+				D74BBF4808374637B657977C /* SafeOpenUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -278,6 +289,14 @@
 			path = Upgrade;
 			sourceTree = "<group>";
 		};
+		D74BBF4808374637B657977C /* SafeOpenUITests */ = {
+			isa = PBXGroup;
+			children = (
+				FBD4279A298749A1A60171D4 /* ScreenshotTests.swift */,
+			);
+			path = SafeOpenUITests;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -317,6 +336,43 @@
 			productName = SafeOpen;
 			productReference = 1702DE1DC4488E8748376C82 /* SafeOpen.app */;
 			productType = "com.apple.product-type.application";
+		};
+		75FA1402-7447-48D7-B071- /* SafeOpenUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 71E5EBEE-C8A9-4E09-91A1- /* Build configuration list for PBXNativeTarget "SafeOpenUITests" */;
+			buildPhases = (
+				B4112417-52E6-47CA-B5FD- /* Sources */,
+				AF8D9F8C-F01F-4C21-9135- /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SafeOpenUITests;
+			packageProductDependencies = (
+			);
+			productName = SafeOpenUITests;
+			productReference = 1FE39A55-7291-4F7C-A683- /* SafeOpenUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		BE7F1E446885410C8B748755 /* SafeOpenUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8B4CAE6A726F430B9C25865F /* Build configuration list for PBXNativeTarget "SafeOpenUITests" */;
+			buildPhases = (
+				C9C971A0AF3440F39971A179 /* Sources */,
+				1F57B1D5830D48A3B9BB6185 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CFB21E832CE145148E3DFCF4 /* PBXTargetDependency */,
+			);
+			name = SafeOpenUITests;
+			packageProductDependencies = (
+			);
+			productName = SafeOpenUITests;
+			productReference = 9CFF285BA4F74E97A5E0CE98 /* SafeOpenUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -421,6 +477,14 @@
 				C440C6766E750A493D55A2D5 /* SafeOpenStore.swift in Sources */,
 				FB3E63825766C07D9FB4822F /* ScannedPayload.swift in Sources */,
 				CE9AC7811829C2D659088C19 /* URLNormalizationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9C971A0AF3440F39971A179 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5FC4FF6999244ABB9A291F5B /* ScreenshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -630,6 +694,40 @@
 			};
 			name = Release;
 		};
+		7EB1CA42B2C84B2283F8B5BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 15;
+				DEVELOPMENT_TEAM = 2SGGP65W6C;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.katafract.safeopen.UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SafeOpen.app/SafeOpen";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Debug;
+		};
+		8DF6F6D48B9E43249E8E0604 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 15;
+				DEVELOPMENT_TEAM = 2SGGP65W6C;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.katafract.safeopen.UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SafeOpen.app/SafeOpen";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -659,6 +757,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		8B4CAE6A726F430B9C25865F /* Build configuration list for PBXNativeTarget "SafeOpenUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7EB1CA42B2C84B2283F8B5BF /* Debug */,
+				8DF6F6D48B9E43249E8E0604 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
