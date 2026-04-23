@@ -111,3 +111,16 @@ targets:
       properties:
         com.apple.security.application-groups:
           - group.com.katafract.enclave
+
+  SafeOpenUITests:
+    type: ui-test-bundle
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: SafeOpenUITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.katafract.safeopen.UITests
+        TEST_TARGET_NAME: SafeOpen
+    dependencies:
+      - target: SafeOpen
