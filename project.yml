@@ -113,7 +113,7 @@ targets:
           - group.com.katafract.enclave
 
   SafeOpenUITests:
-    type: ui-test-bundle
+    type: bundle.ui-testing
     platform: iOS
     deploymentTarget: "17.0"
     sources:
