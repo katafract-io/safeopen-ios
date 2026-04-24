@@ -6,5 +6,10 @@
 	<string>production</string>
 	<key>com.apple.developer.networking.HotspotConfiguration</key>
 	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.katafract.enclave</string>
+		<string>group.com.katafract.safeopen</string>
+	</array>
 </dict>
 </plist>
