@@ -1,9 +1,17 @@
 #!/bin/zsh -e
-# Xcode Cloud CI pre-build: set CFBundleVersion on all targets via agvtool.
+# Xcode Cloud CI pre-build: regenerate pbxproj from project.yml, then set CFBundleVersion.
+# Regenerate pbxproj from project.yml to avoid VFS build errors with stale/corrupted project files.
+cd "$CI_PRIMARY_REPOSITORY_PATH"
+if command -v xcodegen &>/dev/null; then
+  echo "ci_pre_xcodebuild: regenerating pbxproj via xcodegen"
+  xcodegen generate
+else
+  echo "ci_pre_xcodebuild: xcodegen not found, skipping pbxproj regeneration"
+fi
+
 # Formula: CI_BUILD_NUMBER + 100 (ensures climb past any legacy TestFlight build).
 BUILD_NUM=$((CI_BUILD_NUMBER + 100))
 echo "ci_pre_xcodebuild: setting CFBundleVersion to $BUILD_NUM on all targets"
-cd "$CI_PRIMARY_REPOSITORY_PATH"
 XCPROJ=$(ls -d *.xcodeproj 2>/dev/null | head -1)
 if [ -z "$XCPROJ" ]; then
   echo "  no .xcodeproj at repo root, searching..."
