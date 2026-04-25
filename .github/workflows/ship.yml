@@ -22,18 +22,19 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: App Group entitlement gate (WARN — see TODO)
+      - name: App Group entitlement gate
         run: |
           ENT_FILE="SafeOpen/SafeOpen.entitlements"
           EXPECTED="group.com.katafract.enclave"
           if [ ! -f "$ENT_FILE" ]; then
-            echo "::warning file=$ENT_FILE::File not found"
-          elif ! grep -q "$EXPECTED" "$ENT_FILE"; then
-            echo "::warning file=$ENT_FILE::Missing App Group $EXPECTED — cross-app unlock will not work"
-            echo "TODO: Add $EXPECTED to $ENT_FILE, then flip this step to hard-fail mode"
-          else
-            echo "::notice::App Group entitlement present — flip to hard-fail on next pass"
+            echo "::error file=$ENT_FILE::main-target .entitlements file missing"
+            exit 1
           fi
+          if ! grep -q "$EXPECTED" "$ENT_FILE"; then
+            echo "::error file=$ENT_FILE::Missing App Group $EXPECTED — cross-app unlock will not work"
+            exit 1
+          fi
+          echo "::notice::App Group $EXPECTED present in $ENT_FILE"
       - name: Checkout
         uses: actions/checkout@v4
         with: { fetch-depth: 1 }
