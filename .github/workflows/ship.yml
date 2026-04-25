@@ -121,7 +121,7 @@ jobs:
           set -e
 
       - name: Clean
-        run: xcodebuild -project SafeOpen.xcodeproj -scheme SafeOpen clean
+        run: xcodebuild -project SafeOpen.xcodeproj -scheme SafeOpen -destination "generic/platform=iOS" clean
 
       - name: Archive
         env:
