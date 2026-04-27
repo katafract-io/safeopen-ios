@@ -11,7 +11,14 @@ struct ScreenshotMode {
     /// Mock inspection result: safe Google.com
     static let safeResult = InspectionResult(
         id: UUID(),
-        payload: ScannedPayload(type: .url, content: "https://www.google.com"),
+        payload: ScannedPayload(
+            id: UUID(),
+            rawValue: "https://www.google.com",
+            type: .url,
+            normalizedValue: "https://www.google.com",
+            scannedAt: Date(),
+            source: .shareExtension
+        ),
         title: "Google Search",
         summary: "Google Search is a trusted search engine. No malicious indicators detected.",
         riskLevel: .low,
@@ -32,7 +39,14 @@ struct ScreenshotMode {
     /// Mock inspection result: danger phishing
     static let dangerResult = InspectionResult(
         id: UUID(),
-        payload: ScannedPayload(type: .url, content: "https://example.top/verify-account"),
+        payload: ScannedPayload(
+            id: UUID(),
+            rawValue: "https://example.top/verify-account",
+            type: .url,
+            normalizedValue: "https://example.top/verify-account",
+            scannedAt: Date(),
+            source: .shareExtension
+        ),
         title: "Suspicious Link",
         summary: "Suspicious URL with phishing indicators. Domain registered recently. Avoid clicking.",
         riskLevel: .high,
