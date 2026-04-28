@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0781840181A19FDF93669855 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D8AC8FC25EBF9C3A850744 /* ScreenshotTests.swift */; };
+		AA11BB22CC33DD44EE55FF67 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF66 /* SnapshotHelper.swift */; };
 		08D0190AE54F244F658B7DD8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA98AEEA3EB0AB39428E6178 /* PrivacyInfo.xcprivacy */; };
 		1586CC60A6EB6D06EB9DF5B9 /* PayloadParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86D1887A3C07BE3A3DB322A /* PayloadParser.swift */; };
 		1FB099DF17D4E88FCB7AD0EB /* PasteLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526DA69097B36919B396D842 /* PasteLinkViewModel.swift */; };
@@ -66,6 +67,7 @@
 /* Begin PBXFileReference section */
 		07B22A013130DE577F9BA712 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		07D8AC8FC25EBF9C3A850744 /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF66 /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		1702DE1DC4488E8748376C82 /* SafeOpen.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SafeOpen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BDD0C49A91C036C396285D6 /* RiskFactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskFactor.swift; sourceTree = "<group>"; };
 		1F39B632DC2A37FA4E751989 /* SafeOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SafeOpen.entitlements; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				07D8AC8FC25EBF9C3A850744 /* ScreenshotTests.swift */,
+				AA11BB22CC33DD44EE55FF66 /* SnapshotHelper.swift */,
 			);
 			path = SafeOpenUITests;
 			sourceTree = "<group>";
@@ -437,6 +440,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0781840181A19FDF93669855 /* ScreenshotTests.swift in Sources */,
+				AA11BB22CC33DD44EE55FF67 /* SnapshotHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
