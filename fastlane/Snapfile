@@ -7,7 +7,7 @@ devices([
   "iPad Pro 13-inch (M5)"
 ])
 
-ios_version("26.4")
+ios_version("19")
 
 languages(["en-US"])
 
