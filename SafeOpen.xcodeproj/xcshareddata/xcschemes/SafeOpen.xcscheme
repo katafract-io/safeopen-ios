@@ -8,15 +8,15 @@
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F10B3D7BE5DD39CFA29CA905"
-               BuildableName = "SafeOpenUITests.xctest"
-               BlueprintName = "SafeOpenUITests"
+               BlueprintIdentifier = "F3FB959C1419E7B237D47754"
+               BuildableName = "SafeOpen.app"
+               BlueprintName = "SafeOpen"
                ReferencedContainer = "container:SafeOpen.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -26,28 +26,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      shouldAutocreateTestingModules = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F10B3D7BE5DD39CFA29CA905"
-               BuildableName = "SafeOpenUITests.xctest"
-               BlueprintName = "SafeOpenUITests"
-               ReferencedContainer = "container:SafeOpen.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "FASTLANE_SNAPSHOT"
-            value = "1"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+      shouldUseLaunchSchemeArgsEnv = "YES">
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -76,6 +55,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "F3FB959C1419E7B237D47754"
+            BuildableName = "SafeOpen.app"
+            BlueprintName = "SafeOpen"
+            ReferencedContainer = "container:SafeOpen.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
