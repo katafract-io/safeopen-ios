@@ -106,10 +106,10 @@ struct ProUpgradeView: View {
 
     private func credits(for productID: String) -> Int {
         switch productID {
-        case SafeOpenStore.standardID: return 100
+        case SafeOpenStore.standardID: return 500
         // Legacy grandfather mappings (if old user restores purchase)
         case SafeOpenStore.starterID:  return 100
-        case SafeOpenStore.powerID:    return 2500
+        case SafeOpenStore.powerID:    return 2000
         default: return 0
         }
     }

@@ -3,12 +3,13 @@ import StoreKit
 
 /// SafeOpen consumable credit pack store + balance tracking.
 ///
-/// Unified credit SKU across all Katafract apps:
-///   - credits_standard  : 100 credits ($5.00), cross-app currency
+/// SafeOpen credit packs (SafeOpen-specific balance, not shared with
+/// other Katafract apps; each app has its own credit ledger):
+///   - credits_standard  : 500 credits  ($3.99) — active SKU
 ///
 /// Legacy IDs (grandfathered for existing user balances, not offered in UI):
 ///   - credits_starter   : 100 credits  ($0.99)
-///   - credits_power     : 2500 credits ($9.99)
+///   - credits_power     : 2000 credits ($9.99)
 ///
 /// Every install starts with 10 free credits and gets 10 more every 30 days.
 /// The authoritative balance lives on the backend, not in StoreKit.
