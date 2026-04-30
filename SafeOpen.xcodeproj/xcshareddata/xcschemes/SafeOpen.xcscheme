@@ -42,11 +42,14 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
-         BuildableIdentifier = "primary"
-         BlueprintIdentifier = "F3FB959C1419E7B237D47754"
-         BuildableName = "SafeOpen.app"
-         BlueprintName = "SafeOpen"
-         ReferencedContainer = "container:SafeOpen.xcodeproj">
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "F3FB959C1419E7B237D47754"
+            BuildableName = "SafeOpen.app"
+            BlueprintName = "SafeOpen"
+            ReferencedContainer = "container:SafeOpen.xcodeproj">
+         </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
@@ -56,11 +59,14 @@
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
       <BuildableProductRunnable
-         BuildableIdentifier = "primary"
-         BlueprintIdentifier = "F3FB959C1419E7B237D47754"
-         BuildableName = "SafeOpen.app"
-         BlueprintName = "SafeOpen"
-         ReferencedContainer = "container:SafeOpen.xcodeproj">
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "F3FB959C1419E7B237D47754"
+            BuildableName = "SafeOpen.app"
+            BlueprintName = "SafeOpen"
+            ReferencedContainer = "container:SafeOpen.xcodeproj">
+         </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
