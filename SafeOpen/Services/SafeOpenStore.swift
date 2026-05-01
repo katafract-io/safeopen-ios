@@ -67,6 +67,21 @@ final class SafeOpenStore: ObservableObject {
     // MARK: - StoreKit
 
     func loadProducts() async {
+        // Screenshot mode: bypass StoreKit and use mock products
+        if CommandLine.arguments.contains("--screenshots") {
+            let mockProducts: [any Identifiable] = [
+                ScreenshotMode.mockStarterProduct,
+                ScreenshotMode.mockStandardProduct,
+                ScreenshotMode.mockPowerProduct
+            ].compactMap { $0 }
+
+            // For screenshot mode, we'll store these as empty to simplify the UI
+            // In real UI, this would be bridged differently, but for now:
+            // The UI should check CommandLine.arguments and show mock products directly
+            products = []
+            return
+        }
+
         do {
             let loaded = try await Product.products(for: Self.allProductIDs)
             products = loaded.sorted { $0.price < $1.price }
