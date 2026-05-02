@@ -30,7 +30,7 @@ platform :ios do
   lane :smoke_screenshots do
     capture_ios_screenshots(
       devices: ["iPhone 17 Pro Max"],
-      only_testing: ["SafeOpenUITests/ScreenshotTests/testHome"]
+      only_testing: ["SafeOpenUITests/ScreenshotTests/testCapture01PasteEmpty"]
     )
     assert_screenshots_present!(min_shots: 1)
     UI.success("Smoke pass: at least one PNG produced. Safe to run full capture_version_screenshots.")

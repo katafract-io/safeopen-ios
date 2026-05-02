@@ -6,81 +6,72 @@ class ScreenshotTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    // MARK: - Frame 01: Home — URL paste prompt, empty state
+    // MARK: - Frame 01: Empty paste (default Inspect tab, home state)
 
-    func testHome() {
-        let app = launch(flags: defaultFlags)
-        sleep(2)
-        snapshot("01-home-paste")
+    func testCapture01PasteEmpty() {
+        let app = launch(flags: ["-ScreenshotMode", "seedData"])
+        sleep(4)
+        snapshot("01-paste-empty")
     }
 
-    // MARK: - Frame 02: Home — with placeholder text visible
+    // MARK: - Frame 02: Safe result (verdicts inspection)
 
-    func testHomeWithPlaceholder() {
-        let app = launch(flags: defaultFlags)
-        sleep(2)
-        snapshot("02-home-placeholder")
+    func testCapture02ResultSafe() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-result", "safe"
+        ])
+        sleep(4)
+        snapshot("02-result-safe")
     }
 
-    // MARK: - Frame 03: Home — URL pasted (interaction state)
+    // MARK: - Frame 03: Dangerous result (phishing warning)
 
-    func testHomeWithURL() {
-        let app = launch(flags: defaultFlags)
-        sleep(1)
-        let textEditor = app.textEditors.firstMatch
-        if textEditor.waitForExistence(timeout: 3) {
-            textEditor.tap()
-            textEditor.typeText("https://www.google.com")
-            sleep(1)
-        }
-        snapshot("03-home-with-url")
+    func testCapture03ResultDanger() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-result", "danger"
+        ])
+        sleep(4)
+        snapshot("03-result-danger")
     }
 
-    // MARK: - Frame 04: SafeOpen header + branding
+    // MARK: - Frame 04: History (tab 2, populated with 4 results)
 
-    func testHeader() {
-        let app = launch(flags: defaultFlags)
-        sleep(2)
-        // Scroll to top to ensure header is visible
-        app.scrollView.swipeUp()
-        sleep(1)
-        snapshot("04-header-branding")
+    func testCapture04History() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "2"
+        ])
+        sleep(4)
+        snapshot("04-history")
     }
 
-    // MARK: - Frame 05: Controls (Paste button, Clear button)
+    // MARK: - Frame 05: Account (tab 3, with balance display)
 
-    func testControls() {
-        let app = launch(flags: defaultFlags)
-        sleep(1)
-        let textEditor = app.textEditors.firstMatch
-        if textEditor.waitForExistence(timeout: 3) {
-            textEditor.tap()
-            textEditor.typeText("https://example.com")
-            sleep(1)
-        }
-        snapshot("05-controls-paste-clear")
+    func testCapture05Account() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "3",
+            "-ScreenshotMode-balance", "247"
+        ])
+        sleep(4)
+        snapshot("05-account-balance")
     }
 
-    // MARK: - Frame 06: Check Safety button (primary CTA)
+    // MARK: - Frame 06: Upgrade sheet (buy credits, zero balance)
 
-    func testCheckSafetyButton() {
-        let app = launch(flags: defaultFlags)
-        sleep(2)
-        // Show button in disabled state, then enable by adding text
-        let textEditor = app.textEditors.firstMatch
-        if textEditor.waitForExistence(timeout: 3) {
-            textEditor.tap()
-            textEditor.typeText("https://www.apple.com")
-            sleep(1)
-        }
-        snapshot("06-check-safety-button")
+    func testCapture06UpgradeSheet() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-upgrade",
+            "-ScreenshotMode-balance", "0"
+        ])
+        sleep(4)
+        snapshot("06-upgrade-sheet")
     }
 
     // MARK: - Helpers
-
-    private var defaultFlags: [String] {
-        ["--screenshots", "--skip-onboarding"]
-    }
 
     private func launch(flags: [String]) -> XCUIApplication {
         let app = XCUIApplication()
