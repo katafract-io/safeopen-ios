@@ -12,6 +12,13 @@ final class AppState: ObservableObject {
 
     init() {
         load()
+        // Screenshot mode: seed history and select tab if specified
+        if ScreenshotMode.isEnabled && ScreenshotMode.seedData {
+            inspectionHistory = ScreenshotMode.seedHistory
+            if let tab = ScreenshotMode.initialTab {
+                selectedTab = tab
+            }
+        }
     }
 
     func record(_ result: InspectionResult) {
