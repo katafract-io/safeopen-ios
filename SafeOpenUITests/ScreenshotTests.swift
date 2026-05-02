@@ -6,7 +6,7 @@ class ScreenshotTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    // MARK: - Frame 01: Home — URL paste prompt
+    // MARK: - Frame 01: Home — URL paste prompt, empty state
 
     func testHome() {
         let app = launch(flags: defaultFlags)
@@ -14,44 +14,66 @@ class ScreenshotTests: XCTestCase {
         snapshot("01-home-paste")
     }
 
-    // MARK: - Frame 02: Scanning state — URL being checked
+    // MARK: - Frame 02: Home — with placeholder text visible
 
-    func testScanning() {
-        let app = launch(flags: defaultFlags + ["--seed-data", "scanning"])
+    func testHomeWithPlaceholder() {
+        let app = launch(flags: defaultFlags)
         sleep(2)
-        snapshot("02-scanning")
+        snapshot("02-home-placeholder")
     }
 
-    // MARK: - Frame 03: Safe result — green verdict
+    // MARK: - Frame 03: Home — URL pasted (interaction state)
 
-    func testSafeResult() {
-        let app = launch(flags: defaultFlags + ["--seed-data", "safe"])
-        sleep(2)
-        snapshot("03-safe-result")
+    func testHomeWithURL() {
+        let app = launch(flags: defaultFlags)
+        sleep(1)
+        let textEditor = app.textEditors.firstMatch
+        if textEditor.waitForExistence(timeout: 3) {
+            textEditor.tap()
+            textEditor.typeText("https://www.google.com")
+            sleep(1)
+        }
+        snapshot("03-home-with-url")
     }
 
-    // MARK: - Frame 04: Suspicious result — yellow warning
+    // MARK: - Frame 04: SafeOpen header + branding
 
-    func testSuspiciousResult() {
-        let app = launch(flags: defaultFlags + ["--seed-data", "suspicious"])
+    func testHeader() {
+        let app = launch(flags: defaultFlags)
         sleep(2)
-        snapshot("04-suspicious-result")
+        // Scroll to top to ensure header is visible
+        app.scrollView.swipeUp()
+        sleep(1)
+        snapshot("04-header-branding")
     }
 
-    // MARK: - Frame 05: Dangerous result — red warning with risk factors
+    // MARK: - Frame 05: Controls (Paste button, Clear button)
 
-    func testDangerResult() {
-        let app = launch(flags: defaultFlags + ["--seed-data", "danger"])
-        sleep(2)
-        snapshot("05-danger-result")
+    func testControls() {
+        let app = launch(flags: defaultFlags)
+        sleep(1)
+        let textEditor = app.textEditors.firstMatch
+        if textEditor.waitForExistence(timeout: 3) {
+            textEditor.tap()
+            textEditor.typeText("https://example.com")
+            sleep(1)
+        }
+        snapshot("05-controls-paste-clear")
     }
 
-    // MARK: - Frame 06: Credit balance + IAP pack picker
+    // MARK: - Frame 06: Check Safety button (primary CTA)
 
-    func testCreditsAndIAP() {
-        let app = launch(flags: defaultFlags + ["--show-credits"])
+    func testCheckSafetyButton() {
+        let app = launch(flags: defaultFlags)
         sleep(2)
-        snapshot("06-credits-iap")
+        // Show button in disabled state, then enable by adding text
+        let textEditor = app.textEditors.firstMatch
+        if textEditor.waitForExistence(timeout: 3) {
+            textEditor.tap()
+            textEditor.typeText("https://www.apple.com")
+            sleep(1)
+        }
+        snapshot("06-check-safety-button")
     }
 
     // MARK: - Helpers
