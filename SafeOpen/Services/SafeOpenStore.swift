@@ -51,11 +51,21 @@ final class SafeOpenStore: ObservableObject {
     init() {
         transactionListener = listenForTransactions()
         Task { await loadProducts() }
-        Task { await refreshBalance() }
-        // Automatic retry of any past consumable purchase whose server-side redemption
-        // failed mid-flight. Apple rule 3.1.1 prohibits user-facing "Restore Purchases"
-        // UI for consumable-only apps — so we do this silently on every launch instead.
-        Task { await retryPendingRedemptions() }
+
+        // Screenshot mode: mock balance if specified
+        if ScreenshotMode.isEnabled && ScreenshotMode.seedData,
+           let mockBalance = ScreenshotMode.mockBalance {
+            self.balance = mockBalance
+            self.freeBalance = 5
+            self.freeBalanceCap = 10
+            self.balanceIsStale = false
+        } else {
+            Task { await refreshBalance() }
+            // Automatic retry of any past consumable purchase whose server-side redemption
+            // failed mid-flight. Apple rule 3.1.1 prohibits user-facing "Restore Purchases"
+            // UI for consumable-only apps — so we do this silently on every launch instead.
+            Task { await retryPendingRedemptions() }
+        }
     }
 
     deinit { transactionListener?.cancel() }

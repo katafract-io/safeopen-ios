@@ -1,8 +1,15 @@
 import SwiftUI
 import KatafractStyle
 
+// MARK: - InspectionResultView + ProUpgradeView forward imports
+// These are imported here for screenshot mode sheet presentations.
+// In normal flow they're reached via NavigationStack, but in screenshot mode
+// we present them directly as sheets from AppCoordinator.onAppear.
+
 struct AppCoordinator: View {
     @EnvironmentObject var appState: AppState
+    @State private var screenshotResult: InspectionResult?
+    @State private var showScreenshotUpgrade = false
 
     var body: some View {
         TabView(selection: $appState.selectedTab) {
@@ -32,5 +39,24 @@ struct AppCoordinator: View {
         }
         .preferredColorScheme(.dark)
         .tint(KataAccent.gold)
+        .sheet(item: $screenshotResult) { result in
+            NavigationStack {
+                InspectionResultView(result: result)
+            }
+        }
+        .sheet(isPresented: $showScreenshotUpgrade) {
+            ProUpgradeView()
+        }
+        .onAppear {
+            // Inject screenshot mode presentations
+            if ScreenshotMode.isEnabled && ScreenshotMode.seedData {
+                if let result = ScreenshotMode.presentResult {
+                    screenshotResult = result
+                }
+                if ScreenshotMode.presentUpgradeSheet {
+                    showScreenshotUpgrade = true
+                }
+            }
+        }
     }
 }
