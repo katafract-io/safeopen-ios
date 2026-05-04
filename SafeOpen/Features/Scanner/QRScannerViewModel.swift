@@ -100,14 +100,11 @@ final class QRScannerViewModel: ObservableObject {
         guard !scanCooldown, raw != lastScannedValue else { return }
         lastScannedValue = raw
         scanCooldown = true
+        // Stop the AV session immediately so the same code can't re-fire while the
+        // result screen is shown. resumeScanning() restarts it when the user returns.
+        scanner.stop()
 
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         result = service.inspect(raw: raw, source: .camera)
-
-        Task {
-            try? await Task.sleep(for: .seconds(2.5))
-            scanCooldown = false
-            lastScannedValue = nil
-        }
     }
 }

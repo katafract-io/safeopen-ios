@@ -29,6 +29,9 @@ struct QRScannerView: View {
         .task { await viewModel.requestPermission() }
         .onDisappear { viewModel.stopScanning() }
         .onAppear { viewModel.resumeScanning() }
+        .onChange(of: viewModel.result) { _, newValue in
+            if newValue == nil { viewModel.resumeScanning() }
+        }
         .onReceive(viewModel.$result.compactMap { $0 }) { appState.record($0) }
     }
 }
