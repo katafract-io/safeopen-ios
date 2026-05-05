@@ -56,6 +56,11 @@ struct InspectionAPIClient {
             "device_id": Self.deviceID,
             "request_ephemeral": true,
         ]
+        if let r = regionHint { body["region_hint"] = r }
+        if PlatformEntitlement.isPlatformUnlocked,
+           let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
+            body["enclave_token"] = token
+        }
         await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
@@ -81,6 +86,11 @@ struct InspectionAPIClient {
             "device_id": Self.deviceID,
             "request_ephemeral": true,
         ]
+        if let r = regionHint { body["region_hint"] = r }
+        if PlatformEntitlement.isPlatformUnlocked,
+           let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
+            body["enclave_token"] = token
+        }
         await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
@@ -119,6 +129,10 @@ struct InspectionAPIClient {
         var req = URLRequest(url: endpoint)
         req.httpMethod = "GET"
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
+        if PlatformEntitlement.isPlatformUnlocked,
+           let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
+            req.setValue(token, forHTTPHeaderField: "X-Enclave-Token")
+        }
         let (data, response) = try await Self.session.data(for: req)
         try checkStatus(response, data: data)
         let decoder = JSONDecoder()
@@ -147,6 +161,10 @@ struct InspectionAPIClient {
         var req = URLRequest(url: endpoint)
         req.httpMethod = "GET"
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
+        if PlatformEntitlement.isPlatformUnlocked,
+           let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
+            req.setValue(token, forHTTPHeaderField: "X-Enclave-Token")
+        }
         let (data, response) = try await Self.session.data(for: req)
         try checkStatus(response, data: data)
         let decoder = JSONDecoder()
@@ -170,6 +188,10 @@ struct InspectionAPIClient {
         req.httpMethod = "POST"
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if PlatformEntitlement.isPlatformUnlocked,
+           let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
+            req.setValue(token, forHTTPHeaderField: "X-Enclave-Token")
+        }
         var body: [String: Any] = ["transaction_id": transactionId]
         await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
