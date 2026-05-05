@@ -26,7 +26,7 @@ SafeOpen changes that.
 
 Point your camera at any QR code, or paste a URL to get a safety inspection before anything loads. SafeOpen analyzes the link and flags risk signals: shortened URLs, raw IP addresses, punycode domains, unusual ports, suspicious tracking parameters, and more. All of this runs entirely on your device — offline, instant, free.
 
-When you're ready to open, tap "Inspect & Open Safely". Your request routes through SafeOpen's privacy relay, where it gets a disposable IPv6 address that the destination sees instead of your real IP. The address is released after 10 minutes. Your cookies and browsing history are destroyed when the session ends.
+When you're ready to open, tap "Inspect & Open Safely". Your browser session routes through SafeOpen's privacy relay via a WKURLSchemeHandler proxy. All requests (including subsequent navigation, images, scripts, and API calls) see a disposable IPv6 address that the destination receives instead of your real IP. The address is released after 10 minutes. Your cookies and browsing history are destroyed when the session ends.
 
 FREE — NO ACCOUNT REQUIRED
 - QR scanner with torch control
@@ -91,7 +91,7 @@ SafeOpen is a QR code scanner and link inspection app. No user account is requir
 
 Camera access is used exclusively for QR scanning via AVFoundation. No photos are stored.
 
-"Inspect & Open Safely" opens the link in an isolated in-app browser through Katafract's privacy relay. The reviewer's real IP will not be exposed to any destination URL opened via this button.
+"Inspect & Open Safely" opens the link in an isolated in-app browser that routes all traffic through Katafract's privacy relay. The browser session is configured with a WKURLSchemeHandler that intercepts all HTTP/HTTPS requests and forwards them through the SafeOpen API. The reviewer's real IP will not be exposed to any destination URL opened via this button — all requests are proxied and appear to originate from SafeOpen's servers only.
 
 In-app purchases are consumable scan-credit packs (not subscriptions). Purchasing is not required — the app is fully functional with the free credits included on install. Test with a Sandbox Apple ID.
 

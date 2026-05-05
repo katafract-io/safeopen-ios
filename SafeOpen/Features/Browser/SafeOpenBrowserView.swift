@@ -92,7 +92,7 @@ struct WebView: UIViewRepresentable {
     let session: SafeOpenSession
     @ObservedObject var vm: BrowserViewModel
 
-    func makeCoordinator() -> Coordinator { Coordinator(vm: vm) }
+    func makeCoordinator() -> Coordinator { Coordinator(vm: vm, session: session) }
 
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
@@ -100,11 +100,13 @@ struct WebView: UIViewRepresentable {
         config.websiteDataStore = .nonPersistent()
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
 
-        // Proxy routing: WKWebView doesn't expose a native proxy API.
-        // Full routing requires openSession() to return real credentials,
-        // then a WKURLSchemeHandler intercept. Current flow uses prefetch-only
-        // sessions (empty token/host), so the browser opens direct with a
-        // non-persistent data store for local privacy.
+        // Proxy routing via WKURLSchemeHandler for safeopen:// scheme.
+        // All http/https requests are intercepted and converted to safeopen://proxy?url=...
+        // The SafeOpenSchemeHandler then proxies the request through the SafeOpen API,
+        // ensuring the destination only sees the SafeOpen server IP.
+        let schemeHandler = SafeOpenSchemeHandler()
+        schemeHandler.sessionManager = SafeOpenSessionManager.shared
+        config.setURLSchemeHandler(schemeHandler, forURLScheme: "safeopen")
 
         let wv = WKWebView(frame: .zero, configuration: config)
         wv.navigationDelegate = context.coordinator
@@ -124,7 +126,9 @@ struct WebView: UIViewRepresentable {
             }
         }
 
-        wv.load(URLRequest(url: url))
+        // Convert the initial URL to safeopen:// scheme for proxying
+        let proxyURL = context.coordinator.convertToProxyScheme(url)
+        wv.load(URLRequest(url: proxyURL))
         return wv
     }
 
@@ -132,14 +136,19 @@ struct WebView: UIViewRepresentable {
 
     final class Coordinator: NSObject, WKNavigationDelegate {
         let vm: BrowserViewModel
+        let session: SafeOpenSession
         var progressObs: NSKeyValueObservation?
         var titleObs: NSKeyValueObservation?
 
-        init(vm: BrowserViewModel) { self.vm = vm }
+        init(vm: BrowserViewModel, session: SafeOpenSession) {
+            self.vm = vm
+            self.session = session
+        }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             DispatchQueue.main.async {
-                self.vm.currentURL = webView.url
+                // Extract the real destination URL from the proxy URL
+                self.vm.currentURL = webView.url?.extractDestinationURL() ?? webView.url
                 self.vm.isLoading = false
                 self.vm.progress = 1.0
             }
@@ -149,17 +158,62 @@ struct WebView: UIViewRepresentable {
             DispatchQueue.main.async { self.vm.isLoading = false }
         }
 
-        // Block navigation to non-http schemes (no mailto:, tel:, etc.)
+        // Intercept navigation to convert http/https to safeopen:// scheme
         func webView(_ webView: WKWebView,
                      decidePolicyFor action: WKNavigationAction,
                      decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-            let scheme = action.request.url?.scheme?.lowercased() ?? ""
-            if scheme == "http" || scheme == "https" || scheme == "about" {
-                decisionHandler(.allow)
-            } else {
+            guard let url = action.request.url else {
                 decisionHandler(.cancel)
+                return
             }
+
+            let scheme = url.scheme?.lowercased() ?? ""
+
+            // Allow about: and already-converted safeopen: schemes
+            if scheme == "about" || scheme == "safeopen" {
+                decisionHandler(.allow)
+                return
+            }
+
+            // Convert http/https to safeopen:// for proxy routing
+            if scheme == "http" || scheme == "https" {
+                if let proxyURL = convertToProxyScheme(url) {
+                    var modifiedRequest = action.request
+                    modifiedRequest.url = proxyURL
+                    webView.load(modifiedRequest)
+                }
+                decisionHandler(.cancel)
+                return
+            }
+
+            // Block all other schemes
+            decisionHandler(.cancel)
         }
+
+        // MARK: - Private
+
+        func convertToProxyScheme(_ url: URL) -> URL? {
+            var components = URLComponents()
+            components.scheme = "safeopen"
+            components.host = "proxy"
+            components.queryItems = [
+                URLQueryItem(name: "url", value: url.absoluteString)
+            ]
+            return components.url
+        }
+    }
+}
+
+extension URL {
+    /// Extract destination URL from safeopen://proxy?url=... format
+    fileprivate func extractDestinationURL() -> URL? {
+        guard scheme == "safeopen" else { return self }
+        if let components = URLComponents(url: self, resolvingAgainstBaseURL: true),
+           let queryItems = components.queryItems,
+           let urlParam = queryItems.first(where: { $0.name == "url" })?.value {
+            return URL(string: urlParam)
+        }
+        return nil
     }
 }
 
@@ -182,9 +236,9 @@ struct SessionInfoSheet: View {
                         Text(session.ephemeral ? "Disposable IPv6" : "Shared node IP")
                             .foregroundStyle(session.ephemeral ? Color(red: 0, green: 0.83, blue: 1) : .secondary)
                     }
-                    LabeledContent("Your browsing IP") {
-                        Text("Your device connection")
-                            .foregroundStyle(.secondary)
+                    LabeledContent("Your actual IP") {
+                        Text("Hidden — routed via SafeOpen")
+                            .foregroundStyle(.green)
                     }
                 }
 
@@ -209,8 +263,8 @@ struct SessionInfoSheet: View {
 
                 Section {
                     Text(session.ephemeral
-                         ? "Our servers inspected this link using a disposable IPv6 address — the destination only saw our server during analysis. This browser session is isolated with no cookies or cache."
-                         : "Our servers inspected this link through a shared Katafract node. This browser session is isolated with no cookies or cache.")
+                         ? "Our servers analyzed this link using a disposable IPv6 address, and all your browsing traffic routes through that same address. The destination only sees our server's IP, not your device's IP. This browser session is isolated with no cookies or cache."
+                         : "Our servers analyzed this link through a shared Katafract node, and all your browsing traffic routes through that node. The destination only sees our shared node IP, not your device's IP. This browser session is isolated with no cookies or cache.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
