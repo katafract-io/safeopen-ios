@@ -8,6 +8,7 @@ final class ScreenshotTests: XCTestCase {
         let app = XCUIApplication()
         // Launch with ScreenshotMode enabled and seedData flag
         app.launchArguments = ["-ScreenshotMode", "seedData"]
+        setupSnapshot(app)
         app.launch()
     }
 
@@ -24,7 +25,7 @@ final class ScreenshotTests: XCTestCase {
         sleep(1)
 
         // Trigger snapshot: identity lockup + input card visible
-        snapshot("1_paste_link_hero", traits: .phonePortrait)
+        snapshot("1_paste_link_hero")
     }
 
     /// Screenshot 2: Inspection result — SAFE verdict banner, URL preview, tracker count, summary
@@ -51,7 +52,7 @@ final class ScreenshotTests: XCTestCase {
         sleep(2)
 
         // Take screenshot of safe result
-        snapshot("2_safe_result_banner", traits: .phonePortrait)
+        snapshot("2_safe_result_banner")
     }
 
     /// Screenshot 3: Inspection result — DANGER banner, suspicious URL, tracker breakdown expanded
@@ -85,7 +86,7 @@ final class ScreenshotTests: XCTestCase {
         }
 
         // Take screenshot of danger result with expanded details
-        snapshot("3_danger_result_expanded", traits: .phonePortrait)
+        snapshot("3_danger_result_expanded")
     }
 
     /// Screenshot 4: Credits view — 4 credit packs with prices
@@ -107,7 +108,7 @@ final class ScreenshotTests: XCTestCase {
         }
 
         // Take screenshot of credits view with all packs visible
-        snapshot("4_credits_packs", traits: .phonePortrait)
+        snapshot("4_credits_packs")
     }
 
     /// Screenshot 5: Paywall / Pro unlock view
@@ -129,7 +130,7 @@ final class ScreenshotTests: XCTestCase {
         }
 
         // Take screenshot of pro view
-        snapshot("5_pro_upgrade_view", traits: .phonePortrait)
+        snapshot("5_pro_upgrade_view")
     }
 
     // MARK: - iPad Variants (iPad Pro 13-inch M5)
@@ -144,7 +145,7 @@ final class ScreenshotTests: XCTestCase {
 
         sleep(1)
 
-        snapshot("6_ipad_paste_link_hero", traits: .iPadLandscape)
+        snapshot("6_ipad_paste_link_hero")
     }
 
     /// Screenshot 7 (iPad): Safe result on wider screen
@@ -166,7 +167,7 @@ final class ScreenshotTests: XCTestCase {
 
         sleep(2)
 
-        snapshot("7_ipad_safe_result", traits: .iPadLandscape)
+        snapshot("7_ipad_safe_result")
     }
 
     /// Screenshot 8 (iPad): Credits view landscape
@@ -179,36 +180,6 @@ final class ScreenshotTests: XCTestCase {
 
         sleep(1)
 
-        snapshot("8_ipad_credits_view", traits: .iPadLandscape)
-    }
-}
-
-// MARK: - XCUIScreenshotExtension (snapshot() helper)
-
-extension XCTestCase {
-    func snapshot(_ name: String, traits: UITraitCollection) {
-        let screenshot = XCUIScreen.main.screenshot()
-        let attachment = XCTAttachment(screenshot: screenshot)
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
-    }
-}
-
-extension UITraitCollection {
-    @nonobjc static var phonePortrait: UITraitCollection {
-        UITraitCollection(traitsFrom: [
-            UITraitCollection(horizontalSizeClass: .compact),
-            UITraitCollection(verticalSizeClass: .regular),
-            UITraitCollection(userInterfaceStyle: .dark)
-        ])
-    }
-
-    @nonobjc static var iPadLandscape: UITraitCollection {
-        UITraitCollection(traitsFrom: [
-            UITraitCollection(horizontalSizeClass: .regular),
-            UITraitCollection(verticalSizeClass: .compact),
-            UITraitCollection(userInterfaceStyle: .dark)
-        ])
+        snapshot("8_ipad_credits_view")
     }
 }
