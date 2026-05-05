@@ -45,6 +45,12 @@ struct InspectionAPIClient {
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
+
+        let assertion = await AppAttestClient.shared.assertionHeader()
+        if !assertion.isEmpty {
+            req.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
+        }
 
         var body: [String: Any] = [
             "url": url.absoluteString,
@@ -71,6 +77,12 @@ struct InspectionAPIClient {
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
+
+        let assertion = await AppAttestClient.shared.assertionHeader()
+        if !assertion.isEmpty {
+            req.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
+        }
 
         var body: [String: Any] = [
             "url": url.absoluteString,
@@ -97,6 +109,11 @@ struct InspectionAPIClient {
         var req = URLRequest(url: endpoint)
         req.httpMethod = "DELETE"
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
+
+        let assertion = await AppAttestClient.shared.assertionHeader()
+        if !assertion.isEmpty {
+            req.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
+        }
 
         var body: [String: Any] = [:]
         await Self.attachAttestFields(to: &body)
@@ -175,6 +192,12 @@ struct InspectionAPIClient {
         req.httpMethod = "POST"
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let assertion = await AppAttestClient.shared.assertionHeader()
+        if !assertion.isEmpty {
+            req.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
+        }
+
         var body: [String: Any] = ["transaction_id": transactionId]
         await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
