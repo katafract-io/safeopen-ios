@@ -8,8 +8,10 @@ import KatafractStyle
 
 struct AppCoordinator: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var store: SafeOpenStore
     @State private var screenshotResult: InspectionResult?
     @State private var showScreenshotUpgrade = false
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     var body: some View {
         TabView(selection: $appState.selectedTab) {
@@ -46,6 +48,19 @@ struct AppCoordinator: View {
         }
         .sheet(isPresented: $showScreenshotUpgrade) {
             ProUpgradeView()
+        }
+        .sheet(isPresented: Binding(
+            get: { !hasSeenOnboarding },
+            set: { if !$0 { hasSeenOnboarding = true } }
+        )) {
+            OnboardingView(onDismiss: {
+                hasSeenOnboarding = true
+                // Ensure store loads products and balance after onboarding
+                Task {
+                    await store.loadProducts()
+                    await store.refreshBalance()
+                }
+            })
         }
         .onAppear {
             // Inject screenshot mode presentations
