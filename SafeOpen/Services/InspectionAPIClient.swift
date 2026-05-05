@@ -7,7 +7,12 @@ import Security
 struct InspectionAPIClient {
 
     static let baseURL = "https://api.katafract.com"
-    private static let session = URLSession(configuration: .ephemeral)
+    private static let session: URLSession = {
+        let config = URLSessionConfiguration.ephemeral
+        config.timeoutIntervalForRequest = 15
+        config.timeoutIntervalForResource = 30
+        return URLSession(configuration: config)
+    }()
 
     // MARK: - Device ID (anonymous, persisted in Keychain)
 
