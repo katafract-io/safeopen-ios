@@ -38,60 +38,45 @@ class ShareViewController: UIViewController {
             return
         }
 
-        for item in items {
-            // Try URL
-            if let attachments = item.attachments as? [NSItemProvider] {
-                for provider in attachments {
-                    if provider.hasItemConformingToTypeIdentifier("public.url") {
-                        provider.loadItem(forTypeIdentifier: "public.url", options: nil) { item, _ in
-                            if let url = item as? URL {
-                                completion(url)
-                                return
-                            }
-                        }
-                    }
-                }
-            }
+        let providers = items.flatMap { $0.attachments ?? [] }
+        loadURL(from: providers, index: 0, completion: completion)
+    }
 
-            // Try plain text
-            if let attachments = item.attachments as? [NSItemProvider] {
-                for provider in attachments {
-                    if provider.hasItemConformingToTypeIdentifier("public.plain-text") {
-                        provider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { item, _ in
-                            if let text = item as? String, let url = self.extractURLFromText(text) {
-                                completion(url)
-                                return
-                            }
-                        }
-                    }
-                }
-            }
+    private func loadURL(from providers: [NSItemProvider], index: Int, completion: @escaping (URL?) -> Void) {
+        guard index < providers.count else {
+            completion(nil)
+            return
         }
+        let provider = providers[index]
 
-        completion(nil)
+        if provider.hasItemConformingToTypeIdentifier("public.url") {
+            provider.loadItem(forTypeIdentifier: "public.url", options: nil) { [weak self] item, _ in
+                if let url = item as? URL, url.scheme == "http" || url.scheme == "https" {
+                    completion(url)
+                } else {
+                    self?.loadURL(from: providers, index: index + 1, completion: completion)
+                }
+            }
+        } else if provider.hasItemConformingToTypeIdentifier("public.plain-text") {
+            provider.loadItem(forTypeIdentifier: "public.plain-text", options: nil) { [weak self] item, _ in
+                if let text = item as? String, let url = self?.extractURLFromText(text) {
+                    completion(url)
+                } else {
+                    self?.loadURL(from: providers, index: index + 1, completion: completion)
+                }
+            }
+        } else {
+            loadURL(from: providers, index: index + 1, completion: completion)
+        }
     }
 
     private func extractURLFromText(_ text: String) -> URL? {
-        // Simple URL extraction from plain text
-        let patterns = [
-            "https?://[\\S]+",
-            "www\\.[\\S]+"
-        ]
-        for pattern in patterns {
-            if let regex = try? NSRegularExpression(pattern: pattern) {
-                let range = NSRange(text.startIndex..., in: text)
-                if let match = regex.firstMatch(in: text, range: range) {
-                    if let range = Range(match.range, in: text) {
-                        var urlString = String(text[range])
-                        if !urlString.hasPrefix("http") {
-                            urlString = "https://" + urlString
-                        }
-                        return URL(string: urlString)
-                    }
-                }
-            }
+        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else {
+            return nil
         }
-        return nil
+        let range = NSRange(text.startIndex..., in: text)
+        let matches = detector.matches(in: text, options: [], range: range)
+        return matches.compactMap { $0.url }.first { $0.scheme == "http" || $0.scheme == "https" }
     }
 
     private func inspectURL(_ url: URL) {
