@@ -108,29 +108,34 @@ No demo credentials required.
 
 ## In-App Purchases (consumable credit packs — no subscription)
 
-| Product ID | Name | Price | Type |
-|---|---|---|---|
-| com.katafract.safeopen.credits_starter | SafeOpen Credits — Starter | $0.99 | Consumable |
-| com.katafract.safeopen.credits_standard | SafeOpen Credits — Standard | $2.99 | Consumable |
-| com.katafract.safeopen.credits_power | SafeOpen Credits — Power | $9.99 | Consumable |
+**Canonical SKUs (v2 new signups):**
 
-ASC Internal IDs: starter `6762161470`, standard `6762160344`, power `6762157575`
+| Product ID | Name | Price | Type | Credits |
+|---|---|---|---|---|
+| com.katafract.safeopen.credits.100 | 100 Scan Credits | $0.99 | Consumable | 100 |
+| com.katafract.safeopen.credits.500 | 500 Scan Credits | $4.99 | Consumable | 500 |
+| com.katafract.safeopen.credits.2500 | 2,500 Scan Credits | $19.99 | Consumable | 2,500 |
 
 IAP display name/description for each:
 
-**Starter (100 credits)**
+**100 Credits**
 - Display Name: `100 Scan Credits`
 - Description: `100 scan credits for AI summaries and privacy-relay opens. Credits never expire.`
 
-**Standard (500 credits)**
+**500 Credits**
 - Display Name: `500 Scan Credits`
 - Description: `500 scan credits for AI summaries and privacy-relay opens. Credits never expire. Best value for regular use.`
 
-**Power (2,500 credits)**
+**2,500 Credits**
 - Display Name: `2,500 Scan Credits`
 - Description: `2,500 scan credits for AI summaries and privacy-relay opens. Credits never expire. Best value per credit.`
 
 ---
+
+## Legacy IAPs — grandfathered (do not retire; existing user balances)
+- `com.katafract.safeopen.credits_starter` ($0.99, 100 credits)
+- `com.katafract.safeopen.credits_standard` ($5.00 legacy, 100 credits)
+- `com.katafract.safeopen.credits_power` ($9.99, 2,500 credits)
 
 ## Old IAPs — mark Removed from Sale in ASC
 - `com.katafract.safeopen.pro_monthly` (ID: 6761950941)
