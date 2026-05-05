@@ -15,7 +15,7 @@ Link inspector & safe opener
 
 ## Promotional Text (160/170 chars, updateable without new build)
 ```
-Every link you open exposes your IP. SafeOpen inspects links before you open them and routes every open through a privacy relay, so your device stays anonymous.
+SafeOpen inspects every link through a server-side privacy relay before you open it, so you know what you're getting into before your device connects.
 ```
 
 ## Description (≤4000 chars)
@@ -26,7 +26,7 @@ SafeOpen changes that.
 
 Point your camera at any QR code, or paste a URL to get a safety inspection before anything loads. SafeOpen analyzes the link and flags risk signals: shortened URLs, raw IP addresses, punycode domains, unusual ports, suspicious tracking parameters, and more. All of this runs entirely on your device — offline, instant, free.
 
-When you're ready to open, tap "Inspect & Open Safely". Your request routes through SafeOpen's privacy relay, where it gets a disposable IPv6 address that the destination sees instead of your real IP. The address is released after 10 minutes. Your cookies and browsing history are destroyed when the session ends.
+When you're ready to open, tap "Inspect & Open Safely". SafeOpen first analyzes the link on our servers using a disposable IPv6 address — the destination sees our server, not you, during analysis. Then the link opens in an isolated in-app browser with no cookies, no cache, and a fresh session — your browsing connection is direct, but no persistent data is ever stored.
 
 FREE — NO ACCOUNT REQUIRED
 - QR scanner with torch control
@@ -39,7 +39,7 @@ FREE — NO ACCOUNT REQUIRED
 SCAN CREDITS (optional, one-time purchases)
 Two features require a connection to Katafract's servers and cost 1 scan credit each:
 - AI Summary: a plain-English summary of what the destination page actually contains
-- Open Safely: view the page through a privacy relay in an isolated session — the destination sees a disposable IPv6 address, not your real IP
+- Open Safely: analyze the link via a server-side privacy relay (disposable IPv6, not your IP), then view in an isolated browser session with no cookies or persistent data
 
 Every install starts with 10 free credits. We add 10 more every 30 days.
 If you need more, credits are available as one-time in-app purchases. They never expire and there is no subscription.
@@ -91,7 +91,7 @@ SafeOpen is a QR code scanner and link inspection app. No user account is requir
 
 Camera access is used exclusively for QR scanning via AVFoundation. No photos are stored.
 
-"Inspect & Open Safely" opens the link in an isolated in-app browser through Katafract's privacy relay. The reviewer's real IP will not be exposed to any destination URL opened via this button.
+"Inspect & Open Safely" first analyzes the link on our servers using a disposable IPv6 address (the destination sees our server IP during analysis, not the user's IP). The link then opens in an isolated WKWebView with no cookies, no persistent data store, and a fresh session. The in-app browser connects directly to the destination using the device's network connection.
 
 In-app purchases are consumable scan-credit packs (not subscriptions). Purchasing is not required — the app is fully functional with the free credits included on install. Test with a Sandbox Apple ID.
 
