@@ -463,7 +463,6 @@ struct PrefetchPreviewSheet: View {
 
     @State private var selectedTab: PreviewTab = .snapshot
     private let cyan  = Color(red: 0, green: 0.83, blue: 1)
-    private let token = InspectionAPIClient.serviceToken
 
     enum PreviewTab: String, CaseIterable {
         case snapshot = "Preview"
@@ -545,8 +544,7 @@ struct PrefetchPreviewSheet: View {
                 // Snapshot WebView
                 if prefetch.hasSnapshot {
                     SnapshotWebView(
-                        url: URL(string: "\(InspectionAPIClient.baseURL)/v1/safe-open/snapshot/\(prefetch.sessionId)")!,
-                        token: token
+                        url: URL(string: "\(InspectionAPIClient.baseURL)/v1/safe-open/snapshot/\(prefetch.sessionId)")!
                     )
                     .frame(minHeight: 420)
                 } else {
@@ -785,7 +783,6 @@ struct PrefetchPreviewSheet: View {
 
 struct SnapshotWebView: UIViewRepresentable {
     let url: URL
-    let token: String
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
@@ -804,9 +801,14 @@ struct SnapshotWebView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {}
 
     private func load(_ wv: WKWebView) {
-        var req = URLRequest(url: url)
-        req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        wv.load(req)
+        Task {
+            let assertion = await AppAttestClient.shared.assertionHeader()
+            DispatchQueue.main.async {
+                var req = URLRequest(url: url)
+                req.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
+                wv.load(req)
+            }
+        }
     }
 
     class Coordinator: NSObject, WKNavigationDelegate {

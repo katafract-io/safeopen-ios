@@ -31,7 +31,8 @@ struct DeviceCheckClient {
             }
             var req = URLRequest(url: URL(string: "\(InspectionAPIClient.baseURL)/v1/safeopen/device-check/claim-welcome")!)
             req.httpMethod = "POST"
-            req.setValue("Bearer \(InspectionAPIClient.serviceToken)", forHTTPHeaderField: "Authorization")
+            let assertion = await AppAttestClient.shared.assertionHeader()
+            req.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
             req.setValue(InspectionAPIClient.deviceID, forHTTPHeaderField: "X-Device-ID")
             req.setValue("application/json", forHTTPHeaderField: "Content-Type")
             let body: [String: Any] = ["device_token": tokenData.base64EncodedString()]

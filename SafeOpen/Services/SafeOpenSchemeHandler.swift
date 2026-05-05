@@ -86,7 +86,8 @@ final class SafeOpenSchemeHandler: NSObject, WKURLSchemeHandler {
         let proxyEndpoint = URL(string: "https://api.katafract.com/v1/safe-open/proxy")!
         var proxyRequest = URLRequest(url: proxyEndpoint)
         proxyRequest.httpMethod = "POST"
-        proxyRequest.setValue("Bearer \(InspectionAPIClient.serviceToken)", forHTTPHeaderField: "Authorization")
+        let assertion = await AppAttestClient.shared.assertionHeader()
+        proxyRequest.setValue(assertion, forHTTPHeaderField: "X-App-Attest-Assertion")
         proxyRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         proxyRequest.setValue(session_id, forHTTPHeaderField: "X-Session-ID")
         if !sessionToken.isEmpty {
