@@ -40,7 +40,9 @@ final class SafeOpenSessionManager: ObservableObject {
             )
             scheduleExpiry(at: result.expiresAt)
         } catch InspectionAPIError.creditsRequired {
-            needsCredits = true
+            if !PlatformEntitlement.isPlatformUnlocked {
+                needsCredits = true
+            }
         } catch InspectionAPIError.rateLimited {
             isRateLimited = true
             self.error = "Too many requests. Please wait a moment and try again."
@@ -75,7 +77,9 @@ final class SafeOpenSessionManager: ObservableObject {
             scheduleExpiry(at: s.expiresAt)
             await SafeOpenStore.shared.refreshBalance()
         } catch InspectionAPIError.creditsRequired {
-            needsCredits = true
+            if !PlatformEntitlement.isPlatformUnlocked {
+                needsCredits = true
+            }
         } catch InspectionAPIError.rateLimited {
             isRateLimited = true
             self.error = "Too many requests. Please wait a moment and try again."
