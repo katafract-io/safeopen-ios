@@ -87,7 +87,9 @@ Improved link preview — the inspection sheet now opens immediately so you can 
 ## App Review Notes
 
 ```
-SafeOpen is a QR code scanner and link inspection app. No user account is required. A service-level API token is embedded in the binary for all platform calls.
+SafeOpen is a QR code scanner and link inspection app. No user account is required.
+
+No static service credentials are embedded in the binary. Authentication uses per-install device ID + App Attest assertions.
 
 Camera access is used exclusively for QR scanning via AVFoundation. No photos are stored.
 
