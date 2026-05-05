@@ -46,7 +46,7 @@ struct InspectionAPIClient {
 
     // MARK: - Prefetch
 
-    func prefetchURL(_ url: URL, regionHint: String? = nil) async throws -> PrefetchResult {
+    func prefetchURL(_ url: URL) async throws -> PrefetchResult {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/prefetch")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
@@ -58,7 +58,6 @@ struct InspectionAPIClient {
             "device_id": Self.deviceID,
             "request_ephemeral": true,
         ]
-        if let r = regionHint { body["region_hint"] = r }
         await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
@@ -73,7 +72,7 @@ struct InspectionAPIClient {
 
     // MARK: - Session provisioning
 
-    func createSession(for url: URL, regionHint: String? = nil) async throws -> SafeOpenSession {
+    func createSession(for url: URL) async throws -> SafeOpenSession {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
@@ -85,7 +84,6 @@ struct InspectionAPIClient {
             "device_id": Self.deviceID,
             "request_ephemeral": true,
         ]
-        if let r = regionHint { body["region_hint"] = r }
         await Self.attachAttestFields(to: &body)
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
 
