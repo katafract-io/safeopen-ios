@@ -11,6 +11,8 @@ final class SafeOpenSessionManager: ObservableObject {
     @Published var isLoading = false
     @Published var error: String?
     @Published var needsCredits = false
+    @Published var isRateLimited = false
+    @Published var isOffline = false
 
     private let api = InspectionAPIClient()
     private var expiryTask: Task<Void, Never>?
@@ -21,6 +23,8 @@ final class SafeOpenSessionManager: ObservableObject {
     func loadPreview(url: URL) async {
         isLoading = true
         error = nil
+        isRateLimited = false
+        isOffline = false
         defer { isLoading = false }
         do {
             let result = try await api.prefetchURL(url)
@@ -37,6 +41,14 @@ final class SafeOpenSessionManager: ObservableObject {
             scheduleExpiry(at: result.expiresAt)
         } catch InspectionAPIError.creditsRequired {
             needsCredits = true
+        } catch InspectionAPIError.rateLimited {
+            isRateLimited = true
+            self.error = "Too many requests. Please wait a moment and try again."
+        } catch let error as URLError where error.code == .notConnectedToInternet {
+            isOffline = true
+            self.error = "No internet connection."
+        } catch InspectionAPIError.serverError(let code, _) where code >= 500 {
+            self.error = "SafeOpen servers are temporarily unavailable."
         } catch {
             self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
         }
@@ -50,6 +62,8 @@ final class SafeOpenSessionManager: ObservableObject {
     func openSession(url: URL) async {
         isLoading = true
         error = nil
+        isRateLimited = false
+        isOffline = false
         defer { isLoading = false }
 
         await revokeCurrentSession()
@@ -62,6 +76,14 @@ final class SafeOpenSessionManager: ObservableObject {
             await SafeOpenStore.shared.refreshBalance()
         } catch InspectionAPIError.creditsRequired {
             needsCredits = true
+        } catch InspectionAPIError.rateLimited {
+            isRateLimited = true
+            self.error = "Too many requests. Please wait a moment and try again."
+        } catch let error as URLError where error.code == .notConnectedToInternet {
+            isOffline = true
+            self.error = "No internet connection."
+        } catch InspectionAPIError.serverError(let code, _) where code >= 500 {
+            self.error = "SafeOpen servers are temporarily unavailable."
         } catch {
             self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
         }
