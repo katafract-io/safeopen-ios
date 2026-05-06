@@ -4,6 +4,7 @@ Verify that the given marketing version train is not behind the max
 preReleaseVersion already in App Store Connect.  Exit 1 if stale, 0 if OK.
 Non-blocking (exit 0) when ASC credentials are missing or the call fails.
 """
+from __future__ import annotations
 import argparse, json, os, sys, time, urllib.request, subprocess, tempfile
 
 ASC_BASE = "https://api.appstoreconnect.apple.com"
