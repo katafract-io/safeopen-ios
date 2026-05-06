@@ -5,6 +5,7 @@ import KatafractStyle
 struct SafeOpenApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var store    = SafeOpenStore.shared
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         Task.detached(priority: .background) {
@@ -21,6 +22,11 @@ struct SafeOpenApp: App {
                 .environmentObject(appState)
                 .environmentObject(store)
                 .tint(KataAccent.gold)
+                .onChange(of: scenePhase) { _, newPhase in
+                    if newPhase == .active {
+                        Task { await SafeOpenStore.shared.retryPendingRedemptions() }
+                    }
+                }
         }
     }
 }
