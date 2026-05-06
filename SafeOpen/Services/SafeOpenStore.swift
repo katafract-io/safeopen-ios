@@ -3,7 +3,14 @@ import StoreKit
 
 /// SafeOpen consumable credit pack store + balance tracking.
 ///
-/// Three credit packs: starter (100/$0.99), standard (500/$3.99), power (2000/$9.99).
+/// SafeOpen credit packs (SafeOpen-specific balance, not shared with
+/// other Katafract apps; each app has its own credit ledger):
+///   - credits_standard  : 500 credits  ($3.99) — active SKU
+///
+/// Legacy IDs (grandfathered for existing user balances, not offered in UI):
+///   - credits_starter   : 100 credits  ($0.99)
+///   - credits_power     : 2000 credits ($9.99)
+///
 /// Every install starts with 10 free credits and gets 10 more every 30 days.
 /// The authoritative balance lives on the backend, not in StoreKit.
 @MainActor
@@ -67,21 +74,6 @@ final class SafeOpenStore: ObservableObject {
     // MARK: - StoreKit
 
     func loadProducts() async {
-        // Screenshot mode: bypass StoreKit and use mock products
-        if CommandLine.arguments.contains("--screenshots") {
-            let mockProducts: [any Identifiable] = [
-                ScreenshotMode.mockStarterProduct,
-                ScreenshotMode.mockStandardProduct,
-                ScreenshotMode.mockPowerProduct
-            ].compactMap { $0 }
-
-            // For screenshot mode, we'll store these as empty to simplify the UI
-            // In real UI, this would be bridged differently, but for now:
-            // The UI should check CommandLine.arguments and show mock products directly
-            products = []
-            return
-        }
-
         do {
             let loaded = try await Product.products(for: Self.allProductIDs)
             products = loaded.sorted { $0.price < $1.price }
