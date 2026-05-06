@@ -2,8 +2,6 @@ import XCTest
 
 @MainActor
 class ScreenshotTests: XCTestCase {
-    private var app: XCUIApplication!
-
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
