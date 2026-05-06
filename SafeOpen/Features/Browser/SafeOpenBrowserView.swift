@@ -183,7 +183,7 @@ struct SessionInfoSheet: View {
                             .foregroundStyle(session.ephemeral ? Color(red: 0, green: 0.83, blue: 1) : .secondary)
                     }
                     LabeledContent("Your browsing IP") {
-                        Text("Your device connection")
+                        Text("Your device (direct connection)")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -209,8 +209,8 @@ struct SessionInfoSheet: View {
 
                 Section {
                     Text(session.ephemeral
-                         ? "Our servers inspected this link using a disposable IPv6 address — the destination only saw our server during analysis. This browser session is isolated with no cookies or cache."
-                         : "Our servers inspected this link through a shared Katafract node. This browser session is isolated with no cookies or cache.")
+                         ? "Our servers analyzed this link using a disposable IPv6 address — the destination saw our server IP during analysis, not yours. Your browser connection above is direct, but this session has no cookies, no cache, and no persistent storage."
+                         : "Our servers analyzed this link through a shared Katafract node. Your browser connection above is direct, but this session has no cookies, no cache, and no persistent storage.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
