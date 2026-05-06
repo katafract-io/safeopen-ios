@@ -9,12 +9,6 @@ struct InspectionAPIClient {
     static let baseURL = "https://api.katafract.com"
     private static let session = URLSession(configuration: .ephemeral)
 
-    /// The app service token. Authenticates the SafeOpen client to the backend.
-    /// Per-install authorization is the device ID below; this token only proves
-    /// the request came from a SafeOpen build. App Attest is layered on top for
-    /// request integrity and reinstall-farming defense.
-    static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
-
     // MARK: - Device ID (anonymous, persisted in Keychain)
 
     static var deviceID: String {
@@ -50,7 +44,6 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/prefetch")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [
@@ -77,7 +70,6 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [
@@ -104,7 +96,6 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session/\(sessionId)")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "DELETE"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         _ = try? await Self.session.data(for: req)
     }
 
@@ -124,7 +115,6 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "GET"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         let (data, response) = try await Self.session.data(for: req)
         try checkStatus(response, data: data)
@@ -153,7 +143,6 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits/offers")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "GET"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         let (data, response) = try await Self.session.data(for: req)
         try checkStatus(response, data: data)
@@ -176,7 +165,6 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits/redeem")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
-        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         var body: [String: Any] = ["transaction_id": transactionId]

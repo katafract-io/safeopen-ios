@@ -132,7 +132,6 @@ actor AppAttestClient {
     private func requestChallenge() async throws -> ChallengeResponse {
         var req = URLRequest(url: URL(string: "\(InspectionAPIClient.baseURL)/v1/safeopen/attest/challenge")!)
         req.httpMethod = "GET"
-        req.setValue("Bearer \(InspectionAPIClient.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(InspectionAPIClient.deviceID, forHTTPHeaderField: "X-Device-ID")
         let (data, _) = try await URLSession.shared.data(for: req)
         return try JSONDecoder().decode(ChallengeResponse.self, from: data)
@@ -141,7 +140,6 @@ actor AppAttestClient {
     private func submitAttestation(keyId: String, attestation: Data, challenge: String) async throws {
         var req = URLRequest(url: URL(string: "\(InspectionAPIClient.baseURL)/v1/safeopen/attest")!)
         req.httpMethod = "POST"
-        req.setValue("Bearer \(InspectionAPIClient.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(InspectionAPIClient.deviceID, forHTTPHeaderField: "X-Device-ID")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body: [String: Any] = [
