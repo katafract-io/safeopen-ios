@@ -56,7 +56,6 @@ struct InspectionAPIClient {
             "device_id": Self.deviceID,
             "request_ephemeral": true,
         ]
-        if let r = regionHint { body["region_hint"] = r }
         if PlatformEntitlement.isPlatformUnlocked,
            let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
             body["enclave_token"] = token
@@ -86,7 +85,6 @@ struct InspectionAPIClient {
             "device_id": Self.deviceID,
             "request_ephemeral": true,
         ]
-        if let r = regionHint { body["region_hint"] = r }
         if PlatformEntitlement.isPlatformUnlocked,
            let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
             body["enclave_token"] = token

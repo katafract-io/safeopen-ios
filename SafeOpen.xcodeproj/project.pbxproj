@@ -12,6 +12,7 @@
 		08D0190AE54F244F658B7DD8 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA98AEEA3EB0AB39428E6178 /* PrivacyInfo.xcprivacy */; };
 		1586CC60A6EB6D06EB9DF5B9 /* PayloadParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86D1887A3C07BE3A3DB322A /* PayloadParser.swift */; };
 		1FB099DF17D4E88FCB7AD0EB /* PasteLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526DA69097B36919B396D842 /* PasteLinkViewModel.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E2D3C4B5A6978869504132 /* OnboardingView.swift */; };
 		2762CEDCDFBEFD08A426C8D8 /* PayloadClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C596220D4905CB4A3CD0D3CF /* PayloadClassifier.swift */; };
 		2773B6376489084F8D279584 /* QRScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E8C6C7D19F4C3CADA86ADAF /* QRScannerView.swift */; };
 		2E0F3F2D13D1C01D5AE21EA4 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244324F6DAF84072752217D7 /* AppState.swift */; };
@@ -72,6 +73,7 @@
 		1BDD0C49A91C036C396285D6 /* RiskFactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskFactor.swift; sourceTree = "<group>"; };
 		1F39B632DC2A37FA4E751989 /* SafeOpen.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SafeOpen.entitlements; sourceTree = "<group>"; };
 		2127CC0D12F979138598C77C /* PasteLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteLinkView.swift; sourceTree = "<group>"; };
+		F1E2D3C4B5A6978869504132 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		244324F6DAF84072752217D7 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		280742B220D637A4C4ADD9CA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2A556DB223228AEAD95DBA33 /* SafeOpenService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenService.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 			children = (
 				2AB9BB6F09C53E0D1C17D97F /* InspectingSealView.swift */,
 				2127CC0D12F979138598C77C /* PasteLinkView.swift */,
+				F1E2D3C4B5A6978869504132 /* OnboardingView.swift */,
 				526DA69097B36919B396D842 /* PasteLinkViewModel.swift */,
 			);
 			path = Paste;
@@ -462,6 +465,7 @@
 				7F0B605E6C323F1A24ED4D3C /* KataScanResultView.swift in Sources */,
 				365C7D21B94163E003C77FD3 /* ParsedContent.swift in Sources */,
 				B10EE0B833CE08F751A0EC73 /* PasteLinkView.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* OnboardingView.swift in Sources */,
 				1FB099DF17D4E88FCB7AD0EB /* PasteLinkViewModel.swift in Sources */,
 				2762CEDCDFBEFD08A426C8D8 /* PayloadClassifier.swift in Sources */,
 				1586CC60A6EB6D06EB9DF5B9 /* PayloadParser.swift in Sources */,
