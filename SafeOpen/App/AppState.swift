@@ -9,9 +9,6 @@ final class AppState: ObservableObject {
     @Published var inspectionHistory: [InspectionResult] = []
     @Published var selectedTab: Int = 0
     @Published var pendingURLToInspect: URL?
-    @Published var mockCredits: Int = 0
-    @Published var shouldOpenCreditsView: Bool = false
-    @Published var prefillURL: String?
 
     init() {
         load()
