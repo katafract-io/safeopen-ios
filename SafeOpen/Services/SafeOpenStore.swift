@@ -3,15 +3,12 @@ import StoreKit
 
 /// SafeOpen consumable credit pack store + balance tracking.
 ///
-/// Canonical credit SKUs (new signups):
-///   - com.katafract.safeopen.credits.100   : 100 credits  ($0.99)
-///   - com.katafract.safeopen.credits.500   : 500 credits  ($4.99)
-///   - com.katafract.safeopen.credits.2500  : 2500 credits ($19.99)
+/// Unified credit SKU across all Katafract apps:
+///   - credits_standard  : 100 credits ($5.00), cross-app currency
 ///
 /// Legacy IDs (grandfathered for existing user balances, not offered in UI):
-///   - com.katafract.safeopen.credits_starter  : 100 credits  ($0.99)
-///   - com.katafract.safeopen.credits_standard : 100 credits  ($5.00)
-///   - com.katafract.safeopen.credits_power    : 2500 credits ($9.99)
+///   - credits_starter   : 100 credits  ($0.99)
+///   - credits_power     : 2500 credits ($9.99)
 ///
 /// Every install starts with 10 free credits and gets 10 more every 30 days.
 /// The authoritative balance lives on the backend, not in StoreKit.
@@ -20,21 +17,15 @@ final class SafeOpenStore: ObservableObject {
 
     static let shared = SafeOpenStore()
 
-    // Active canonical SKUs
-    static let credits100ID  = "com.katafract.safeopen.credits.100"
-    static let credits500ID  = "com.katafract.safeopen.credits.500"
-    static let credits2500ID = "com.katafract.safeopen.credits.2500"
+    // Active unified SKU
+    static let standardID = "com.katafract.safeopen.credits_standard"
 
     // Legacy grandfathered IDs (for existing user balance migration only)
-    static let starterID     = "com.katafract.safeopen.credits_starter"
-    static let standardID    = "com.katafract.safeopen.credits_standard"
-    static let powerID       = "com.katafract.safeopen.credits_power"
+    static let starterID  = "com.katafract.safeopen.credits_starter"
+    static let powerID    = "com.katafract.safeopen.credits_power"
 
     // All product IDs to look up from StoreKit (active + legacy)
-    static let allProductIDs: Set<String> = [
-        credits100ID, credits500ID, credits2500ID,
-        starterID, standardID, powerID
-    ]
+    static let allProductIDs: Set<String> = [standardID, starterID, powerID]
 
     @Published var products: [Product] = []
     @Published var isPurchasing = false
@@ -51,12 +42,6 @@ final class SafeOpenStore: ObservableObject {
     @Published var balanceIsStale: Bool = false
     @Published var lastBalanceFetchAt: Date?
 
-    // Canonical products (active)
-    var credits100:  Product? { products.first { $0.id == Self.credits100ID  } }
-    var credits500:  Product? { products.first { $0.id == Self.credits500ID  } }
-    var credits2500: Product? { products.first { $0.id == Self.credits2500ID } }
-
-    // Legacy products (fallback for existing users)
     var starter:  Product? { products.first { $0.id == Self.starterID  } }
     var standard: Product? { products.first { $0.id == Self.standardID } }
     var power:    Product? { products.first { $0.id == Self.powerID    } }
@@ -194,10 +179,9 @@ final class SafeOpenStore: ObservableObject {
     /// UI rule.
     func retryPendingRedemptions() async {
         for await result in Transaction.all {
-            guard case .verified(let tx) = result else { continue }
-            // Redeem any credit pack: canonical IDs or legacy IDs
-            let isCreditProduct = Self.allProductIDs.contains(tx.productID)
-            guard isCreditProduct, tx.revocationDate == nil else { continue }
+            guard case .verified(let tx) = result,
+                  Self.allProductIDs.contains(tx.productID),
+                  tx.revocationDate == nil else { continue }
             await redeem(transaction: tx)
         }
         await refreshBalance()
