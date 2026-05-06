@@ -3,18 +3,18 @@
   "nonRenewingSubscriptions" : [],
   "products" : [
     {
-      "displayPrice" : "5.00",
+      "displayPrice" : "3.99",
       "familyShareable" : false,
       "internalID" : "C0F1A8E1-1001",
       "localizations" : [
         {
-          "description" : "100 credits for use across SafeOpen, MeritMosaic, AeroMosaic, and Meridian. AI features cost 1 credit each. Credits never expire.",
-          "displayName" : "100 Credits",
+          "description" : "500 SafeOpen credits. AI-powered link inspection costs 1 credit per scan. Credits never expire.",
+          "displayName" : "500 Credits",
           "locale" : "en_US"
         }
       ],
       "productID" : "com.katafract.safeopen.credits_standard",
-      "referenceName" : "100 Credits",
+      "referenceName" : "500 Credits",
       "type" : "Consumable"
     }
   ],
