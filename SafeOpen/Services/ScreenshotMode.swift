@@ -240,6 +240,7 @@ struct ScreenshotMode {
     </html>
     """
 
+
     /// Mock inspection result: risky (different safe URL)
     static let riskyResult = InspectionResult(
         id: UUID(),
