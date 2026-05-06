@@ -71,6 +71,30 @@ class ScreenshotTests: XCTestCase {
         snapshot("06-upgrade-sheet")
     }
 
+    // MARK: - Frame 07: Browser result (Inspect tab with safe verdict displayed)
+
+    func testCapture07BrowserResult() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
+            "-ScreenshotMode-result", "safe"
+        ])
+        sleep(4)
+        snapshot("07-browser-result")
+    }
+
+    // MARK: - Frame 08: Account with subscriber state (Account tab, zero credits, no upgrade prompt)
+
+    func testCapture08AccountSubscriber() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "3",
+            "-ScreenshotMode-balance", "0"
+        ])
+        sleep(4)
+        snapshot("08-account-subscriber")
+    }
+
     // MARK: - Helpers
 
     private func launch(flags: [String]) -> XCUIApplication {
