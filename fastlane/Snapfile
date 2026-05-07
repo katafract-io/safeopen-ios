@@ -9,6 +9,10 @@ devices([
 
 languages(["en-US"])
 
+# cmfmbp has iOS 26.4 AND 26.4.1 — device sims are built against 26.4.1.
+# Without pin fastlane picks 26.4 and fails to match. Update if runner upgrades.
+ios_version("26.4.1")
+
 # UI test scheme name
 # Use the APP scheme — it now includes SafeOpenUITests in TestAction Testables (buildForTesting=YES)
 # AND in TestAction.Testables. The SafeOpenUITests scheme has no LaunchAction app ref so it can't
