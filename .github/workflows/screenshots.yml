@@ -19,7 +19,7 @@ jobs:
   regenerate:
     name: Capture + upload screenshots
     runs-on: [ self-hosted, macOS, ios-build, ARM64 ]
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     env:
       APP_NAME: safeopen
@@ -109,15 +109,18 @@ jobs:
           set -o pipefail
           export PATH="${RBENV_RUBY}/bin:$PATH"
           rm -rf fastlane/screenshots
-          ${RBENV_RUBY}/bin/bundle exec fastlane ${FASTLANE_LANE} 2>&1 | tee /tmp/fastlane.log | tail -80
+          FASTLANE_LOG="/tmp/fastlane-${APP_NAME}-${{ github.run_id }}.log"
+          ${RBENV_RUBY}/bin/bundle exec fastlane ${FASTLANE_LANE} 2>&1 | tee "$FASTLANE_LOG" | tail -80
           echo "shot_count=$(find fastlane/screenshots -name '*.png' 2>/dev/null | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          echo "fastlane_log=$FASTLANE_LOG" >> "$GITHUB_OUTPUT"
 
       - name: Collect artifacts
         if: always()
         run: |
           mkdir -p /tmp/screenshot-artifacts
           cp -r fastlane/screenshots /tmp/screenshot-artifacts/ 2>/dev/null || true
-          tail -50 /tmp/fastlane.log > /tmp/screenshot-artifacts/fastlane.tail.log 2>/dev/null || true
+          LOG="${{ steps.fastlane.outputs.fastlane_log }}"
+          [ -f "$LOG" ] && tail -80 "$LOG" > /tmp/screenshot-artifacts/fastlane.tail.log || true
 
       - name: Upload artifacts
         if: always()
