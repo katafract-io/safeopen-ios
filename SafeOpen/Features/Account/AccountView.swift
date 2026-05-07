@@ -110,7 +110,7 @@ struct AccountView: View {
                 Button("Clear History", role: .destructive) { appState.clearHistory() }
                 Button("Cancel", role: .cancel) { }
             }
-            .task { await store.refreshBalance() }
+            .task { if !ScreenshotMode.isEnabled { await store.refreshBalance() } }
             .overlay {
                 if store.isPurchasing {
                     Color.black.opacity(0.3).ignoresSafeArea()

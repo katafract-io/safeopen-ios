@@ -92,6 +92,7 @@ struct ProUpgradeView: View {
                 }
             }
             .task {
+                guard !ScreenshotMode.isEnabled else { return }
                 await store.refreshBalance()
                 await store.refreshOffers()
             }

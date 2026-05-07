@@ -97,11 +97,16 @@ class ScreenshotTests: XCTestCase {
 
     // MARK: - Helpers
 
+    @discardableResult
     private func launch(flags: [String]) -> XCUIApplication {
         let app = XCUIApplication()
         setupSnapshot(app)
         app.launchArguments += flags
         app.launch()
+        XCTAssertTrue(
+            app.wait(for: .runningForeground, timeout: 30),
+            "App did not reach foreground within 30s — aborting to avoid silent 39-min 0-PNG run"
+        )
         return app
     }
 }

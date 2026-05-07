@@ -50,7 +50,7 @@ struct AppCoordinator: View {
             ProUpgradeView()
         }
         .sheet(isPresented: Binding(
-            get: { !hasSeenOnboarding },
+            get: { !hasSeenOnboarding && !ScreenshotMode.isEnabled },
             set: { if !$0 { hasSeenOnboarding = true } }
         )) {
             OnboardingView(onDismiss: {

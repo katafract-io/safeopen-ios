@@ -436,7 +436,7 @@ struct OpenSafelyButton: View {
                 manager.needsCredits = false
             }
         }
-        .task { await store.refreshBalance() }
+        .task { if !ScreenshotMode.isEnabled { await store.refreshBalance() } }
     }
 
     private func openSafely() async {
