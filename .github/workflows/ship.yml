@@ -2,7 +2,6 @@ name: Ship to TestFlight
 
 on:
   push:
-    branches: [ main, "release/*" ]
     tags: [ "v*" ]
   workflow_dispatch:
     inputs:
@@ -18,12 +17,6 @@ concurrency:
 jobs:
   archive-and-upload:
     name: Archive + TestFlight upload
-    # Skip on push unless commit message contains [ship] or it's a version tag.
-    # Prevents every fix commit from burning cmfmbp on a TestFlight build.
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      startsWith(github.ref, 'refs/tags/v') ||
-      contains(github.event.head_commit.message, '[ship]')
     runs-on: [ self-hosted, macOS, ios-build, ARM64 ]
     timeout-minutes: 30
 
