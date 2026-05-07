@@ -74,11 +74,7 @@ jobs:
 
       - name: Regenerate Xcode project (if xcodegen)
         run: |
-          if [ -f "project.yml" ] && command -v xcodegen >/dev/null 2>&1; then
-            xcodegen generate 2>&1 | tail -20
-          else
-            echo "no xcodegen needed"
-          fi
+          echo "Skipping xcodegen — committed xcodeproj preserved to retain FASTLANE_SNAPSHOT=1 in scheme TestAction"
 
       - name: Install Ruby deps (Ruby 3.3.11 via rbenv)
         run: |
@@ -105,6 +101,7 @@ jobs:
           FASTLANE_HIDE_CHANGELOG: 1
           FASTLANE_SKIP_UPDATE_CHECK: 1
           FASTLANE_DISABLE_COLORS: 1
+          FASTLANE_SNAPSHOT: "1"
         run: |
           set -o pipefail
           export PATH="${RBENV_RUBY}/bin:$PATH"
