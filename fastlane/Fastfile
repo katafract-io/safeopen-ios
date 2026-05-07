@@ -2,6 +2,32 @@
 # Doctrine: feedback_screenshot_seed_release_gate.md + feedback_validate_one_png_before_long_watcher.md
 # Safety: never let a 0-PNG run wipe ASC. smoke validates the pipeline before submit_version_screenshots.
 
+require 'snapshot/test_command_generator'
+# Monkey-patch: fastlane's simctl parser truncates 3-component iOS versions (e.g. 26.4.1 → "26.4"),
+# causing xcodebuild to fail with "device not found" when the .1 runtime is installed but .0 isn't.
+# Fix: use UDID-based destinations instead of name+OS — bypasses the version string mismatch.
+class ::Snapshot::TestCommandGenerator
+  class << self
+    def destination(devices)
+      devices = [devices] unless devices.is_a?(Array)
+      os = case devices.first.to_s
+           when /^Apple TV/ then 'tvOS'
+           when /^Apple Watch/ then 'watchOS'
+           else 'iOS'
+           end
+      os_version = ::Snapshot.config[:ios_version] || ::Snapshot::LatestOsVersion.version(os)
+      destinations = devices.map do |d|
+        device = find_device(d, os_version)
+        FastlaneCore::UI.user_error!("No device found named '#{d}' (os_version=#{os_version})") if device.nil?
+        FastlaneCore::UI.message("UDID-patched destination: #{device.name} (#{device.os_version}) udid=#{device.udid}")
+        "-destination 'platform=#{os} Simulator,id=#{device.udid}'"
+      end
+      [destinations.join(' ')]
+    end
+  end
+end
+FastlaneCore::UI.message("[Fastfile] UDID-destination monkey-patch loaded for ::Snapshot::TestCommandGenerator")
+
 default_platform(:ios)
 
 # Aborts the lane unless at least MIN_SHOTS PNG files exist under fastlane/screenshots/.
