@@ -26,9 +26,9 @@ struct QRScannerView: View {
                 InspectionResultView(result: result)
             }
         }
-        .task { await viewModel.requestPermission() }
+        .task { if !ScreenshotMode.isEnabled { await viewModel.requestPermission() } }
         .onDisappear { viewModel.stopScanning() }
-        .onAppear { viewModel.resumeScanning() }
+        .onAppear { if !ScreenshotMode.isEnabled { viewModel.resumeScanning() } }
         .onReceive(viewModel.$result.compactMap { $0 }) { appState.record($0) }
     }
 }

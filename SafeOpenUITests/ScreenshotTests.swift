@@ -9,7 +9,7 @@ class ScreenshotTests: XCTestCase {
     // MARK: - Frame 01: Empty paste (default Inspect tab, home state)
 
     func testCapture01PasteEmpty() {
-        let app = launch(flags: ["-ScreenshotMode", "seedData"])
+        let app = launch(flags: ["-ScreenshotMode", "seedData", "-ScreenshotMode-tab", "1"])
         sleep(4)
         snapshot("01-paste-empty")
     }
@@ -19,6 +19,7 @@ class ScreenshotTests: XCTestCase {
     func testCapture02ResultSafe() {
         let app = launch(flags: [
             "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
             "-ScreenshotMode-result", "safe"
         ])
         sleep(4)
@@ -30,6 +31,7 @@ class ScreenshotTests: XCTestCase {
     func testCapture03ResultDanger() {
         let app = launch(flags: [
             "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
             "-ScreenshotMode-result", "danger"
         ])
         sleep(4)
@@ -64,6 +66,7 @@ class ScreenshotTests: XCTestCase {
     func testCapture06UpgradeSheet() {
         let app = launch(flags: [
             "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
             "-ScreenshotMode-upgrade",
             "-ScreenshotMode-balance", "0"
         ])

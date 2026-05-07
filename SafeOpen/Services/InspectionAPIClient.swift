@@ -7,6 +7,7 @@ import Security
 struct InspectionAPIClient {
 
     static let baseURL = "https://api.katafract.com"
+    private static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
     private static let session: URLSession = {
         let config = URLSessionConfiguration.ephemeral
         config.timeoutIntervalForRequest = 15
@@ -49,6 +50,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/prefetch")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [
@@ -78,6 +80,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safe-open/session")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [
@@ -126,6 +129,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "GET"
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         if PlatformEntitlement.isPlatformUnlocked,
            let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
@@ -158,6 +162,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits/offers")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "GET"
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         if PlatformEntitlement.isPlatformUnlocked,
            let token = UserDefaults(suiteName: PlatformEntitlement.sharedGroup)?.string(forKey: PlatformEntitlement.tokenKey) {
@@ -184,6 +189,7 @@ struct InspectionAPIClient {
         let endpoint = URL(string: "\(Self.baseURL)/v1/safeopen/credits/redeem")!
         var req = URLRequest(url: endpoint)
         req.httpMethod = "POST"
+        req.setValue("Bearer \(Self.serviceToken)", forHTTPHeaderField: "Authorization")
         req.setValue(Self.deviceID, forHTTPHeaderField: "X-Device-ID")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         if PlatformEntitlement.isPlatformUnlocked,
