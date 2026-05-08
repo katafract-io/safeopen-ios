@@ -10,8 +10,8 @@ struct InspectionAPIClient {
     private static let serviceToken = "3e27ee700e0b3ef336b4c7b5360af3fdb16410fb445e2b1889bf5da5b083b977"
     private static let session: URLSession = {
         let config = URLSessionConfiguration.ephemeral
-        config.timeoutIntervalForRequest = 15
-        config.timeoutIntervalForResource = 30
+        config.timeoutIntervalForRequest = 35
+        config.timeoutIntervalForResource = 45
         return URLSession(configuration: config)
     }()
 

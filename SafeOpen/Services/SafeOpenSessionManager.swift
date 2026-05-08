@@ -53,6 +53,8 @@ final class SafeOpenSessionManager: ObservableObject {
             } catch let error as URLError where error.code == .notConnectedToInternet {
                 isOffline = true
                 self.error = "No internet connection."
+            } catch InspectionAPIError.serverError(let code, _) where code == 400 {
+                self.error = "This URL can't be scanned for security reasons."
             } catch InspectionAPIError.serverError(let code, _) where code >= 500 {
                 self.error = "SafeOpen servers are temporarily unavailable."
             } catch {
@@ -94,6 +96,8 @@ final class SafeOpenSessionManager: ObservableObject {
             } catch let error as URLError where error.code == .notConnectedToInternet {
                 isOffline = true
                 self.error = "No internet connection."
+            } catch InspectionAPIError.serverError(let code, _) where code == 400 {
+                self.error = "This URL can't be scanned for security reasons."
             } catch InspectionAPIError.serverError(let code, _) where code >= 500 {
                 self.error = "SafeOpen servers are temporarily unavailable."
             } catch {

@@ -394,7 +394,10 @@ struct OpenSafelyButton: View {
                     .opacity(PlatformEntitlement.isPlatformUnlocked ? 0.5 : 1)
             }
         }
-        .alert("Error", isPresented: .constant(manager.error != nil), actions: {
+        .alert("Error", isPresented: Binding(
+            get: { manager.error != nil },
+            set: { if !$0 { manager.error = nil } }
+        ), actions: {
             Button("OK") { manager.error = nil }
         }, message: {
             Text(manager.error ?? "")
