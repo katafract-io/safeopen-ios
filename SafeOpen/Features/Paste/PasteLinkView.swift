@@ -23,13 +23,7 @@ struct PasteLinkView: View {
                             .foregroundStyle(Color.kataSapphire.opacity(0.6))
                             .kerning(2)
                             .onTapGesture(count: 3) {
-                                #if DEBUG
                                 showDebug = true
-                                #else
-                                if PlatformEntitlement.isPlatformUnlocked {
-                                    showDebug = true
-                                }
-                                #endif
                             }
                     }
                     .padding(.top, 8)

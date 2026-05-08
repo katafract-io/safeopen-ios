@@ -45,6 +45,9 @@ final class SafeOpenSessionManager: ObservableObject {
                     expiresAt:    result.expiresAt
                 )
                 scheduleExpiry(at: result.expiresAt)
+            } catch InspectionAPIError.unauthorized {
+                soLog("prefetch: 401/403 unauthorized — token rejected by backend", category: "session")
+                self.error = "Service error. Please update the app."
             } catch InspectionAPIError.creditsRequired {
                 soLog("prefetch: credits required", category: "session")
                 if !PlatformEntitlement.isPlatformUnlocked {
@@ -95,6 +98,9 @@ final class SafeOpenSessionManager: ObservableObject {
                 activeSessionId = s.sessionId
                 scheduleExpiry(at: s.expiresAt)
                 await SafeOpenStore.shared.refreshBalance()
+            } catch InspectionAPIError.unauthorized {
+                soLog("openSession: 401/403 unauthorized — token rejected by backend", category: "session")
+                self.error = "Service error. Please update the app."
             } catch InspectionAPIError.creditsRequired {
                 soLog("openSession: credits required", category: "session")
                 if !PlatformEntitlement.isPlatformUnlocked {
