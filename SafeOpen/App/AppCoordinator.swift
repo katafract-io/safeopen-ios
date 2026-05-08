@@ -11,6 +11,7 @@ struct AppCoordinator: View {
     @EnvironmentObject var store: SafeOpenStore
     @State private var screenshotResult: InspectionResult?
     @State private var showScreenshotUpgrade = false
+    @State private var screenshotPrefetch: PrefetchResult?
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     var body: some View {
@@ -49,6 +50,15 @@ struct AppCoordinator: View {
         .sheet(isPresented: $showScreenshotUpgrade) {
             ProUpgradeView()
         }
+        .sheet(item: $screenshotPrefetch) { prefetch in
+            PrefetchPreviewSheet(
+                prefetch: prefetch,
+                onOpen: { screenshotPrefetch = nil },
+                onCancel: { screenshotPrefetch = nil }
+            )
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
         .sheet(isPresented: Binding(
             get: { !hasSeenOnboarding && !ScreenshotMode.isEnabled },
             set: { if !$0 { hasSeenOnboarding = true } }
@@ -71,6 +81,7 @@ struct AppCoordinator: View {
                 if ScreenshotMode.presentUpgradeSheet {
                     showScreenshotUpgrade = true
                 }
+                screenshotPrefetch = ScreenshotMode.presentPrefetch
             }
         }
     }

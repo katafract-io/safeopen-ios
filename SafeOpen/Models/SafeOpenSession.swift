@@ -21,7 +21,8 @@ struct SafeOpenSession: Codable {
     }
 }
 
-struct PrefetchResult: Codable {
+struct PrefetchResult: Codable, Identifiable {
+    var id: String { sessionId }
     let originalUrl: String
     let finalUrl: String
     let statusCode: Int

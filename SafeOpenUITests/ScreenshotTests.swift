@@ -98,6 +98,18 @@ class ScreenshotTests: XCTestCase {
         snapshot("08-account-subscriber")
     }
 
+    // MARK: - Frame 09: PrefetchPreviewSheet (NYT web preview with snapshot)
+
+    func testCapture09PreviewSheet() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
+            "-ScreenshotMode-prefetch"
+        ])
+        sleep(5)
+        snapshot("09-preview-sheet")
+    }
+
     // MARK: - Helpers
 
     @discardableResult

@@ -820,6 +820,10 @@ struct SnapshotWebView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {}
 
     private func load(_ wv: WKWebView) {
+        if ScreenshotMode.isEnabled {
+            wv.loadHTMLString(ScreenshotMode.snapshotHTML, baseURL: nil)
+            return
+        }
         let req = URLRequest(url: url)
         wv.load(req)
     }
