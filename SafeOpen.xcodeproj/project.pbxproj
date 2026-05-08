@@ -53,6 +53,8 @@
 		DCAB28EAB482D33A999557CE /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = A666E307890E875CE4AB00E3 /* Configuration.storekit */; };
 		FB3E63825766C07D9FB4822F /* ScannedPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EF11F4BD8BF70F7ECEA6DBB /* ScannedPayload.swift */; };
 		FFE2A1FC09AE24685899E49E /* PlatformEntitlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A910C8B3ED332533D83F9DC1 /* PlatformEntitlement.swift */; };
+		AABBCC001122334455667702 /* FounderDebugPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC001122334455667701 /* FounderDebugPanel.swift */; };
+		AABBCC001122334455667704 /* SOLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBCC001122334455667703 /* SOLogger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,6 +120,8 @@
 		E591E0D58D6F5654B9C2F837 /* SafeOpenApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeOpenApp.swift; sourceTree = "<group>"; };
 		EE0E76A9D021D3A0BBC0C3BC /* PayloadType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadType.swift; sourceTree = "<group>"; };
 		F86D1887A3C07BE3A3DB322A /* PayloadParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadParser.swift; sourceTree = "<group>"; };
+		AABBCC001122334455667701 /* FounderDebugPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FounderDebugPanel.swift; sourceTree = "<group>"; };
+		AABBCC001122334455667703 /* SOLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOLogger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,9 +150,18 @@
 				76D4DB25C1CEAD3CDBFF581C /* SafeOpenSessionManager.swift */,
 				5A0DB197A0884854435CDFEB /* SafeOpenStore.swift */,
 				5AD2DAF1222DE78210A9DFC3 /* ScreenshotMode.swift */,
+				AABBCC001122334455667703 /* SOLogger.swift */,
 				9AD8FF9A89EC0FC65425E9DB /* URLNormalizationService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		AABBCC001122334455667705 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				AABBCC001122334455667701 /* FounderDebugPanel.swift */,
+			);
+			path = Debug;
 			sourceTree = "<group>";
 		};
 		0F59D5BB59FBA173D834C29C /* Inspection */ = {
@@ -175,6 +188,7 @@
 			children = (
 				9EABE9A799AA22F38F58C5C3 /* Account */,
 				B3FACA49BD459E708E1DB55D /* Browser */,
+				AABBCC001122334455667705 /* Debug */,
 				8480836F31F59B2BBEFBDEE9 /* History */,
 				0F59D5BB59FBA173D834C29C /* Inspection */,
 				6326670F957CB26D77F0E2A3 /* Paste */,
@@ -487,6 +501,8 @@
 				FB3E63825766C07D9FB4822F /* ScannedPayload.swift in Sources */,
 				7CC6841248F92F50116BD4AD /* ScreenshotMode.swift in Sources */,
 				CE9AC7811829C2D659088C19 /* URLNormalizationService.swift in Sources */,
+				AABBCC001122334455667702 /* FounderDebugPanel.swift in Sources */,
+				AABBCC001122334455667704 /* SOLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
