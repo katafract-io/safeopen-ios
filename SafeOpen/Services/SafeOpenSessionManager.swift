@@ -22,6 +22,7 @@ final class SafeOpenSessionManager: ObservableObject {
     // MARK: - Prefetch
 
     func loadPreview(url: URL) async {
+        soLog("loadPreview → \(url.absoluteString.prefix(80))", category: "session")
         loadTask?.cancel()
         isLoading = true
         error = nil
@@ -32,6 +33,7 @@ final class SafeOpenSessionManager: ObservableObject {
             defer { isLoading = false }
             do {
                 let result = try await api.prefetchURL(url)
+                soLog("prefetch OK: status=\(result.statusCode) snapshot=\(result.hasSnapshot) ephemeral=\(result.ephemeral)", category: "session")
                 self.prefetch = result
                 session = SafeOpenSession(
                     sessionId:    result.sessionId,
@@ -44,20 +46,26 @@ final class SafeOpenSessionManager: ObservableObject {
                 )
                 scheduleExpiry(at: result.expiresAt)
             } catch InspectionAPIError.creditsRequired {
+                soLog("prefetch: credits required", category: "session")
                 if !PlatformEntitlement.isPlatformUnlocked {
                     needsCredits = true
                 }
             } catch InspectionAPIError.rateLimited {
+                soLog("prefetch: rate limited", category: "session")
                 isRateLimited = true
                 self.error = "Too many requests. Please wait a moment and try again."
             } catch let error as URLError where error.code == .notConnectedToInternet {
+                soLog("prefetch: offline (\(error.localizedDescription))", category: "session")
                 isOffline = true
                 self.error = "No internet connection."
             } catch InspectionAPIError.serverError(let code, _) where code == 400 {
+                soLog("prefetch: blocked 400", category: "session")
                 self.error = "This URL can't be scanned for security reasons."
             } catch InspectionAPIError.serverError(let code, _) where code >= 500 {
+                soLog("prefetch: server error \(code)", category: "session")
                 self.error = "SafeOpen servers are temporarily unavailable."
             } catch {
+                soLog("prefetch: error — \(error.localizedDescription)", category: "session")
                 self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
             }
             if needsCredits == false {
@@ -70,6 +78,7 @@ final class SafeOpenSessionManager: ObservableObject {
     // MARK: - Full proxy session
 
     func openSession(url: URL) async {
+        soLog("openSession → \(url.absoluteString.prefix(80))", category: "session")
         loadTask?.cancel()
         isLoading = true
         error = nil
@@ -87,20 +96,26 @@ final class SafeOpenSessionManager: ObservableObject {
                 scheduleExpiry(at: s.expiresAt)
                 await SafeOpenStore.shared.refreshBalance()
             } catch InspectionAPIError.creditsRequired {
+                soLog("openSession: credits required", category: "session")
                 if !PlatformEntitlement.isPlatformUnlocked {
                     needsCredits = true
                 }
             } catch InspectionAPIError.rateLimited {
+                soLog("openSession: rate limited", category: "session")
                 isRateLimited = true
                 self.error = "Too many requests. Please wait a moment and try again."
             } catch let error as URLError where error.code == .notConnectedToInternet {
+                soLog("openSession: offline (\(error.localizedDescription))", category: "session")
                 isOffline = true
                 self.error = "No internet connection."
             } catch InspectionAPIError.serverError(let code, _) where code == 400 {
+                soLog("openSession: blocked 400", category: "session")
                 self.error = "This URL can't be scanned for security reasons."
             } catch InspectionAPIError.serverError(let code, _) where code >= 500 {
+                soLog("openSession: server error \(code)", category: "session")
                 self.error = "SafeOpen servers are temporarily unavailable."
             } catch {
+                soLog("openSession: error — \(error.localizedDescription)", category: "session")
                 self.error = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
             }
         }
@@ -109,6 +124,7 @@ final class SafeOpenSessionManager: ObservableObject {
 
     func revokeCurrentSession() async {
         guard let id = activeSessionId else { return }
+        soLog("revoking session \(id.prefix(8))", category: "session")
         activeSessionId = nil
         session = nil
         prefetch = nil

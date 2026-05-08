@@ -10,7 +10,9 @@ struct SafeOpenApp: App {
     init() {
         guard !ScreenshotMode.isEnabled else { return }
         Task.detached(priority: .background) {
+            soLog("attest bootstrap start", category: "attest")
             await AppAttestClient.shared.bootstrapIfNeeded()
+            soLog("attest bootstrap done", category: "attest")
             await DeviceCheckClient.claimWelcomeOnce()
         }
     }
@@ -22,6 +24,7 @@ struct SafeOpenApp: App {
                 .environmentObject(store)
                 .tint(KataAccent.gold)
                 .onChange(of: scenePhase) { _, newPhase in
+                    soLog("scenePhase → \(newPhase)", category: "scene")
                     if newPhase == .active, !ScreenshotMode.isEnabled {
                         Task { await SafeOpenStore.shared.retryPendingRedemptions() }
                     }
