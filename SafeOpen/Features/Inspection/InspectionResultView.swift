@@ -394,14 +394,6 @@ struct OpenSafelyButton: View {
                     .opacity(PlatformEntitlement.isPlatformUnlocked ? 0.5 : 1)
             }
         }
-        .alert("Error", isPresented: Binding(
-            get: { manager.error != nil },
-            set: { if !$0 { manager.error = nil } }
-        ), actions: {
-            Button("OK") { manager.error = nil }
-        }, message: {
-            Text(manager.error ?? "")
-        })
         .sheet(isPresented: $showBrowser, onDismiss: {
             Task { await manager.revokeCurrentSession() }
         }) {
@@ -409,8 +401,34 @@ struct OpenSafelyButton: View {
                 SafeOpenBrowserView(url: url, session: session)
             }
         }
-        .sheet(isPresented: $showPrefetchSheet) {
-            if let prefetch = manager.prefetch {
+        .sheet(isPresented: $showPrefetchSheet, onDismiss: {
+            manager.error = nil
+            Task { await manager.revokeCurrentSession() }
+        }) {
+            if let errorMsg = manager.error {
+                VStack(spacing: 24) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.orange)
+                    Text("Couldn't analyze link")
+                        .font(.headline)
+                    Text(errorMsg)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+                    Button("Dismiss") {
+                        showPrefetchSheet = false
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.orange)
+                    .controlSize(.large)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(UIColor.systemGroupedBackground))
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+            } else if let prefetch = manager.prefetch {
                 PrefetchPreviewSheet(
                     prefetch: prefetch,
                     onOpen: { showPrefetchSheet = false; showBrowser = true },
@@ -435,6 +453,7 @@ struct OpenSafelyButton: View {
         }
         .onChange(of: manager.needsCredits) { _, needs in
             if needs {
+                showPrefetchSheet = false
                 showBuyCredits = true
                 manager.needsCredits = false
             }
@@ -450,9 +469,6 @@ struct OpenSafelyButton: View {
         manager.clear()
         showPrefetchSheet = true  // open sheet immediately so user sees activity
         await manager.loadPreview(url: url)
-        if manager.prefetch == nil {
-            showPrefetchSheet = false  // error or credits required — dismiss
-        }
     }
 
 }

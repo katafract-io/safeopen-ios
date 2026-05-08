@@ -6,6 +6,7 @@ struct PasteLinkView: View {
     @StateObject private var viewModel = PasteLinkViewModel()
     @FocusState private var inputFocused: Bool
     @Binding var pendingURL: URL?
+    @State private var showDebug = false
 
     var body: some View {
         NavigationStack {
@@ -21,6 +22,11 @@ struct PasteLinkView: View {
                             .font(.kataMono(10))
                             .foregroundStyle(Color.kataSapphire.opacity(0.6))
                             .kerning(2)
+                            .onTapGesture(count: 3) {
+                                if PlatformEntitlement.isPlatformUnlocked {
+                                    showDebug = true
+                                }
+                            }
                     }
                     .padding(.top, 8)
 
@@ -124,6 +130,9 @@ struct PasteLinkView: View {
         }
         .fullScreenCover(isPresented: $viewModel.isInspecting) {
             InspectingSealView()
+        }
+        .sheet(isPresented: $showDebug) {
+            FounderDebugPanel()
         }
         .onReceive(viewModel.$result.compactMap { $0 }) { appState.record($0) }
         .onAppear {
