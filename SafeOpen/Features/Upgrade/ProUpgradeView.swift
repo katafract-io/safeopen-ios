@@ -40,18 +40,20 @@ struct ProUpgradeView: View {
                     VStack(spacing: 12) {
                         if store.products.isEmpty {
                             KataProgressRing(size: 28).padding(28)
-                        } else if let product = store.standard {
-                            let offer = store.offers.first { $0.productId == product.id }
-                            CreditPackRow(
-                                product: product,
-                                baseCredits: offer?.baseCredits ?? credits(for: product.id),
-                                bonusCredits: offer?.bonusCredits ?? 0,
-                                bonusType: offer?.bonusType ?? "",
-                                highlight: true
-                            ) {
-                                Task { await store.purchase(product) }
+                        } else {
+                            ForEach(store.products, id: \.id) { product in
+                                let offer = store.offers.first { $0.productId == product.id }
+                                CreditPackRow(
+                                    product: product,
+                                    baseCredits: offer?.baseCredits ?? credits(for: product.id),
+                                    bonusCredits: offer?.bonusCredits ?? 0,
+                                    bonusType: offer?.bonusType ?? "",
+                                    highlight: product.id == SafeOpenStore.standardID
+                                ) {
+                                    Task { await store.purchase(product) }
+                                }
+                                .disabled(store.isPurchasing)
                             }
-                            .disabled(store.isPurchasing)
                         }
                     }
                     .padding(16)
