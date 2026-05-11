@@ -173,7 +173,7 @@ private struct CreditsLedgerView: View {
             // Secondary line: free vs cap
             Text("Free credits: \(freeBalance) / \(freeBalanceCap)")
                 .font(.kataCaption(11))
-                .foregroundStyle(Color.kataIce.opacity(0.4))
+                .foregroundStyle(Color.kataIce.opacity(0.7))
         }
         .padding(.vertical, 12)
         .onChange(of: balance) { oldValue, newValue in

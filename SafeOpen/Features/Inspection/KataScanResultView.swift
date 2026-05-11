@@ -161,8 +161,8 @@ private struct DangerResultBanner: View {
                 // Struck-through URL
                 Text(urlString)
                     .font(.kataMono(13))
-                    .foregroundStyle(Color.kataIce.opacity(0.4))
-                    .strikethrough(true, color: Color.kataIce.opacity(0.25))
+                    .foregroundStyle(Color.kataIce.opacity(0.65))
+                    .strikethrough(true, color: Color.kataIce.opacity(0.45))
                     .lineLimit(2)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 8)
@@ -223,11 +223,11 @@ private struct UnknownResultBanner: View {
             VStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .stroke(Color.kataIce.opacity(0.2), lineWidth: 0.5)
+                        .stroke(Color.kataIce.opacity(0.45), lineWidth: 0.5)
                         .frame(width: 60, height: 60)
                     Image(systemName: "questionmark")
                         .font(.system(size: 28, weight: .ultraLight))
-                        .foregroundStyle(Color.kataIce.opacity(0.5))
+                        .foregroundStyle(Color.kataIce.opacity(0.8))
                 }
                 .padding(.top, 20)
 

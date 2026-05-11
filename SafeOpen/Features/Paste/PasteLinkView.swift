@@ -17,10 +17,10 @@ struct PasteLinkView: View {
                     VStack(spacing: 4) {
                         Text("SafeOpen")
                             .font(.kataDisplay(28))
-                            .foregroundStyle(Color.kataMidnight)
+                            .foregroundStyle(Color.kataIce)
                         Text("KATAFRACT")
                             .font(.kataMono(10))
-                            .foregroundStyle(Color.kataSapphire.opacity(0.6))
+                            .foregroundStyle(Color.kataIce.opacity(0.55))
                             .kerning(2)
                             .onTapGesture(count: 3) {
                                 showDebug = true
@@ -32,14 +32,14 @@ struct PasteLinkView: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("URL or Text")
                             .font(.kataCaption(12, weight: .semibold))
-                            .foregroundStyle(Color.kataMidnight.opacity(0.55))
+                            .foregroundStyle(Color.kataIce.opacity(0.65))
                             .padding(.horizontal, 4)
 
                         ZStack(alignment: .topLeading) {
                             if viewModel.input.isEmpty {
                                 Text("Paste a link, QR content, or any text…")
                                     .font(.kataBody(15))
-                                    .foregroundStyle(Color.kataMidnight.opacity(0.3))
+                                    .foregroundStyle(Color.kataIce.opacity(0.38))
                                     .padding(.top, 10)
                                     .padding(.leading, 4)
                                     .allowsHitTesting(false)
@@ -47,7 +47,7 @@ struct PasteLinkView: View {
 
                             TextEditor(text: $viewModel.input)
                                 .font(.kataMono(15))
-                                .foregroundStyle(Color.kataMidnight)
+                                .foregroundStyle(Color.kataIce)
                                 .scrollContentBackground(.hidden)
                                 .focused($inputFocused)
                                 .frame(minHeight: 110, alignment: .top)
@@ -57,10 +57,10 @@ struct PasteLinkView: View {
                         .padding(14)
                         .background(
                             RoundedRectangle(cornerRadius: 14)
-                                .fill(Color.kataIce.opacity(0.45))
+                                .fill(Color.kataNavy.opacity(0.5))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 14)
-                                        .stroke(Color.kataSapphire.opacity(0.3), lineWidth: 1)
+                                        .stroke(Color.kataIce.opacity(0.2), lineWidth: 1)
                                 )
                         )
                     }
@@ -88,7 +88,7 @@ struct PasteLinkView: View {
                             } label: {
                                 Label("Clear", systemImage: "xmark.circle")
                                     .font(.kataCaption(13))
-                                    .foregroundStyle(Color.kataMidnight.opacity(0.45))
+                                    .foregroundStyle(Color.kataIce.opacity(0.55))
                             }
                             .buttonStyle(.plain)
                         }

@@ -30,10 +30,10 @@ final class QRScannerViewModel: ObservableObject {
             let granted = await AVCaptureDevice.requestAccess(for: .video)
             cameraStatus = granted ? .authorized : .denied
             cameraAuthorized = granted
-            if granted { startScanning() }
+            if granted && previewLayer == nil { startScanning() }
         case .authorized:
             cameraAuthorized = true
-            startScanning()
+            if previewLayer == nil { startScanning() }
         default:
             cameraAuthorized = false
         }

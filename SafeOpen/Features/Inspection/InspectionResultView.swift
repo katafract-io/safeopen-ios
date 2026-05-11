@@ -441,7 +441,7 @@ struct OpenSafelyButton: View {
                     KataProgressRing(size: 44)
                     Text("Analyzing link…")
                         .font(.kataMono(13))
-                        .foregroundStyle(Color.kataGold.opacity(0.7))
+                        .foregroundStyle(Color.kataGold.opacity(0.9))
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .presentationDetents([.large])
