@@ -21,24 +21,28 @@ struct AppCoordinator: View {
                 .tabItem {
                     Label("Scan", systemImage: "qrcode.viewfinder")
                 }
+                .accessibilityIdentifier("scan-tab")
 
             PasteLinkView(pendingURL: $appState.pendingURLToInspect)
                 .tag(1)
                 .tabItem {
                     Label("Inspect", systemImage: "link.badge.plus")
                 }
+                .accessibilityIdentifier("inspect-tab")
 
             HistoryView()
                 .tag(2)
                 .tabItem {
                     Label("History", systemImage: "clock")
                 }
+                .accessibilityIdentifier("history-tab")
 
             AccountView()
                 .tag(3)
                 .tabItem {
                     Label("Account", systemImage: "person.circle")
                 }
+                .accessibilityIdentifier("account-tab")
         }
         .preferredColorScheme(.dark)
         .tint(KataAccent.gold)
