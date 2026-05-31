@@ -84,31 +84,35 @@ struct ScreenshotMode {
         canOpenSafely: true
     )
 
-    /// Mock inspection result: danger phishing
+    /// Mock inspection result: danger phishing.
+    /// This is the App Store HERO frame (frame 01). It must read instantly as a
+    /// CAUGHT phishing threat: high-contrast "Do not open." verdict, a lookalike
+    /// bank-login domain, and concrete reasons. Lead riskFactor is .punycodeHost
+    /// so the banner stamp surfaces the phishing/lookalike-domain reason first.
     static let dangerResult = InspectionResult(
         id: UUID(),
         payload: ScannedPayload(
             id: UUID(),
-            rawValue: "https://suspicious-bank-login.xyz/verify-account",
+            rawValue: "https://secure-chàse-login.xyz/verify-account",
             type: .url,
-            normalizedValue: "https://suspicious-bank-login.xyz/verify-account",
+            normalizedValue: "https://secure-chàse-login.xyz/verify-account",
             scannedAt: Date().addingTimeInterval(-3600),
             source: .shareExtension
         ),
-        title: "Suspicious Link",
-        summary: "Suspicious URL with phishing indicators. Domain registered recently. Avoid clicking.",
+        title: "Phishing — Do Not Open",
+        summary: "Phishing link. This domain imitates a real bank login page using lookalike characters and was registered days ago. Do not enter your credentials.",
         riskLevel: .high,
         riskFactors: [
+            .punycodeHost,
             .suspiciousPathKeyword,
-            .suspiciousEncoding,
-            .trackingParameters
+            .suspiciousEncoding
         ],
         recommendedAction: .block,
-        finalURL: URL(string: "https://suspicious-bank-login.xyz/verify-account?campaign=urgent"),
+        finalURL: URL(string: "https://secure-chàse-login.xyz/verify-account?campaign=urgent"),
         redirectHops: [
             RedirectHop(
                 id: UUID(),
-                url: URL(string: "https://suspicious-bank-login.xyz/verify-account")!,
+                url: URL(string: "https://secure-chàse-login.xyz/verify-account")!,
                 statusCode: 200,
                 resolvedLocally: false
             )

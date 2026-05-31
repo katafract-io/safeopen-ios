@@ -6,36 +6,55 @@ class ScreenshotTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    // MARK: - Frame 01: Empty paste (default Inspect tab, home state)
+    // MARK: - Frame 01 (HERO): Caught phishing threat
+    //
+    // App Store search shows frame 01. It MUST sell, not show an empty paste box.
+    // This seeds a malicious lookalike-bank URL and presents the danger verdict:
+    // high-contrast "Do not open." banner + phishing reasons (punycode lookalike
+    // host, suspicious path, encoding). This is the converting hero.
+    // Caption overlay (added later): "Know if a link is a scam before you tap".
 
-    func testCapture01PasteEmpty() {
-        let app = launch(flags: ["-ScreenshotMode", "seedData", "-ScreenshotMode-tab", "1"])
-        sleep(4)
-        snapshot("01-paste-empty")
-    }
-
-    // MARK: - Frame 02: Safe result (verdicts inspection)
-
-    func testCapture02ResultSafe() {
-        let app = launch(flags: [
-            "-ScreenshotMode", "seedData",
-            "-ScreenshotMode-tab", "1",
-            "-ScreenshotMode-result", "safe"
-        ])
-        sleep(4)
-        snapshot("02-result-safe")
-    }
-
-    // MARK: - Frame 03: Dangerous result (phishing warning)
-
-    func testCapture03ResultDanger() {
+    func testCapture01HeroDanger() {
         let app = launch(flags: [
             "-ScreenshotMode", "seedData",
             "-ScreenshotMode-tab", "1",
             "-ScreenshotMode-result", "danger"
         ])
         sleep(4)
-        snapshot("03-result-danger")
+        snapshot("01-hero-danger-phishing")
+    }
+
+    // MARK: - Frame 02: Caution verdict (scam gift-card link)
+    //
+    // A second populated verdict — a "Free Gift Card" scam flagged as caution.
+    // Demonstrates the on-device check catching a softer scam, not just hard
+    // phishing. (Camera scanner is intentionally NOT used as a frame: in the
+    // simulator / screenshot mode it renders the camera-permission wall, which
+    // is exactly the empty-state frame the ASO doctrine forbids.)
+    // Caption overlay: "QR codes and links, checked on-device".
+
+    func testCapture02ResultCaution() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
+            "-ScreenshotMode-result", "medium"
+        ])
+        sleep(4)
+        snapshot("02-result-caution")
+    }
+
+    // MARK: - Frame 03: Safe verdict (the reassuring counterpart)
+    //
+    // Caption overlay: "See the threat. Then decide.".
+
+    func testCapture03ResultSafe() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "1",
+            "-ScreenshotMode-result", "safe"
+        ])
+        sleep(4)
+        snapshot("03-result-safe")
     }
 
     // MARK: - Frame 04: History (tab 2, populated with 4 results)
@@ -49,65 +68,28 @@ class ScreenshotTests: XCTestCase {
         snapshot("04-history")
     }
 
-    // MARK: - Frame 05: Account (tab 3, with balance display)
+    // MARK: - Frame 05: Safe preview sheet (web snapshot + trackers)
 
-    func testCapture05Account() {
-        let app = launch(flags: [
-            "-ScreenshotMode", "seedData",
-            "-ScreenshotMode-tab", "3",
-            "-ScreenshotMode-balance", "247"
-        ])
-        sleep(4)
-        snapshot("05-account-balance")
-    }
-
-    // MARK: - Frame 06: Upgrade sheet (buy credits, zero balance)
-
-    func testCapture06UpgradeSheet() {
-        let app = launch(flags: [
-            "-ScreenshotMode", "seedData",
-            "-ScreenshotMode-tab", "1",
-            "-ScreenshotMode-upgrade",
-            "-ScreenshotMode-balance", "0"
-        ])
-        sleep(4)
-        snapshot("06-upgrade-sheet")
-    }
-
-    // MARK: - Frame 07: Browser result (Inspect tab with safe verdict displayed)
-
-    func testCapture07BrowserResult() {
-        let app = launch(flags: [
-            "-ScreenshotMode", "seedData",
-            "-ScreenshotMode-tab", "1",
-            "-ScreenshotMode-result", "safe"
-        ])
-        sleep(4)
-        snapshot("07-browser-result")
-    }
-
-    // MARK: - Frame 08: Account with subscriber state (Account tab, zero credits, no upgrade prompt)
-
-    func testCapture08AccountSubscriber() {
-        let app = launch(flags: [
-            "-ScreenshotMode", "seedData",
-            "-ScreenshotMode-tab", "3",
-            "-ScreenshotMode-balance", "0"
-        ])
-        sleep(4)
-        snapshot("08-account-subscriber")
-    }
-
-    // MARK: - Frame 09: PrefetchPreviewSheet (NYT web preview with snapshot)
-
-    func testCapture09PreviewSheet() {
+    func testCapture05PreviewSheet() {
         let app = launch(flags: [
             "-ScreenshotMode", "seedData",
             "-ScreenshotMode-tab", "1",
             "-ScreenshotMode-prefetch"
         ])
         sleep(5)
-        snapshot("09-preview-sheet")
+        snapshot("05-preview-sheet")
+    }
+
+    // MARK: - Frame 06: Account (tab 3, with balance display)
+
+    func testCapture06Account() {
+        let app = launch(flags: [
+            "-ScreenshotMode", "seedData",
+            "-ScreenshotMode-tab", "3",
+            "-ScreenshotMode-balance", "247"
+        ])
+        sleep(4)
+        snapshot("06-account-balance")
     }
 
     // MARK: - Helpers
