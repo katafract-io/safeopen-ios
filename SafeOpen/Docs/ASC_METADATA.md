@@ -113,7 +113,7 @@ No demo credentials required.
 | Product ID | Name | Price | Type |
 |---|---|---|---|
 | com.katafract.safeopen.credits_starter | SafeOpen Credits — Starter | $0.99 | Consumable |
-| com.katafract.safeopen.credits_standard | SafeOpen Credits — Standard | $2.99 | Consumable |
+| com.katafract.safeopen.credits_standard | SafeOpen Credits — Standard | $3.99 | Consumable |
 | com.katafract.safeopen.credits_power | SafeOpen Credits — Power | $9.99 | Consumable |
 
 ASC Internal IDs: starter `6762161470`, standard `6762160344`, power `6762157575`
