@@ -36,7 +36,7 @@ For each row below, click "Create" → choose **Consumable**:
 | Reference Name | `Standard Credit Pack` |
 | Product ID | `com.katafract.safeopen.credits_standard` |
 | Type | Consumable |
-| Price | **$2.99** (USD) |
+| Price | **$3.99** (USD) |
 | Display Name | `500 Scan Credits` |
 | Description | `500 scan credits for SafeOpen. Each AI summary or Open Safely session costs 1 credit. Credits never expire.` |
 | Review Notes | `Consumable. Server validates Apple transaction via App Store Server API and grants 500 credits to the device's anonymous Keychain UUID. Idempotent on transactionId.` |
