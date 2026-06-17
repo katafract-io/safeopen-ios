@@ -104,6 +104,10 @@ class ScreenshotTests: XCTestCase {
             app.wait(for: .runningForeground, timeout: 30),
             "App did not reach foreground within 30s — aborting to avoid silent 39-min 0-PNG run"
         )
+        // Force portrait — the simulator can boot landscape, which produced
+        // rotated (landscape) App Store screenshots. Lock to portrait so the
+        // capture has the correct portrait dimensions.
+        XCUIDevice.shared.orientation = .portrait
         return app
     }
 }
