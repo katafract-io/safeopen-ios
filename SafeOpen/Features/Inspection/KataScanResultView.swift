@@ -48,10 +48,26 @@ private struct SealedContainer<Content: View>: View {
             content()
                 .padding(20)
 
-            // Serif stamp — top-right corner
+            // Serif stamp — top-right corner. Width-constrained + wrapping so a
+            // longer label can never render as a diagonal sentence across the card.
             Text(stampText)
                 .font(.kataDisplay(14))
                 .foregroundStyle(Color.kataChampagne)
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+                .multilineTextAlignment(.trailing)
+                .frame(maxWidth: 130, alignment: .trailing)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.kataNavy.opacity(0.55))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(Color.kataChampagne.opacity(0.25), lineWidth: 0.5)
+                        )
+                )
                 .rotationEffect(.degrees(stampAngle))
                 .padding(.top, 14)
                 .padding(.trailing, 18)
@@ -141,7 +157,7 @@ private struct DangerResultBanner: View {
     let reason: String
 
     var body: some View {
-        SealedContainer(hairlineColor: .kataChampagne, stampText: "Caution: \(reason)", stampAngle: -8) {
+        SealedContainer(hairlineColor: .kataChampagne, stampText: "Danger", stampAngle: -8) {
             VStack(spacing: 20) {
                 ZStack {
                     Circle()
@@ -157,6 +173,15 @@ private struct DangerResultBanner: View {
                     .font(.kataDisplay(24))
                     .foregroundStyle(Color.kataIce)
                     .multilineTextAlignment(.center)
+
+                // Reason shown as normal horizontal text (was previously
+                // jammed into the rotated corner stamp, which rendered as a
+                // long diagonal sentence across the card).
+                Text(reason)
+                    .font(.kataBody(15))
+                    .foregroundStyle(Color.kataIce.opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 16)
 
                 // Struck-through URL
                 Text(urlString)
