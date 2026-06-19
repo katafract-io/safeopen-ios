@@ -3,7 +3,7 @@
 // Sealed verdict report. Opus crit item #2:
 //   - No green checkmark SF Symbol, no red danger color
 //   - Gold hairline container around screenshot thumbnail + metadata
-//   - Serif "stamp" rotated -8° in kataChampagne for all verdict levels
+//   - Verdict + reason shown as clean horizontal text/banner (no rotated stamp)
 //   - Differentiates from every scam-warning screen the user has ever seen
 
 import SwiftUI
@@ -31,48 +31,24 @@ struct KataScanResultBanner: View {
 
 private struct SealedContainer<Content: View>: View {
     let hairlineColor: Color
-    let stampText: String
-    let stampAngle: Double
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            // Gold hairline border container
-            RoundedRectangle(cornerRadius: 2)
-                .stroke(hairlineColor.opacity(0.5), lineWidth: 0.5)
-                .background(
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.kataNavy.opacity(0.05))
-                )
-
-            content()
-                .padding(20)
-
-            // Serif stamp — top-right corner. Width-constrained + wrapping so a
-            // longer label can never render as a diagonal sentence across the card.
-            Text(stampText)
-                .font(.kataDisplay(14))
-                .foregroundStyle(Color.kataChampagne)
-                .lineLimit(2)
-                .minimumScaleFactor(0.7)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 130, alignment: .trailing)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
-                .background(
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.kataNavy.opacity(0.55))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 4)
-                                .stroke(Color.kataChampagne.opacity(0.25), lineWidth: 0.5)
-                        )
-                )
-                .rotationEffect(.degrees(stampAngle))
-                .padding(.top, 14)
-                .padding(.trailing, 18)
-        }
-        .frame(maxWidth: .infinity)
+        // Hairline border container. (Removed the rotated corner "stamp" — it
+        // read as childish and a longer label rendered as a stretched diagonal.)
+        // Content is the sizing view; the border is its background so the card
+        // height wraps the content instead of expanding to fill.
+        content()
+            .padding(20)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(Color.kataNavy.opacity(0.05))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 2)
+                            .stroke(hairlineColor.opacity(0.5), lineWidth: 0.5)
+                    )
+            )
     }
 }
 
@@ -82,7 +58,7 @@ private struct SafeResultBanner: View {
     let urlString: String
 
     var body: some View {
-        SealedContainer(hairlineColor: .kataGold, stampText: "Verified", stampAngle: -8) {
+        SealedContainer(hairlineColor: .kataGold) {
             VStack(spacing: 20) {
                 // Sealed ring icon instead of green checkmark
                 ZStack {
@@ -157,7 +133,7 @@ private struct DangerResultBanner: View {
     let reason: String
 
     var body: some View {
-        SealedContainer(hairlineColor: .kataChampagne, stampText: "Danger", stampAngle: -8) {
+        SealedContainer(hairlineColor: .kataChampagne) {
             VStack(spacing: 20) {
                 ZStack {
                     Circle()
@@ -174,14 +150,21 @@ private struct DangerResultBanner: View {
                     .foregroundStyle(Color.kataIce)
                     .multilineTextAlignment(.center)
 
-                // Reason shown as normal horizontal text (was previously
-                // jammed into the rotated corner stamp, which rendered as a
-                // long diagonal sentence across the card).
+                // Reason as a clean horizontal banner (full-width tinted bar,
+                // no rotation) — the background-banner treatment belongs here,
+                // on the horizontal text, not on a rotated corner stamp.
                 Text(reason)
                     .font(.kataBody(15))
-                    .foregroundStyle(Color.kataIce.opacity(0.7))
+                    .foregroundStyle(Color.kataIce.opacity(0.85))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 16)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .padding(.horizontal, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color.kataChampagne.opacity(0.10))
+                    )
+                    .padding(.horizontal, 12)
 
                 // Struck-through URL
                 Text(urlString)
@@ -207,7 +190,7 @@ private struct CautionResultBanner: View {
     let result: InspectionResult
 
     var body: some View {
-        SealedContainer(hairlineColor: .kataChampagne, stampText: "Caution", stampAngle: -8) {
+        SealedContainer(hairlineColor: .kataChampagne) {
             VStack(spacing: 12) {
                 ZStack {
                     Circle()
@@ -244,7 +227,7 @@ private struct UnknownResultBanner: View {
     let result: InspectionResult
 
     var body: some View {
-        SealedContainer(hairlineColor: .kataGold, stampText: "Unknown", stampAngle: -8) {
+        SealedContainer(hairlineColor: .kataGold) {
             VStack(spacing: 12) {
                 ZStack {
                     Circle()
