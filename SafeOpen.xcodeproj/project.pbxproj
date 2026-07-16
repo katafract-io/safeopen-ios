@@ -721,7 +721,6 @@
 		EE15F8B8A994D09FA2FD6623 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Distribution";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = SafeOpen/SafeOpen.entitlements;
@@ -741,7 +740,6 @@
 		F0FAA47E80D5BA258EABC9C6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_ENTITLEMENTS = SafeOpenShareExtension/SafeOpenShareExtension.entitlements;
 				INFOPLIST_FILE = SafeOpenShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
